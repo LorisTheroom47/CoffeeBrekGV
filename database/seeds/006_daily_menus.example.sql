@@ -1,0 +1,79 @@
+-- Coffee Break Monza
+-- ESEMPIO DOCUMENTALE NON ESEGUITO per i menu programmati per data.
+-- La data 2099-01-15 è esclusivamente dimostrativa e non rappresenta
+-- un dato reale del ristorante.
+--
+-- Tutte le istruzioni restano commentate intenzionalmente. Revisionare nomi,
+-- slug e data prima di usare manualmente un esempio in un ambiente adatto.
+
+-- 1. Creare un menu giornaliero in bozza.
+-- insert into public.daily_menus (
+--   service_date,
+--   status,
+--   title,
+--   notes
+-- ) values (
+--   date '2099-01-15',
+--   'draft',
+--   'Menu dimostrativo',
+--   'Esempio non riferito a un servizio reale.'
+-- );
+
+-- 2. Verificare i piatti esistenti tramite nome e slug della categoria.
+-- select
+--   menu_item.id,
+--   menu_item.name,
+--   category.slug as category_slug
+-- from public.menu_items as menu_item
+-- join public.categories as category
+--   on category.id = menu_item.category_id
+-- where
+--   category.slug in ('primi', 'secondi')
+--   and menu_item.name in ('Nome piatto dimostrativo 1', 'Nome piatto dimostrativo 2')
+-- order by category.slug, menu_item.name;
+
+-- 3. Associare i piatti trovati al menu dimostrativo senza UUID hardcoded.
+-- with selected_items as (
+--   select
+--     menu_item.id,
+--     row_number() over (
+--       order by category.slug, menu_item.name
+--     ) - 1 as display_order
+--   from public.menu_items as menu_item
+--   join public.categories as category
+--     on category.id = menu_item.category_id
+--   where
+--     category.slug in ('primi', 'secondi')
+--     and menu_item.name in (
+--       'Nome piatto dimostrativo 1',
+--       'Nome piatto dimostrativo 2'
+--     )
+-- )
+-- insert into public.daily_menu_items (
+--   daily_menu_id,
+--   menu_item_id,
+--   display_order,
+--   available,
+--   price_override
+-- )
+-- select
+--   daily_menu.id,
+--   selected_item.id,
+--   selected_item.display_order,
+--   true,
+--   null
+-- from public.daily_menus as daily_menu
+-- cross join selected_items as selected_item
+-- where daily_menu.service_date = date '2099-01-15';
+
+-- 4. Il menu resta in draft finché non viene pubblicato esplicitamente.
+-- select service_date, status, title
+-- from public.daily_menus
+-- where service_date = date '2099-01-15';
+
+-- 5. Pubblicarlo soltanto in un secondo momento, dopo la verifica manuale.
+-- update public.daily_menus
+-- set status = 'published'
+-- where
+--   service_date = date '2099-01-15'
+--   and status = 'draft';

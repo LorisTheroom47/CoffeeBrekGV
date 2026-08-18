@@ -1,0 +1,356 @@
+# Coffee Break Monza — Changelog
+
+## 18 agosto 2026
+
+- Predisposta CB-010C.4 con il workflow manuale GitHub Actions `.github/workflows/cloudflare-build.yml` su `ubuntu-latest`.
+- La pipeline usa Node.js 24 e pnpm 11.18.0, installa con lockfile congelato ed esegue lint, audit, build Next.js e build OpenNext tramite `pnpm cf:build`.
+- Aggiunta la misurazione dell'output `.open-next` e del Worker principale, inclusa la dimensione gzip, con caricamento dell'output e del report come artifact temporaneo.
+- Il workflow usa permessi minimi `contents: read`, non contiene deploy, token Cloudflare, secret applicativi, valori ambiente o trigger `pull_request_target`.
+- La cartella di progetto non è ancora un repository Git: il workflow è stato verificato staticamente ma non può essere eseguito su GitHub finché la futura root `Coffee Break` non viene inizializzata e pubblicata.
+- Completata la sostituzione CB-010C.3B rimuovendo `src/proxy.ts` e introducendo `src/middleware.ts` come ponte Edge legacy per OpenNext.
+- Conservati matcher `/admin/:path*`, client Supabase SSR, `getClaims()`, sincronizzazione dei cookie request/response e header; nessun redirect o controllo autorizzativo è stato spostato nel middleware.
+- Verificata l'assenza di API Node nella catena del middleware e confermati `requireAdmin()` nel layout protetto e in tutte le 10 Server Action amministrative; RLS e `private.is_admin()` restano invariati.
+- La build Next.js 16.3.0 passa e registra il middleware nei chunk Edge, mostrando soltanto l'avviso previsto per la convenzione `middleware.ts` deprecata.
+- Il precedente blocker OpenNext relativo al Node.js Proxy è scomparso. La build impacchetta il middleware e raggiunge il server bundle, dove Windows nativo nega un symlink con errore `EPERM`.
+- Nessun workaround importante è stato applicato: bundle finale, dimensione compressa e preview restano da verificare in WSL o CI Linux. Nessun deploy, database, SQL, RLS, business logic o Durable Object è stato modificato.
+- Lint e build Next.js sono superati; `pnpm audit` conferma zero vulnerabilità note.
+- Predisposta CB-010C.2 installando esclusivamente `@opennextjs/cloudflare` 1.20.2 e Wrangler 4.124.0, senza aggiornare Next.js 16.3.0.
+- Aggiunti gli script `cf:build`, `cf:preview` e `cf:deploy`, la configurazione minima `wrangler.jsonc` e `open-next.config.ts`, senza R2, Durable Objects, account ID, dominio o valori ambiente.
+- Abilitati `nodejs_compat` e `global_fetch_strictly_public` con compatibility date `2026-08-15`; `node:crypto` e `node:net` restano invariati.
+- La build OpenNext su Windows ha completato la build Next.js ma si è fermata perché il Node.js Proxy Middleware di Next.js 16 non è ancora supportato dall'adapter; nessuna modifica importante al flusso Supabase Auth è stata applicata automaticamente.
+- Dimensione finale del Worker e preview locale non sono state eseguite perché `.open-next/worker.js` non è stato prodotto. L'adapter raccomanda inoltre WSL o CI Linux per evitare i limiti del supporto Windows.
+- Documentati esclusivamente i nomi delle cinque env di produzione; nessun valore reale, secret Cloudflare, deploy, database o SQL è stato introdotto.
+- Il rate limiter resta in-memory e Durable Objects non è stato implementato. La build Next.js ordinaria e l'audit dipendenze restano superati.
+- Eseguito il test reale del nucleo database CB-010B.2D.1 dopo l'applicazione confermata della migrazione 014, partendo da conteggi ordini e badge pari a zero.
+- Verificato un ordine pickup server-only con una sola testata e una sola riga, numero e totale corretti; il retry identico ha restituito lo stesso risultato senza nuovi inserimenti.
+- Verificato `IDEMPOTENCY_CONFLICT` con stessa chiave e quantità differente, lasciando invariato l'ordine originale.
+- Due RPC realmente concorrenti con stessa chiave hanno restituito lo stesso ordine e numero, creando una sola testata e una sola riga senza errori UNIQUE.
+- Confermati blocco anonimo e funzionamento `service_role`; nessuna chiave, fingerprint, UUID o PII è stata mostrata o documentata.
+- La subscription tecnica Broadcast con credenziale server ha restituito `CHANNEL_ERROR` e il browser integrato non era collegabile: flusso `/ordine`, token Turnstile e notifica admin end-to-end restano da ripetere e non sono dichiarati superati.
+- Eliminati per ID i due ordini fittizi; la cascata ha riportato `orders`, `order_items` e badge a zero senza `TRUNCATE`, DELETE diretto sulle righe o modifica della sequence.
+- `pnpm lint` e la build Next.js 16.3.0 sono stati completati correttamente; `pnpm audit` conferma zero vulnerabilità note.
+- Chiarito il confine del fingerprint idempotente prima dell'applicazione della migrazione 014: SHA-256 viene calcolato esclusivamente nella Server Action Next.js sul payload validato e normalizzato; PostgreSQL ne valida soltanto formato e corrispondenza.
+- Confermato che il browser invia dati ordine, chiave UUID e token Turnstile, senza generare, conoscere o controllare `request_fingerprint`; il token e la chiave non entrano nell'hash.
+- Predisposta CB-010B.2D.1 con chiave di idempotenza UUID v4 generata nel browser e mantenuta esclusivamente nello stato React durante i retry, senza `localStorage` o `sessionStorage`.
+- Il token Turnstile resta monouso: ogni retry richiede una nuova verifica, ma conserva la stessa chiave di idempotenza; dopo il successo viene generata la chiave del nuovo ordine.
+- La Server Action valida la chiave e calcola un fingerprint SHA-256 server-side del payload normalizzato, senza prezzi, totali o valori in chiaro memorizzati nel browser.
+- Aggiunte la migrazione revisionabile 014 e il relativo check di sola lettura per colonne nullable compatibili con dati storici, vincolo UNIQUE, fingerprint e nuova firma RPC.
+- La RPC usa un advisory lock transazionale per serializzare la stessa chiave: un retry identico restituisce ordine, numero e totale esistenti senza nuovi INSERT, righe, numeri ordine o Broadcast; un payload differente produce `IDEMPOTENCY_CONFLICT`.
+- La vecchia firma viene rimossa esplicitamente e il nuovo unico overload mantiene `EXECUTE` soltanto per `service_role`, con `PUBLIC`, `anon` e `authenticated` esclusi.
+- Nessuna estensione PostgreSQL, dipendenza, Redis/KV o modifica a Turnstile, Broadcast, prezzi e logica commerciale introdotta.
+- Nessun SQL eseguito, database remoto invariato e nessun ordine reale creato; il test sequenziale e concorrente resta da eseguire dopo revisione e applicazione manuale.
+- `pnpm lint` e la build Next.js 16.3.0 sono stati completati correttamente; `pnpm audit` conferma zero vulnerabilità note.
+
+## 14 agosto 2026
+
+- Completato il test reale CB-010B.2C con un ordine pickup e uno delivery fittizi attraverso widget Turnstile, Server Action, Siteverify, RPC server-only, Broadcast e dashboard.
+- Confermati azione `order_submit`, totali corretti, tariffa delivery di 2,50 euro, notifiche singole, badge, elenco e dettaglio amministrativo.
+- Verificato il ciclo del token: assente dalla conferma dopo l'invio e nuova verifica generata per il secondo ordine, senza persistenza o riutilizzo del token precedente.
+- Le chiavi di test completano automaticamente il widget; il caso UI senza token non è stato forzato. Il relativo blocco client e il messaggio controllato sono stati verificati staticamente.
+- Eseguito un test reale Siteverify con token invalido: `success = false` e nessun nuovo ordine; fail-closed, assenza di retry e RPC successiva alla verifica confermati staticamente.
+- Nessun token o secret è stato mostrato o loggato; nessun `remoteip` o dato cliente viene inviato a Siteverify.
+- Eliminati per ID i due ordini fittizi; la cascata ha rimosso le righe figlie e i conteggi finali sono `orders = 0`, `order_items = 0`, badge nuovi pari a zero.
+- Redis/KV resta non implementato e nessun database, schema, RLS, RPC o migrazione è stato modificato.
+- Implementata CB-010B.2C integrando Cloudflare Turnstile in modalità Managed nel form `/ordine`, senza dipendenze aggiuntive.
+- Aggiunto un Client Component con rendering esplicito dello script ufficiale, azione `order_submit`, callback di successo, scadenza ed errore e reset dopo ogni tentativo che può consumare il token.
+- Il token resta esclusivamente nello stato React e non viene mostrato, loggato o persistito in cookie, `localStorage` o `sessionStorage`.
+- Aggiunto un helper `server-only` che chiama Siteverify una sola volta via POST, con timeout di 5 secondi, senza `remoteip`, retry o esposizione dei dettagli Cloudflare.
+- La verifica è fail-closed per configurazione mancante, timeout, rete, risposta malformata o rifiuto; la RPC server-only viene chiamata soltanto dopo `success = true`, azione `order_submit` e hostname non vuoto.
+- Aggiunti esclusivamente i nomi `NEXT_PUBLIC_TURNSTILE_SITE_KEY` e `TURNSTILE_SECRET_KEY` a `.env.local.example`; nessun valore reale e nessuna modifica a `.env.local`.
+- Documentati chiavi di test Cloudflare per sviluppo, revisione privacy futura, requisito CSP per `challenges.cloudflare.com` e necessità del test reale pickup/delivery dopo la configurazione.
+- Database, SQL, RPC, migrazioni, RLS e Broadcast non sono stati modificati; Redis/KV resta non implementato.
+- Completata CB-010B.2B.2 applicando la migrazione 013: `EXECUTE` su `create_public_order` è stato revocato a `PUBLIC`, `anon` e `authenticated` e concesso esclusivamente a `service_role` tra i ruoli applicativi.
+- Eseguito il check 013: una sola funzione e un solo overload, nessun privilegio inatteso, RLS `orders` attiva e nessun privilegio diretto `anon` su `orders` o `order_items`.
+- Verificato realmente il blocco della RPC con Publishable Key: errore di permesso `42501`, logica interna non raggiunta e nessun ordine creato.
+- Verificati dopo la migrazione un ordine pickup e uno delivery tramite il client server-only, con totali corretti e tariffa di consegna di 2,50 euro; entrambi eliminati per ID con pulizia delle righe figlie tramite cascade e conteggi finali a zero.
+- Confermata l'assenza della Secret Key nei Client Component, nei log e nel bundle client; nessuna credenziale è stata mostrata o inserita nei file versionati.
+- Turnstile e rate limiter distribuito restano non implementati; la migrazione 013 non modifica RPC, schema, RLS, Broadcast o logica applicativa.
+- Collegata CB-010B.2B.1 sostituendo nella sola `createPublicOrderAction` il client anonimo con `createOrderServerSupabaseClient()`; nome RPC e payload sono invariati.
+- Confermati staticamente `server-only`, assenza di import da Client Component, assenza di secret nelle variabili `NEXT_PUBLIC_*`, nei log e nel bundle client e assenza di INSERT diretti sulle tabelle ordini.
+- La Secret Key è configurata esternamente e non è stata letta, mostrata, copiata o versionata; `anonymous.ts` è stato conservato pur non essendo più usato dalla Server Action.
+- La migrazione 013 non è stata applicata e `anon EXECUTE` resta temporaneamente attivo, quindi il bypass diretto non è ancora chiuso.
+- Il collaudo reale pickup/delivery, Broadcast e dashboard non è stato eseguito perché il browser di automazione ha bloccato l'accesso a `localhost`; nessun ordine è stato creato o eliminato durante questa attività.
+- `pnpm lint` e la build Next.js 16.3.0 sono stati completati correttamente dopo il collegamento server-only.
+- Predisposta CB-010B.2B confermando che l'attuale privilegio `anon EXECUTE` permette di chiamare direttamente `create_public_order` e aggirare le protezioni della Server Action.
+- Scelta una Secret Key Supabase dedicata al backend Next.js, mappata al ruolo `service_role`, senza cookie, persistenza, log o variabili `NEXT_PUBLIC_*`.
+- Aggiunti il client server-only non ancora collegato, il placeholder `SUPABASE_SECRET_KEY` e la migrazione 013 revisionabile che revoca `EXECUTE` a `PUBLIC`, `anon` e `authenticated` e lo concede a `service_role`.
+- Aggiunto il check 013 di sola lettura per firma, overload, owner, `SECURITY DEFINER`, privilegi effettivi, RLS e assenza di accesso tabellare `anon`.
+- La migrazione 013 non è stata applicata, il database remoto non è stato modificato e il flusso pubblico continua temporaneamente a usare il client anonimo per evitare interruzioni prima del rollout.
+- Documentati rollout controllato, rischio dei privilegi predefiniti dopo una ricreazione della funzione e raccomandazione futura di 64 KB per il limite di trasporto delle Server Action; `next.config.ts` resta invariato.
+- Turnstile non è stato implementato: verrà attivato soltanto dopo che la chiamata diretta anonima sarà stata chiusa.
+- Lint e build Next.js 16.3.0 superati; nessun SQL eseguito e nessuna credenziale reale letta o inserita nei file versionati.
+- Completata CB-010B.1 aggiornando in modo controllato `next` ed `eslint-config-next` da 16.2.12 a 16.3.0, senza modificare il codice applicativo.
+- Aggiornate le dipendenze transitive vulnerabili: `sharp` 0.34.5 → 0.35.3, `postcss` 8.4.31 → 8.5.23, `brace-expansion` 1.1.16 → 1.1.18 e 5.0.8 → 5.0.9, `js-yaml` 4.3.0 → 4.3.1 e `nanoid` 3.3.16 → 3.3.18.
+- Aggiunto un override pnpm circoscritto a `brace-expansion` 5.x, perché la catena `@typescript-eslint` → `minimatch` manteneva la versione 5.0.8 nonostante l'aggiornamento mirato; nessun major upgrade è stato introdotto.
+- `pnpm audit` è passato da 10 vulnerabilità (8 high, 2 moderate) a zero; `pnpm lint` e la build Next.js 16.3.0 sono stati completati con esito positivo.
+- Predisposta CB-009E.3 con la migrazione revisionabile 012 per rimuovere esclusivamente `public.orders` dalla publication `supabase_realtime`, senza applicare SQL.
+- La migrazione verifica la publication, esegue un `ALTER PUBLICATION ... DROP TABLE` statico soltanto quando necessario ed è ragionevolmente rieseguibile senza SQL dinamico.
+- Aggiunto il check 012 di sola lettura per confermare `orders_postgres_changes_count = 0` e preservare funzione, trigger, topic, evento, policy Broadcast, helper admin e RLS.
+- Verificate anche RLS e policy SELECT, INSERT, UPDATE e DELETE di `public.orders`, senza modificarne definizioni, ruoli o condizioni.
+- Postgres Changes è deprecato nel progetto; dopo l'applicazione manuale della migrazione 012, Broadcast resterà l'unico percorso Realtime per i nuovi ordini.
+- Nessun frontend, database remoto, dato, ordine, policy, grant, RPC, trigger o funzione è stato modificato e nessun SQL è stato eseguito.
+- Superato il test reale end-to-end di CB-009E.2B con un ordine pickup e un ordine delivery interamente fittizi.
+- Il channel privato `admin:orders` ha ricevuto un solo evento `new_order` per ordine, mostrando modalità e totale corretti e aggiornando badge e lista senza refresh manuale.
+- Verificati dettaglio ordine, transizione `new` → `confirmed` senza nuova notifica, suono OFF/ON e assenza di duplicati dopo refresh e re-render.
+- Confermate privacy e persistenza minima: nessun payload completo nei log, nessuna PII nello stato, nessun dato ordine nel browser e sola preferenza booleana del suono in `localStorage`.
+- Eliminati puntualmente i due ordini fittizi; la cascata ha riportato `orders` e `order_items` a zero, il badge finale è zero e il suono è stato ripristinato su OFF.
+- Nessuna correzione applicativa, modifica database o esecuzione SQL effettuata durante il test.
+- Implementata CB-009E.2B migrando il frontend delle notifiche amministrative da Postgres Changes a un channel Supabase Broadcast privato.
+- Il client ascolta esclusivamente il topic `admin:orders` e l'evento `new_order`, usando la sessione amministrativa esistente senza token hardcoded, `service_role` o secret key.
+- Aggiunto un parser prudente del payload minimo con validazione di UUID, numero ordine, modalità, totale, stato e data; payload non validi vengono ignorati senza loggare dati completi.
+- Mantenuti deduplicazione in memoria, massimo tre notifiche, singolo `router.refresh()`, badge server-side, link al dettaglio, suono Web Audio opzionale e preferenza booleana in `localStorage`.
+- Rimossa dal client ogni subscription `postgres_changes`; `public.orders` resta temporaneamente nella publication `supabase_realtime` fino alla migrazione dedicata successiva al test reale.
+- Nessuna modifica a database, migrazioni, policy, RLS, RPC o dipendenze effettuata durante l'implementazione frontend; il test reale è documentato separatamente.
+- Predisposta CB-009E.2A progettando la migrazione controllata dalle notifiche Postgres Changes a Supabase Realtime Broadcast, senza applicare SQL e senza modificare il frontend.
+- Aggiunta la migrazione revisionabile 011 con trigger `AFTER INSERT` su `public.orders` e funzione privata `private.broadcast_new_order()` basata sulla primitiva ufficiale `realtime.send()`.
+- Il Broadcast privato usa il topic stabile `admin:orders`, l’evento `new_order` e un payload costruito esplicitamente con soli ID ordine, numero, modalità, totale, stato e data di creazione.
+- Nessun nome, telefono, email, indirizzo o nota viene serializzato; la riga `NEW` non viene convertita integralmente in JSON.
+- Aggiunta una policy SELECT su `realtime.messages` limitata a `authenticated`, al topic previsto, all’estensione Broadcast e a `private.is_admin()`; anon e utenti non-admin restano esclusi.
+- Aggiunto il check 011 di sola lettura per funzione, privilegi, trigger, payload, policy, helper amministrativo, RLS e permanenza temporanea di `public.orders` nella publication.
+- Postgres Changes resta configurato durante la futura fase di test; la sua eventuale rimozione richiederà una migrazione successiva dopo un collaudo Broadcast riuscito.
+
+## 13 agosto 2026
+
+- Ripetuto il test end-to-end delle notifiche Realtime dopo l’applicazione confermata della migrazione 010 e il superamento del relativo check.
+- Creato un solo ordine fittizio con ritiro mantenendo aperta l’area admin autenticata e il suono disattivato.
+- L’ordine è stato salvato correttamente, ma non sono comparsi notifica, refresh automatico, aggiornamento del badge o aggiornamento dell’elenco; dopo un refresh manuale l’ordine risultava presente.
+- Il test fondamentale resta quindi non superato; payload, parser, link, UPDATE, suono attivo e deduplicazione runtime non sono stati dichiarati funzionanti e non è stata applicata alcuna correzione strutturale.
+- Verificata staticamente l’assenza di log del payload completo e di PII nello stato delle notifiche; la sola preferenza booleana del suono resta prevista in `localStorage`.
+- Eliminato esclusivamente l’ordine fittizio creato dal retest; la cascata ha riportato `orders` e `order_items` a zero e il suono è rimasto disattivato.
+- Predisposta CB-009E.1C con la migrazione revisionabile 010 e il relativo controllo di sola lettura, senza eseguire SQL.
+- Aggiunto l’helper privato `private.is_admin()`, senza parametri, `STABLE`, `SECURITY DEFINER`, owner `postgres` e `search_path` vuoto.
+- L’helper restituisce esclusivamente un booleano basato su `auth.uid()` e sull’esistenza della riga in `public.admin_users`; non legge `auth.users`, non usa SQL dinamico o `service_role` e non accetta identificativi dal client.
+- Predisposta la sostituzione della sola policy `orders_select_admin` con una chiamata all’helper; policy INSERT, UPDATE e DELETE restano invariate.
+- `authenticated` riceve soltanto `USAGE` sullo schema `private` ed `EXECUTE` sull’helper; `PUBLIC` e `anon` restano esclusi e nessun ruolo applicativo riceve `CREATE` sullo schema.
+- RLS e grants di `orders` non vengono indeboliti; il test Realtime e i test REST admin/non-admin/anon dovranno essere ripetuti dopo revisione e applicazione manuale.
+- Eseguito il test reale CB-009E.1B partendo da `orders = 0` e `order_items = 0`, con admin autenticato aperto e suono disattivato.
+- L’ordine fittizio con ritiro è stato creato correttamente, ma il client admin non ha ricevuto l’INSERT Realtime: nessuna notifica, nessun `router.refresh()` e nessun aggiornamento automatico del badge.
+- Verificato in sola lettura che `public.orders` appartiene a `supabase_realtime` e che la publication supporta gli INSERT; il problema richiede una diagnosi mirata e non è stato corretto durante il collaudo.
+- I test successivi su dettaglio, chiusura, suono, limite di tre notifiche, UPDATE e reconnect non sono stati eseguiti dopo il blocco strutturale.
+- Eliminato esclusivamente l’ordine fittizio per ID; `ON DELETE CASCADE` ha rimosso la relativa riga e i conteggi finali sono tornati a zero.
+- Completata CB-009E.1B montando il componente Realtime esclusivamente nel layout admin protetto.
+- La subscription autenticata ascolta soltanto gli INSERT su `public.orders`, rimuove il channel al cleanup e deduplica in memoria gli ID già notificati.
+- Ogni nuovo evento valido mostra al massimo tre notifiche senza PII, offre il collegamento al dettaglio e richiama una sola volta `router.refresh()` per aggiornare dati e statistiche server-side.
+- Aggiunto alla sidebar il conteggio autoritativo degli ordini con stato `new` tramite una singola query server-side, senza polling o incremento locale.
+- Il suono Web Audio è opzionale, inizialmente disattivato; `localStorage` conserva esclusivamente la preferenza booleana.
+- Registrata l'applicazione manuale della migrazione 009; nessun SQL, database, policy, RLS o RPC modificato da CB-009E.1B.
+- Avviata CB-009E.1 verificando sul progetto remoto che la publication `supabase_realtime` esiste ma contiene zero tabelle.
+- Predisposte, senza eseguirle, migrazione 009 e verifica di sola lettura per aggiungere esclusivamente `public.orders` alla publication.
+- Nessun componente di notifica implementato prima della revisione e applicazione manuale della migrazione; nessun polling o canale esterno introdotto.
+- Confermato che la futura subscription dovrà essere limitata all’area admin autenticata e agli eventi INSERT, rispettando RLS e senza `service_role`.
+- Corretto il messaggio di concorrenza di CB-009D.3 introducendo `expectedCurrentStatus` come token ottimistico validato e non autoritativo.
+- La Server Action confronta lo stato atteso con quello reale prima di validare la transizione e mantiene il filtro sullo stato nell’UPDATE.
+- Le vere transizioni vietate continuano a produrre il messaggio dedicato; nessuna regola di transizione, policy o struttura database è stata modificata.
+- Verificato realmente il caso stale con due viste simultanee: nessun UPDATE indesiderato, stato recente preservato e messaggio di concorrenza corretto.
+- Ripulito l’unico ordine fittizio del test mirato; `orders` e `order_items` sono tornate vuote tramite cascata.
+- Eseguito il test reale di CB-009D.3 con percorsi completi pickup, delivery e annullamento usando esclusivamente dati fittizi.
+- Superati avanzamento progressivo, distinzione ritiro/consegna, stati terminali, statistiche, pending, prevenzione del doppio avanzamento e conferma inline dell’annullamento.
+- Individuata una difformità nel caso concorrente: lo stato più recente viene preservato, ma il secondo tentativo restituisce “Transizione di stato non consentita” invece del messaggio specifico previsto per la concorrenza.
+- Nessuna correzione applicata, come richiesto per i problemi strutturali emersi nel collaudo; CB-009D.3 richiede una revisione mirata.
+- Rimossi puntualmente tutti gli ordini fittizi del test; `orders` e `order_items` sono tornate vuote tramite cascata.
+- Implementata CB-009D.3 con gestione amministrativa dello stato dalla pagina di dettaglio ordine.
+- Aggiunto un helper condiviso e tipizzato per transizioni progressive, stati terminali e distinzione tra ritiro e consegna.
+- La Server Action ricontrolla l’amministratore, valida UUID e target, legge stato e modalità dal database e aggiorna esclusivamente `orders.status`.
+- Il filtro simultaneo per ID e stato corrente impedisce di sovrascrivere aggiornamenti concorrenti; le tre route amministrative interessate vengono invalidate dopo il successo.
+- Aggiunti stato pending, prevenzione dei doppi click e conferma inline accessibile prima dell’annullamento.
+- Nessuna modifica a database, policy, RLS, RPC, importi, dati cliente o righe ordine; nessuna nuova dipendenza.
+- Superato il test reale di CB-009D.2 con casi pickup e delivery interamente fittizi, aperti tramite il collegamento “Dettagli” dell’elenco.
+- Verificati campi facoltativi presenti e assenti, recapito condizionale, note, orario richiesto, snapshot delle righe e riepilogo economico senza ricalcoli.
+- Confermate le risposte 404 per UUID inesistente e ID non valido, il layout desktop, il comportamento responsive statico, accessibilità e assenza di PII nei log.
+- Il test non-admin non è stato eseguito perché non era disponibile un account non amministratore già predisposto.
+- Rimossi puntualmente tutti gli ordini fittizi del collaudo; la cascata ha ripulito `order_items` e i conteggi finali sono tornati a zero.
+- Implementata CB-009D.2 con la route protetta `/admin/ordini/[id]` e attivato il collegamento “Dettagli” nell’elenco ordini.
+- Aggiunte due query SSR fisse e filtrate: una su `orders` e una su `order_items`, senza N+1, join a `menu_items`, fetch browser o `service_role`.
+- Il dettaglio usa gli snapshot delle righe e mostra dati cliente, servizio, date, note condizionali e importi salvati senza ricalcoli.
+- Aggiunti UUID validato, `notFound()` per ordine assente e stato di errore tecnico controllato senza dettagli Supabase.
+- La pagina è responsive e in sola lettura; non sono stati aggiunti cambio stato, modifiche, eliminazioni o interventi sul database.
+- Superato il test reale di CB-009D.1 con un ordine di ritiro e uno di consegna creati usando esclusivamente dati fittizi.
+- Verificati empty state, statistiche, ordinamento decrescente, mapping italiano, totali, orari richiesti e controlli “Dettagli” disabilitati.
+- Confermate la query SSR singola su `orders`, l’assenza di letture da `order_items`, di query N+1 e di dati sensibili non richiesti nell’elenco.
+- Eliminati puntualmente i due ordini di test; la cascata ha rimosso le relative righe e il database è tornato a `orders = 0` e `order_items = 0`.
+- Implementata CB-009D.1 con la nuova route protetta `/admin/ordini` e collegamento nella navigazione amministrativa desktop e mobile.
+- Aggiunto un layer dati server-only tipizzato che esegue una sola query SSR su `orders`, rispettando sessione admin e RLS e selezionando esclusivamente i campi necessari all’elenco.
+- Gli ordini sono ordinati per creazione e numero decrescenti; non vengono lette righe da `order_items` e non sono presenti query N+1, fetch client, polling o Realtime.
+- Aggiunte statistiche per totale, nuovi, in lavorazione e completati, con gli annullati esclusi dai completati.
+- Aggiunta una tabella semantica responsive che diventa una lista di card su smartphone, con mapping italiano di stato, modalità, date e totale.
+- L’elenco non mostra UUID, email, indirizzi, note o dettagli dei piatti; il controllo “Dettagli” resta disabilitato in attesa di CB-009D.2.
+- Gestiti empty state e fallimento della query con messaggi controllati, senza dettagli Supabase.
+- Nessuna modifica a database, migrazioni, RLS, policy, RPC o dipendenze.
+- Confermata la pulizia completa degli ordini di test prima dell’avvio di CB-009D.1.
+- Eseguiti test reali controllati di CB-009C.2 con dati esclusivamente fittizi.
+- Superate le regressioni pickup e delivery, inclusi totale definitivo, tariffa delivery di 2,50 euro, modalità e data nella conferma.
+- Confermati honeypot e limite payload superiore a 32 KB: richieste bloccate prima della RPC, messaggi sanitizzati e nessun ordine creato.
+- Confermato il rate limiter nella stessa istanza locale: cinque tentativi consentiti nella finestra di 10 minuti e tentativo successivo bloccato con `TOO_MANY_REQUESTS`.
+- Verificati blocco del doppio invio, stato pending, focus e annuncio accessibile della conferma, reset “Fai un nuovo ordine” e conservazione completa del form sugli errori.
+- Confermate staticamente assenza di CAPTCHA attivo o token fittizi, ordine corretto dei controlli, whitelist RPC e assenza di persistenza o log di payload, IP e dati cliente.
+- Rimossi esclusivamente gli ordini fittizi creati durante il test; le relative righe sono state eliminate tramite cascata e nessun dato preesistente è stato modificato.
+- Il limiter resta best-effort, in-memory e non distribuito; non costituisce una garanzia per un ambiente serverless di produzione.
+
+## 12 agosto 2026
+
+- Implementata CB-009C.2 con honeypot fuori viewport, limite difensivo del payload a 32 KB e rate limiting applicativo best-effort di 5 tentativi ogni 10 minuti.
+- Il limiter usa l'IP normalizzato quando disponibile oppure un bucket condiviso prudente; i dati non vengono scritti nel database né registrati nei log.
+- Documentata la natura non persistente e non distribuita del limiter in-memory, che non sostituisce una protezione infrastrutturale in ambienti serverless ad alto traffico.
+- Predisposto prima della RPC un hook neutro per una futura verifica CAPTCHA, senza provider, token fittizi o dipendenze esterne.
+- Estesi gli errori sanitizzati con `REQUEST_TOO_LARGE`, `TOO_MANY_REQUESTS` e `INVALID_REQUEST`.
+- Rifinita la conferma con modalità, data italiana, orario facoltativo e azione “Fai un nuovo ordine”, senza mostrare UUID o dati personali.
+- Il nuovo ordine azzera carrello, note, dati cliente, consegna, data, ora, honeypot, successo ed errori senza ricaricare la pagina.
+- Nessuna modifica a database, RPC, migrazioni, policy o dashboard amministrativa.
+- Implementata CB-009C.1 con la nuova route pubblica `/ordine`, menu disponibile caricato lato server e carrello interattivo responsive.
+- Aggiunti selezione quantità, note per piatto, consegna o ritiro, dati cliente, data e orario richiesti e riepilogo con totale soltanto indicativo.
+- Collegato il form alla Server Action esistente: il browser invia esclusivamente ID, quantità, note e dati cliente, mentre prezzi e totale definitivo restano calcolati dalla RPC.
+- Aggiunti stati di caricamento, validazione accessibile, conservazione dei dati in caso di errore e conferma con numero ordine e totale definitivo.
+- Aggiornati i pulsanti “Ordina” dell'header desktop/mobile e la call to action della homepage verso `/ordine`.
+- Nessuna modifica a database, RPC, RLS, autenticazione o dashboard; nessuna nuova dipendenza installata.
+- Rate limiting, CAPTCHA e ulteriori protezioni anti-abuso restano necessari prima dell'apertura pubblica del form.
+- Completata CB-009B.3 con test reali della RPC anonima per un ordine pickup e un ordine delivery usando esclusivamente dati fittizi.
+- Verificati snapshot, prezzi database, importi, tariffa di consegna, metodi di pagamento e corrispondenza tra risposta RPC e righe salvate.
+- Confermato il rifiuto di quantità fuori intervallo, UUID inesistente, duplicati, data passata, consegna incompleta e proprietà client `price` e `total`.
+- Verificata l'atomicità con un payload misto non valido, senza ordini parziali o righe orfane.
+- Il test del piatto terminato non è stato eseguito perché non erano presenti piatti con `available = false`.
+- Verificata staticamente la Server Action CB-009B.2, senza creare UI, API route o script pubblici.
+- Rimossi esclusivamente i due ordini creati dal test e confermata la cancellazione a cascata delle relative righe.
+- Nessun dato cliente, UUID di ordini o piatti e nessun file temporaneo conservato.
+
+## 2 agosto 2026
+
+- Implementata CB-009B.2 con Server Action pubblica tipizzata e validazione TypeScript lato server.
+- Aggiunto un client Supabase anonimo server-only con Publishable Key, senza cookie o sessione autenticata.
+- Il payload RPC usa una whitelist esplicita e non accetta prezzi, totali, stato o metodo di pagamento dal client.
+- Aggiunti controllo di data Europe/Rome, ora, dati cliente, consegna/ritiro, UUID, duplicati, massimo 50 righe e quantità da 1 a 99.
+- Verificata rigorosamente la risposta della sola RPC `create_public_order`; numero ordine e totale sono mantenuti come stringhe sicure.
+- Mappati i codici RPC a messaggi italiani senza esporre dettagli Supabase o registrare dati personali.
+- Nessuna UI, API route, migrazione, policy, query diretta alle tabelle ordini, `service_role` o dipendenza aggiuntiva introdotta.
+- Rate limiting, CAPTCHA e protezioni anti-abuso restano esplicitamente necessari prima del lancio pubblico.
+- Predisposta CB-009B.1 con la funzione transazionale `public.create_public_order`, senza applicarla al database.
+- Aggiunte validazioni per dati cliente, consegna/ritiro, data Europe/Rome, struttura JSON, UUID, quantità, duplicati e massimo 50 righe.
+- Prezzi, disponibilità, snapshot e totali vengono determinati esclusivamente dal database con lettura set-based dei piatti disponibili.
+- Ordine e righe vengono inseriti atomicamente; la funzione restituisce soltanto UUID ordine, numero progressivo e totale.
+- Configurati `SECURITY DEFINER`, `search_path` vuoto ed EXECUTE riservato ad `anon`, mantenendo anon privo di accesso diretto alle tabelle.
+- Aggiunti controlli SQL di sola lettura e 15 casi manuali interamente commentati; nessun SQL eseguito e nessuna modifica al sito.
+- Documentati i limiti anti-abuso ancora da implementare: rate limiting, CAPTCHA e controllo della frequenza.
+- Predisposta CB-009A con le tabelle `orders` e `order_items`, relativi vincoli, relazioni, indici e snapshot dei dati del piatto.
+- Configurate modalita consegna/ritiro, stati dell'ordine, importi e pagamento alla consegna o al ritiro.
+- Abilitata RLS; accesso riservato agli amministratori autenticati presenti in `admin_users`.
+- Adottata la strategia B: nessun accesso anonimo finche non sara disponibile un flusso server-side transazionale sicuro.
+- Aggiunti controlli SQL di sola lettura e seed dimostrativo interamente commentato; nessun SQL eseguito e nessuna modifica al sito.
+- Sospesa la funzionalità amministrativa “Menu giornalieri” su decisione dell’utente.
+- Rimosso il collegamento dalla sidebar e disattivate con risposta 404 le route `/admin/menu-giornalieri` e `/admin/menu-giornalieri/nuovo`.
+- Conservati i file applicativi, lo schema, le migrazioni, le policy e gli eventuali dati per una futura riattivazione.
+- Nessun rollback o SQL eseguito; homepage, `/menu` e `/tv` continuano a usare `menu_items`.
+- Implementata CB-008B.1 con elenco protetto dei menu giornalieri ordinato per data e stati Bozza/Pubblicato.
+- Aggiunta la creazione di un menu giornaliero con data civile, titolo e note facoltativi e stato `draft` imposto esclusivamente lato server.
+- Aggiunte validazione rigorosa della data, conservazione dei valori, controllo preventivo dell’unicità e gestione del vincolo UNIQUE concorrente.
+- Aggiunto il collegamento “Menu giornalieri” alla navigazione amministrativa.
+- Nessuna lettura o scrittura su `daily_menu_items` e nessuna modifica a homepage, `/menu`, `/tv` o alle query pubbliche.
+- Predisposta CB-008A con le nuove tabelle `daily_menus` e `daily_menu_items`, senza collegamenti al frontend.
+- Aggiunti vincoli per data univoca, stato draft/published, ordine non negativo e prezzo giornaliero facoltativo.
+- Configurate foreign key CASCADE/RESTRICT, trigger `updated_at`, indici non duplicati, RLS e policy separate per lettura e scrittura.
+- La lettura pubblica è limitata ai menu pubblicati; gli amministratori possono leggere le bozze e gestire entrambe le tabelle tramite `admin_users`.
+- Aggiunti controlli SQL di sola lettura e un seed dimostrativo interamente commentato, senza UUID o dati reali.
+- Nessun SQL eseguito e nessuna modifica al sito, alla dashboard o al comportamento del menu corrente.
+- Predisposta CB-007F.6B.2 con azione “Elimina” e pagina protetta di conferma per le categorie.
+- L’eliminazione è consentita soltanto alle categorie vuote, con conteggio lato server nella pagina e nuovo controllo nella Server Action.
+- Il DELETE è filtrato per ID, verifica una sola riga e gestisce in modo controllato la protezione `ON DELETE RESTRICT`.
+- Predisposte, senza eseguirle, la migrazione 005 e le verifiche per il grant DELETE e la policy riservata agli amministratori.
+- Nessuno spostamento automatico dei piatti, normalizzazione degli ordini, `service_role`, nuova dipendenza o eliminazione a cascata introdotti.
+- Implementata CB-007F.6B.1 con pulsanti accessibili “Sposta su” e “Sposta giù” nella pagina `/admin/categorie`.
+- Aggiunta una Server Action protetta che ricava ordine e categoria vicina lato server e modifica soltanto `display_order`.
+- Gestiti valori duplicati con ordini consecutivi non negativi e aggiunta una compensazione se il secondo UPDATE fallisce.
+- Invalidati `/`, `/menu`, `/tv`, `/admin` e `/admin/categorie`; nessuna transazione SQL reale, migrazione, RPC, `service_role` o eliminazione introdotta.
+- Implementata CB-007F.6A con pagina protetta `/admin/categorie`, conteggio piatti e collegamenti dalla dashboard.
+- Aggiunti form condiviso e pagine per creare e modificare nome e slug delle categorie.
+- Aggiunte validazione server-side, normalizzazione e verifica di unicità dello slug.
+- La creazione calcola `display_order`; la modifica aggiorna esclusivamente nome e slug.
+- Predisposte, senza eseguirle, migrazione 004 e verifiche per policy INSERT/UPDATE riservate agli amministratori.
+- Nessuna eliminazione o riordinamento categorie, `service_role`, dipendenza aggiuntiva o scrittura client-side.
+- Implementata CB-007F.5A con pulsanti accessibili “Sposta su” e “Sposta giù” nella dashboard.
+- Aggiunta una Server Action protetta che ricava categoria, ordine e piatto vicino lato server.
+- Lo scambio modifica esclusivamente `display_order` su un massimo di due piatti della stessa categoria.
+- Gestiti ordini duplicati con valori consecutivi non negativi e aggiunta compensazione se il secondo UPDATE fallisce.
+- Invalidati homepage, `/menu`, `/tv` e `/admin` dopo il riordinamento riuscito.
+- Nessuna migrazione, RPC, `service_role`, dipendenza aggiuntiva o funzione drag & drop introdotta.
+
+## 31 luglio 2026
+
+- Implementata CB-007F.4B estendendo la query pubblica con associazioni e allergeni.
+- Aggiunti tipi pubblici espliciti e aggregazione server-side senza query N+1.
+- Aggiunto un Server Component condiviso per mostrare gli allergeni su homepage, `/menu` e `/tv`.
+- Gestiti array vuoti, relazioni mancanti, nomi nulli o vuoti, duplicati e ordinamento stabile.
+- Mantenuti rendering SSR, formato TV compatto, badge “Terminato”, prezzi, categorie e fallback esistenti.
+- Nessun client component, fetch browser, `service_role`, modifica al database, policy o funzione di scrittura.
+- Implementata CB-007F.4A con caricamento server-side degli allergeni e delle associazioni correnti.
+- Aggiunte checkbox accessibili al form condiviso di creazione e modifica, inclusa la conservazione della selezione dopo un errore.
+- Aggiunta la validazione server-side degli UUID, la rimozione dei duplicati e la verifica dell'esistenza degli allergeni.
+- La creazione inserisce le associazioni nella tabella ponte; la modifica sincronizza soltanto le differenze, aggiungendo prima di rimuovere.
+- Aggiunte compensazioni conservative per errori nelle associazioni; le query multiple non sono una vera transazione SQL.
+- Nessuna modifica al database, alle policy o al flusso DELETE; nessuna `service_role`, RPC o visualizzazione pubblica degli allergeni.
+- Implementata l’azione “Elimina” nella dashboard con pagina protetta di conferma `/admin/piatti/[id]/elimina`.
+- Aggiunta una Server Action DELETE con ricontrollo amministratore, validazione UUID, verifica del piatto e filtro sulla chiave primaria.
+- Aggiunti nome del piatto, avviso definitivo, annullamento separato e stato “Eliminazione…” durante l’invio.
+- Invalidati i percorsi pubblici, la dashboard e le route dinamiche dopo l’eliminazione riuscita.
+- Confermato l’uso di `ON DELETE CASCADE` per le associazioni in `menu_item_allergens`, senza query manuali sulla tabella ponte.
+- Nessuna modifica al database o alle policy, nessuna `service_role`, eliminazione multipla o soft delete.
+- Implementata la route protetta `/admin/piatti/[id]/modifica` e aggiunto il link “Modifica” a ogni piatto della dashboard.
+- Aggiunto il caricamento server-side del piatto esistente e delle categorie, con form condiviso precompilato.
+- Aggiunta una Server Action UPDATE con validazione server-side, controllo amministratore, verifica di ID, piatto e categoria.
+- Limitato il payload a nome, descrizione, categoria, prezzo e disponibilità, lasciando invariati ordinamento, immagine e campi tecnici.
+- Invalidati i percorsi pubblici, la dashboard e la pagina dinamica dopo una modifica riuscita.
+- Nessuna modifica al database o alle policy, nessuna `service_role`, operazione DELETE o gestione allergeni.
+- Implementata la pagina protetta `/admin/piatti/nuovo` con caricamento server-side delle categorie.
+- Aggiunta una Server Action con ricontrollo amministratore, validazione dei campi e inserimento Supabase nel rispetto della RLS.
+- Gestiti prezzo decimale, disponibilità iniziale e accodamento del piatto tramite `display_order`.
+- Invalidati i percorsi `/`, `/menu`, `/tv` e `/admin` dopo il salvataggio.
+- Nessuna modifica al database o alle policy, nessuna `service_role` e nessuna gestione degli allergeni.
+- Modifica ed eliminazione dei piatti non sono state implementate.
+
+## 30 luglio 2026
+
+- Predisposta CB-007F.0 con policy amministrative separate di scrittura per `menu_items` e `menu_item_allergens`.
+- Mantenuta la separazione tra autenticazione e autorizzazione: ogni scrittura richiede la riga personale in `admin_users`.
+- Limitati i grants alle sole operazioni previste, senza `service_role` e senza modificare la lettura pubblica.
+- Aggiunto il file di verifica SQL di sola lettura; nessun SQL è stato applicato al database.
+- Nessuna modifica al sito e nessuna funzione CRUD implementata.
+- Implementata CB-007E.3 con helper server-side per distinguere sessione assente, amministratore autorizzato, utente non autorizzato ed errore tecnico.
+- Protetta la dashboard tramite verifica della riga personale in `admin_users`, nel rispetto della RLS.
+- Aggiunta la pagina `/admin/unauthorized` e aggiornato il flusso di login con controllo definitivo lato server.
+- Riutilizzato il logout esistente nella dashboard e nella pagina di accesso non autorizzato.
+- Nessuna modifica al database, esecuzione SQL o funzione CRUD del menu introdotta.
+
+## 29 luglio 2026
+
+- Predisposta CB-007E.2 con migrazione locale per la tabella minima `admin_users`.
+- Configurata RLS personale in sola lettura, senza accesso `anon` e senza possibilità per gli utenti di auto-assegnarsi come amministratori.
+- Aggiunti il modello manuale di associazione e le verifiche SQL; la migrazione non è stata applicata.
+- Nessuna policy di scrittura sul menu, modifica al sito o operazione sul database remoto effettuata.
+- Implementata CB-007E.1 con pagina login amministratore e accesso email/password tramite Supabase Auth.
+- Aggiunta gestione SSR della sessione con Proxy Next.js 16 e protezione server-side di `/admin`.
+- Aggiunto il logout mantenendo disabilitate tutte le azioni di modifica della dashboard.
+- In questa fase qualsiasi utente Supabase autenticato può accedere: l’autorizzazione tramite database sarà introdotta in CB-007E.2.
+- Nessuna tabella amministratori, policy RLS, scrittura sui dati, registrazione pubblica o Realtime aggiunti.
+- Completata CB-007D collegando la dashboard alla lettura server-side da Supabase.
+- Statistiche e tabella amministrativa ora utilizzano categorie, piatti, prezzi e disponibilità reali.
+- Aggiunti uno stato di errore controllato e un messaggio per il menu vuoto.
+- Rimosso `src/data/menu.ts`, non più utilizzato da alcuna parte del sito.
+- Confermate lettura tramite RLS e Publishable Key, assenza di scritture, autenticazione e Realtime.
+- Predisposto il nuovo layer dati server-side per categorie e piatti tramite Supabase.
+- Collegate homepage, pagina menu e modalità TV alla lettura protetta da RLS con Publishable Key.
+- Aggiunto uno stato di errore pubblico controllato, inclusa una variante leggibile per la modalità TV.
+- Conservato temporaneamente `src/data/menu.ts` per la sola dashboard `/admin`.
+- Nessuna operazione di scrittura, autenticazione o funzionalità Realtime introdotta.
+- Lint e build superati; verifica dati reale in attesa della configurazione locale delle variabili Supabase.
+
+## 28 luglio 2026
+
+- Predisposta CB-007B con schema SQL, seed iniziale, RLS, grants di sola lettura e verifiche SQL; nessuna modifica frontend.
+- Completata CB-007A con dipendenze ufficiali Supabase, configurazione ambiente e client SSR/browser senza query.
+
+## 27 luglio 2026
+
+- Creata la struttura iniziale del progetto Next.js.
+- Riorganizzato il progetto nella cartella `Desktop/Coffee Break`.
+- Realizzata la homepage pubblica responsive prevista dall’attività CB-002.
+- Completata CB-003 con pagina menu, dati tipizzati centralizzati e gestione della disponibilità.
+- Completata CB-004 con pagina contatti, informazioni del locale e segnaposto per la futura mappa.
+- Completata CB-005 con modalità TV a schermo intero, data server-side e layout adattivo per Smart TV.
+- Completata CB-006 con dashboard amministrativa frontend, statistiche automatiche e tabella del menu.

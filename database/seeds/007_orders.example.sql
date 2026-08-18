@@ -1,0 +1,55 @@
+-- CB-009A - Esempi illustrativi per ordini con ritiro e consegna
+--
+-- Questo file e interamente commentato e non viene eseguito automaticamente.
+-- I dati sono fittizi e servono soltanto a mostrare la struttura prevista.
+-- La futura creazione pubblica di un ordine dovra avvenire con una singola
+-- operazione server-side transazionale che validi prezzi, righe e totale.
+
+-- Esempio 1: ordine con ritiro
+--
+-- with nuovo_ordine as (
+--   insert into public.orders (
+--     fulfillment_type, status, customer_name, customer_phone,
+--     customer_email, requested_date, requested_time, subtotal,
+--     delivery_fee, total, payment_method, customer_notes
+--   ) values (
+--     'pickup', 'new', 'Cliente dimostrativo ritiro', '0000000000',
+--     null, date '2099-03-01', time '12:30', 17.00,
+--     0.00, 17.00, 'on_pickup', 'Esempio non reale'
+--   )
+--   returning id
+-- )
+-- insert into public.order_items (
+--   order_id, menu_item_id, item_name, unit_price,
+--   quantity, line_total, customer_notes
+-- )
+-- select id, null, 'Piatto dimostrativo A', 8.50, 2, 17.00, null
+-- from nuovo_ordine;
+
+-- Esempio 2: ordine con consegna
+--
+-- with nuovo_ordine as (
+--   insert into public.orders (
+--     fulfillment_type, status, customer_name, customer_phone,
+--     customer_email, delivery_address, delivery_city,
+--     delivery_postal_code, requested_date,
+--     requested_time, subtotal, delivery_fee, total,
+--     payment_method, customer_notes
+--   ) values (
+--     'delivery', 'new', 'Cliente dimostrativo consegna', '0000000000',
+--     null, 'Via Dimostrativa 0', 'Citta di esempio',
+--     '00000', date '2099-03-01',
+--     time '13:00', 20.00, 3.00, 23.00,
+--     'on_delivery', null
+--   )
+--   returning id
+-- )
+-- insert into public.order_items (
+--   order_id, menu_item_id, item_name, unit_price,
+--   quantity, line_total, customer_notes
+-- )
+-- select id, null, 'Piatto dimostrativo B', 12.00, 1, 12.00, null
+-- from nuovo_ordine
+-- union all
+-- select id, null, 'Piatto dimostrativo C', 8.00, 1, 8.00, 'Nota dimostrativa'
+-- from nuovo_ordine;

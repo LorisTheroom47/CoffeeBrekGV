@@ -1,0 +1,16 @@
+# Dependencies and generated output
+node_modules/
+.pnpm-store/
+.next/
+.open-next/
+.wrangler/
+
+# Local environment and runtime files
+.env
+.env.*
+!.env.local.example
+website/.env.local
+.dev.vars
+
+# Logs
+*.log

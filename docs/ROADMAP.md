@@ -1,0 +1,95 @@
+# Coffee Break Monza — Roadmap
+
+- CB-001 — Struttura iniziale: completato
+- CB-002 — Homepage pubblica: completato
+- CB-003 — Menu del giorno dinamico: completato
+- CB-004 — Pagina Contatti: completato
+- CB-005 — Modalità TV: completato
+- CB-006 — Dashboard Amministratore frontend: completato
+- CB-007A — Configurazione Supabase: completato
+- CB-007B — Schema database e RLS: completato
+- CB-007C — Lettura del menu da Supabase: completato
+- CB-007D — Dashboard Admin collegata a Supabase in sola lettura: completato
+- CB-007E.1 — Autenticazione base amministratore: completata e testata
+- CB-007E.2 — Migrazione applicata e amministratore associato manualmente
+- CB-007E.3 — Controllo autorizzazione collegato al sito: completato e testato realmente
+- CB-007F.0 — Policy di scrittura applicate manualmente
+- CB-007F.1 — Creazione piatto: completata e testata realmente
+- CB-007F.2 — Modifica piatto: completata e testata realmente
+- CB-007F.3 — Eliminazione piatto: completata e testata realmente
+- Test reale di eliminazione con amministratore: da eseguire
+- Test di rifiuto eliminazione con utente non amministratore: da eseguire
+- CB-007F.4A — Gestione allergeni nei form: completata e testata realmente
+- CB-007F.4B — Visualizzazione pubblica allergeni: completata e testata realmente
+- CB-007F.5A — Riordinamento con pulsanti Su/Giù: completato
+- CB-007F.6A — Creazione e modifica categorie: completata e testata
+- CB-007F.6B.1 — Riordinamento categorie con pulsanti Su/Giù: completato e testato
+- CB-007F.6B.2 — Eliminazione sicura categorie vuote: predisposta in attesa della policy DELETE
+- Migrazione 005 policy DELETE categorie: in attesa di revisione e applicazione manuale
+- Test reali eliminazione categorie: da eseguire
+- Migrazione 004 policy categorie: in attesa di revisione e applicazione manuale
+- Drag & drop: non iniziato
+- CRUD allergeni: non iniziato
+- Gestione immagini: non iniziata
+- Core CRUD piatti: completato
+- Core menu: completato
+- Gestione categorie: completata
+- CB-008A — Schema menu programmati per data: completato e applicato
+- CB-008B.1 — Elenco e creazione menu giornalieri: funzionalità sospesa
+- Route amministrative dei menu giornalieri: disattivate e non raggiungibili dall’interfaccia
+- Schema database CB-008A conservato per una possibile riattivazione futura
+- CB-008B.2 — Gestione piatti del menu giornaliero: non iniziata
+- CB-008B.3 — Pubblicazione menu giornaliero: non iniziata
+- CB-008C — Menu pubblico per data: non iniziato
+- Sistema pubblico corrente: basato su `menu_items`
+- Pubblicazione e dominio: da fare
+- CB-009A - Database ordini con consegna e ritiro: applicato
+- CB-009B.1 - Funzione transazionale ordine: completata e applicata
+- CB-009B.2 - Server Action ordine: implementata
+- CB-009B.3 - Test controllato motore ordini: superato
+- Test piatto terminato: non eseguito perché nessun piatto risultava terminato
+- CB-009C.1 - Form pubblico con carrello e invio ordine: completato e testato realmente
+- CB-009C.2 - Protezioni anti-abuso e conferma ordine: implementato e testato realmente
+- Test reali honeypot, payload 32 KB, rate limit, regressione pickup/delivery, conferma, reset e doppio invio: superati nella stessa istanza locale
+- Protezione distribuita e CAPTCHA reale per traffico di produzione: da implementare separatamente
+- Database ordini di test: pulito (`orders = 0`, `order_items = 0`)
+- CB-009D.1 - Elenco amministrativo ordini: implementato
+- Test reale CB-009D.1: superato; database ordini ripulito (`orders = 0`, `order_items = 0`)
+- CB-009D.2 - Dettaglio ordine amministrativo: implementato e testato realmente; database ordini ripulito
+- CB-009D.3 - Cambio stato ordine amministrativo: implementato e testato; fix concorrenza verificato realmente
+- CB-009E.1 - Notifiche interne ordini: migrazione Realtime 009 applicata manualmente
+- CB-009E.1B - Frontend notifiche Realtime admin: implementato
+- Notifiche nuovi ordini: INSERT only, deduplicazione in memoria, refresh server e suono opzionale
+- Test reale CB-009E.1B: non superato; l’INSERT raggiunge il database ma non viene ricevuto dal client admin
+- Diagnosi CB-009E.1B: completata; Realtime riceve l’INSERT ma la valutazione RLS restituisce un payload vuoto
+- CB-009E.1C - Helper RLS privato per SELECT orders: migrazione 010 applicata e check 010 superato
+- Retest Realtime dopo fix 010: non superato; l’ordine è visibile solo dopo refresh manuale, senza notifica o aggiornamento automatico
+- Diagnosi successiva Realtime: necessaria, senza correzioni strutturali applicate durante il retest
+- CB-009E.2A - Migrazione a Supabase Broadcast: migrazione 011 applicata e configurazione database verificata
+- CB-009E.2B - Frontend notifiche Broadcast admin: implementato e testato end-to-end con esito positivo; database ordini ripulito
+- CB-009E.3 - Rimozione sicura di `public.orders` da Postgres Changes: migrazione 012 e check predisposti, non applicati
+- Postgres Changes nel frontend: rimosso e deprecato; `public.orders` resta nella publication fino all'applicazione manuale della migrazione 012
+- Broadcast: unico percorso Realtime definitivo per i nuovi ordini dopo l'applicazione della migrazione 012
+- CB-010A — Audit completo pre-produzione: completato
+- CB-010B.1 — Aggiornamento sicuro dipendenze vulnerabili: completato; audit ridotto da 10 vulnerabilità a zero, lint e build superati con Next.js 16.3.0
+- CB-010B.2B — Confine fidato Server Action → database: completato; migrazione 013 applicata e privilegi verificati
+- CB-010B.2B.1 — Server Action collegata al client server-only; pickup e delivery confermati tramite il percorso server-only
+- CB-010B.2B.2 — Bypass RPC anonimo chiuso: `PUBLIC`, `anon` e `authenticated` senza `EXECUTE`, `service_role` unico ruolo applicativo autorizzato
+- Test diretto con Publishable Key: rifiutato per permessi senza raggiungere la logica RPC e senza creare ordini
+- CB-010B.2C — Cloudflare Turnstile: integrazione Managed implementata con widget esplicito, Siteverify server-only, azione `order_submit` e comportamento fail-closed
+- Test reale Turnstile pickup/delivery: completato end-to-end con Siteverify, Broadcast, dashboard, reset token e pulizia dati
+- Fail-closed Turnstile: token invalido rifiutato realmente da Siteverify; catena Server Action e assenza RPC verificate staticamente
+- CB-010B.2D.1 — Idempotenza atomica ordini: migrazione 014, check e integrazione applicativa predisposti; SQL non applicato
+- Migrazione 014 applicata e check 014 superato
+- Test reale idempotenza database: retry sequenziale, conflitto e concorrenza superati senza duplicati o errori UNIQUE; database finale pulito
+- Retest end-to-end `/ordine`, Turnstile e singola notifica Broadcast admin: da eseguire con browser disponibile
+- Rate limiter distribuito Redis/KV: non implementato
+- CB-010C.1 — Audit compatibilità Cloudflare Workers/OpenNext: completato
+- CB-010C.2 — Adapter OpenNext 1.20.2, Wrangler 4.124.0 e configurazione Workers minima predisposti; nessun deploy eseguito
+- CB-010C.3B — `src/proxy.ts` rimosso e sostituito dal middleware Edge legacy; refresh Supabase invariato e autorizzazione ancora affidata a `requireAdmin()` e RLS
+- Vecchio blocker OpenNext Node Proxy: risolto; la build raggiunge il bundle server ma Windows nega la creazione dei symlink con errore `EPERM`
+- Build OpenNext completa, bundle Cloudflare e compatibilità Free/Paid: da verificare in WSL o CI Linux prima della preview
+- CB-010C.4 — Workflow GitHub Actions Linux predisposto nella futura root del repository, con install, lint, audit, build Next.js, build OpenNext, misurazione e artifact; esecuzione reale in attesa dell'inizializzazione e pubblicazione Git
+- Deploy Cloudflare dal workflow: non configurato
+- Durable Objects e rate limiter distribuito Cloudflare: non implementati
+- Notifiche email/WhatsApp: non iniziate

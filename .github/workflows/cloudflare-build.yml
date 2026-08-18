@@ -82,6 +82,22 @@ jobs:
       - name: Build OpenNext for Cloudflare
         run: pnpm cf:build
 
+      - name: Measure Cloudflare upload bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e .wrangler-dry-run
+
+          pnpm exec wrangler deploy --dry-run --outdir .wrangler-dry-run 2>&1 |
+            tee cloudflare-worker-size-report.txt
+
+          upload_size="$(
+            grep -E 'Total Upload:.*gzip:' cloudflare-worker-size-report.txt |
+              tail -n 1
+          )"
+          test -n "$upload_size"
+          echo "Cloudflare relevant size: $upload_size"
+
       - name: Measure OpenNext output
         shell: bash
         run: |
@@ -91,11 +107,20 @@ jobs:
           total_bytes="$(du -sb .open-next | cut -f1)"
           worker_bytes="$(stat --format='%s' .open-next/worker.js)"
           worker_gzip_bytes="$(gzip -9 -c .open-next/worker.js | wc -c | tr -d ' ')"
+          static_asset_files="$(
+            find .open-next/assets -type f | wc -l | tr -d ' '
+          )"
+          static_asset_bytes="$(
+            find .open-next/assets -type f -printf '%s\n' |
+              awk '{ total += $1 } END { print total + 0 }'
+          )"
 
           {
             echo "OpenNext output bytes: ${total_bytes}"
             echo "Worker main bytes: ${worker_bytes}"
             echo "Worker main gzip bytes: ${worker_gzip_bytes}"
+            echo "Static asset files: ${static_asset_files}"
+            echo "Static asset bytes: ${static_asset_bytes}"
           } | tee cloudflare-build-report.txt
 
       - name: Upload OpenNext artifact
@@ -105,6 +130,7 @@ jobs:
           path: |
             website/.open-next/
             website/cloudflare-build-report.txt
+            website/cloudflare-worker-size-report.txt
           if-no-files-found: error
           include-hidden-files: true
           retention-days: 7

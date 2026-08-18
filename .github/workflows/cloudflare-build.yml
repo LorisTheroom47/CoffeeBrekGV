@@ -36,6 +36,37 @@ jobs:
           cache: pnpm
           cache-dependency-path: website/pnpm-lock.yaml
 
+      - name: Diagnose pnpm context
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          git rev-parse HEAD
+          pwd
+          pnpm --version
+          pnpm config list --json | node -e '
+            let input = "";
+            process.stdin.setEncoding("utf8");
+            process.stdin.on("data", (chunk) => {
+              input += chunk;
+            });
+            process.stdin.on("end", () => {
+              const config = JSON.parse(input);
+              const allowBuilds = config.allowBuilds ?? {};
+              const unrsResolver = Object.fromEntries(
+                Object.entries(allowBuilds).filter(
+                  ([name]) =>
+                    name === "unrs-resolver" ||
+                    name.startsWith("unrs-resolver@"),
+                ),
+              );
+
+              console.log(
+                JSON.stringify({ allowBuilds: unrsResolver }, null, 2),
+              );
+            });
+          '
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 

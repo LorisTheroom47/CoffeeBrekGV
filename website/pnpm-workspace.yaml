@@ -3,12 +3,9 @@ overrides:
 
 allowBuilds:
   esbuild: true
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+  sharp: false
+  unrs-resolver: true
   workerd: true
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
 minimumReleaseAgeExclude:
   - miniflare@5.20260815.0-alpha
   - wrangler@4.124.0

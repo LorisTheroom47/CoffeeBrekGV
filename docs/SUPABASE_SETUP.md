@@ -561,3 +561,13 @@ La pipeline è avviabile soltanto manualmente con `workflow_dispatch` e usa `ubu
 Al termine il workflow controlla l'esistenza di `.open-next/worker.js`, misura l'output completo, il Worker principale e la sua dimensione gzip, quindi carica `.open-next` e il solo report dimensionale come artifact con conservazione di sette giorni. Il runner non riceve file `.env.local`, valori Supabase, chiavi Turnstile o token Cloudflare.
 
 La configurazione usa esclusivamente `contents: read`, disabilita la persistenza delle credenziali del checkout e non contiene deploy, preview, accesso al database, SQL o trigger `pull_request_target`. La verifica eseguita in CB-010C.4 è statica: per il collaudo reale occorre inizializzare e pubblicare il repository nella root scelta, quindi avviare manualmente il workflow e controllare job, misure e artifact.
+
+## Fix produzione Cloudflare `/ordine` e Turnstile
+
+Il 21 agosto 2026 il blocco Siteverify in produzione è stato ricondotto a due widget Turnstile quasi omonimi: la Site Key pubblica usata dalla build apparteneva al widget corretto, mentre la Secret configurata apparteneva al widget duplicato. Entrambe le credenziali erano formalmente valide ma non costituivano una coppia, quindi Siteverify rifiutava il token.
+
+`TURNSTILE_SECRET_KEY` è stata allineata al widget corretto sia come runtime secret del Worker `coffeebrekgv` sia come build secret Cloudflare. `NEXT_PUBLIC_TURNSTILE_SITE_KEY` resta una variabile pubblica separata; il bundle client verificato non contiene `TURNSTILE_SECRET_KEY`, secret server-side o contaminazioni multilinea. La vecchia Secret accidentalmente esposta era già stata ruotata.
+
+Il test reale in produzione ha superato challenge Turnstile, Siteverify e creazione server-only per un ordine pickup e uno delivery. I totali definitivi sono risultati coerenti, inclusa la tariffa delivery di 2,50 €, e i dettagli erano accessibili nell'area admin senza mostrare UUID come testo. La ricezione simultanea della notifica Broadcast non è stata riosservata in questa sessione perché la scheda admin si è chiusa durante il completamento manuale del challenge; il componente e la configurazione Broadcast, già testati in precedenza, non sono stati modificati.
+
+Su conferma esplicita dell'utente sono stati rimossi tutti i tre ordini allora presenti tramite cancellazione di `orders`; `ON DELETE CASCADE` ha ripulito `order_items`. I conteggi finali sono zero, `menu_items` è invariata e non sono stati usati `TRUNCATE`, cancellazioni dirette su `order_items`, SQL, modifiche di sequence, schema, policy, RLS o RPC.

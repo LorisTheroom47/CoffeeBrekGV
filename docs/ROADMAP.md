@@ -1,5 +1,11 @@
 # Coffee Break Monza — Roadmap
 
+- Fix produzione `/ordine` e Turnstile: completato e testato realmente su Cloudflare Workers il 21 agosto 2026
+- Site Key pubblica e Secret Turnstile: allineate allo stesso widget; secret runtime/build separate dal client
+- Test produzione pickup e delivery: superati con Siteverify e totali definitivi corretti
+- Pulizia ordini autorizzata: completata (`orders = 0`, `order_items = 0`, badge admin = 0)
+- Retest notifica Broadcast simultanea durante il fix Turnstile: non osservato per chiusura della scheda admin; implementazione invariata e già verificata in precedenza
+
 - CB-001 — Struttura iniziale: completato
 - CB-002 — Homepage pubblica: completato
 - CB-003 — Menu del giorno dinamico: completato

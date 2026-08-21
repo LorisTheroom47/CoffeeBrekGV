@@ -1,5 +1,14 @@
 # Coffee Break Monza — Changelog
 
+## 21 agosto 2026
+
+- Risolto il blocco Turnstile di `/ordine` in produzione Cloudflare: la Secret configurata apparteneva a un widget duplicato diverso da quello della Site Key pubblica.
+- Allineata `TURNSTILE_SECRET_KEY` al widget corretto nelle secret runtime e di build del Worker `coffeebrekgv`; la Site Key pubblica era già corretta e il bundle client già privo di secret o contaminazioni multilinea.
+- Confermato in produzione il flusso completo fino alla creazione ordine per ritiro e consegna, con Siteverify superato, totale pickup di 8,50 € e totale delivery di 11,00 €, inclusa la tariffa di 2,50 €.
+- Verificata la presenza di entrambi gli ordini nell'area amministrativa e la correttezza dei dettagli, senza UUID mostrati come testo. La notifica Broadcast in tempo reale non è stata riosservata durante questo collaudo perché la scheda admin si è chiusa durante il passaggio manuale Turnstile; il percorso Broadcast esistente non è stato modificato.
+- Su richiesta esplicita dell'utente sono stati eliminati tutti i tre ordini presenti. `ON DELETE CASCADE` ha rimosso le tre righe collegate da `order_items`; i conteggi finali sono zero, il badge admin è tornato a zero e `menu_items` è rimasta invariata.
+- Nessuna modifica a codice applicativo, schema, migrazioni, policy, RLS o RPC; nessun SQL eseguito e nessun secret, token, UUID o dato cliente inserito nella documentazione.
+
 ## 18 agosto 2026
 
 - Predisposta CB-010C.4 con il workflow manuale GitHub Actions `.github/workflows/cloudflare-build.yml` su `ubuntu-latest`.

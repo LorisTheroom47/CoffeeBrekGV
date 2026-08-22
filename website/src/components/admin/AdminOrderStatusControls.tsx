@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import {
   updateOrderStatusAction,
   type UpdateOrderStatusState,
-} from "@/app/admin/(protected)/ordini/[id]/actions";
+} from "@/app/admin/(orders)/ordini/[id]/actions";
 import {
   getAdminOrderStatusPresentation,
   getAllowedAdminOrderTransitions,

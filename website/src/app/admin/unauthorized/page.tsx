@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
 import BrandLogo from "@/components/BrandLogo";
-import { getAdminAuthorization } from "@/lib/auth/authorization";
+import { getOrderAccessAuthorization } from "@/lib/auth/authorization";
 
 export const dynamic = "force-dynamic";
 
@@ -12,14 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminUnauthorizedPage() {
-  const authorization = await getAdminAuthorization();
+  const authorization = await getOrderAccessAuthorization();
 
   if (authorization.status === "unauthenticated") {
     redirect("/admin/login");
   }
 
   if (authorization.status === "authorized") {
-    redirect("/admin");
+    redirect(
+      authorization.role === "admin" ? "/admin" : "/admin/ordini",
+    );
   }
 
   return (

@@ -2,9 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/lib/auth/authorization";
+import { requireOrderAccess } from "@/lib/auth/authorization";
 import {
-  getAllowedAdminOrderTransitions,
   isAdminOrderStatus,
   isAdminOrderTargetStatus,
   isValidAdminOrderId,
@@ -25,7 +24,7 @@ export async function updateOrderStatusAction(
   _previousState: UpdateOrderStatusState,
   formData: FormData,
 ): Promise<UpdateOrderStatusState> {
-  await requireAdmin();
+  await requireOrderAccess();
 
   const rawTargetStatus = formData.get("targetStatus");
   const rawExpectedCurrentStatus = formData.get("expectedCurrentStatus");
@@ -42,54 +41,29 @@ export async function updateOrderStatusAction(
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data: currentOrder, error: readError } = await supabase
-      .from("orders")
-      .select("status, fulfillment_type")
-      .eq("id", orderId)
-      .maybeSingle();
-
-    if (readError || !currentOrder) {
-      return { message: genericErrorMessage };
-    }
-
-    const currentStatus = currentOrder.status;
-    const fulfillmentType = currentOrder.fulfillment_type;
-
-    if (
-      typeof currentStatus !== "string" ||
-      typeof fulfillmentType !== "string" ||
-      !isAdminOrderStatus(currentStatus)
-    ) {
-      return { message: invalidTransitionMessage };
-    }
-
-    if (currentStatus !== rawExpectedCurrentStatus) {
-      return { message: concurrentUpdateMessage };
-    }
-
-    const allowedTransitions = getAllowedAdminOrderTransitions(
-      currentStatus,
-      fulfillmentType,
+    const { data: result, error: updateError } = await supabase.rpc(
+      "update_order_status",
+      {
+        p_order_id: orderId,
+        p_expected_status: rawExpectedCurrentStatus,
+        p_target_status: rawTargetStatus,
+      },
     );
 
-    if (!allowedTransitions.includes(rawTargetStatus)) {
-      return { message: invalidTransitionMessage };
-    }
-
-    const { data: updatedOrder, error: updateError } = await supabase
-      .from("orders")
-      .update({ status: rawTargetStatus })
-      .eq("id", orderId)
-      .eq("status", rawExpectedCurrentStatus)
-      .select("id")
-      .maybeSingle();
-
-    if (updateError) {
+    if (updateError || typeof result !== "string") {
       return { message: genericErrorMessage };
     }
 
-    if (updatedOrder?.id !== orderId) {
+    if (result === "conflict") {
       return { message: concurrentUpdateMessage };
+    }
+
+    if (result === "invalid_transition") {
+      return { message: invalidTransitionMessage };
+    }
+
+    if (result !== "updated") {
+      return { message: genericErrorMessage };
     }
   } catch {
     return { message: genericErrorMessage };

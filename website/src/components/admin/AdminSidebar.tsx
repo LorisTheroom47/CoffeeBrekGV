@@ -1,5 +1,7 @@
 import Link from "next/link";
+import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
 import BrandLogo from "@/components/BrandLogo";
+import { requireOrderAccess } from "@/lib/auth/authorization";
 import { getNewAdminOrderCount } from "@/lib/orders/admin-queries";
 
 const navigationItems = [
@@ -12,13 +14,19 @@ const navigationItems = [
 ];
 
 type SidebarNavigationProps = Readonly<{
+  ariaLabel: string;
+  items: typeof navigationItems;
   newOrderCount: number | null;
 }>;
 
-function SidebarNavigation({ newOrderCount }: SidebarNavigationProps) {
+function SidebarNavigation({
+  ariaLabel,
+  items,
+  newOrderCount,
+}: SidebarNavigationProps) {
   return (
-    <nav className="admin-navigation" aria-label="Navigazione amministratore">
-      {navigationItems.map((item) => (
+    <nav className="admin-navigation" aria-label={ariaLabel}>
+      {items.map((item) => (
         <a href={item.href} key={item.href}>
           <span>{item.label}</span>
           {item.href === "/admin/ordini" &&
@@ -38,19 +46,46 @@ function SidebarNavigation({ newOrderCount }: SidebarNavigationProps) {
 }
 
 export default async function AdminSidebar() {
+  const access = await requireOrderAccess();
   const newOrderCount = await getNewAdminOrderCount();
+  const items =
+    access.role === "admin"
+      ? navigationItems
+      : navigationItems.filter((item) => item.href === "/admin/ordini");
+  const operatorOnly = access.role === "order_operator";
+  const navigationLabel = operatorOnly
+    ? "Navigazione gestione ordini"
+    : "Navigazione amministratore";
+  const homeHref = operatorOnly ? "/admin/ordini" : "/admin";
 
   return (
     <>
       <aside className="admin-sidebar">
         <div>
-          <Link href="/admin" aria-label="Coffee Break GV, dashboard">
+          <Link
+            href={homeHref}
+            aria-label={
+              operatorOnly
+                ? "Coffee Break GV, ordini"
+                : "Coffee Break GV, dashboard"
+            }
+          >
             <BrandLogo className="admin-brand-logo" />
           </Link>
-          <p className="admin-brand-caption">Amministrazione</p>
+          <p className="admin-brand-caption">
+            {operatorOnly ? "Gestione ordini" : "Amministrazione"}
+          </p>
         </div>
-        <SidebarNavigation newOrderCount={newOrderCount} />
-        <p className="admin-sidebar-note">Frontend dimostrativo</p>
+        <SidebarNavigation
+          ariaLabel={navigationLabel}
+          items={items}
+          newOrderCount={newOrderCount}
+        />
+        {operatorOnly ? (
+          <AdminLogoutButton />
+        ) : (
+          <p className="admin-sidebar-note">Frontend dimostrativo</p>
+        )}
       </aside>
 
       <details className="admin-mobile-sidebar">
@@ -58,7 +93,12 @@ export default async function AdminSidebar() {
           <BrandLogo className="admin-mobile-logo" />
           <span className="admin-menu-indicator" aria-hidden="true" />
         </summary>
-        <SidebarNavigation newOrderCount={newOrderCount} />
+        <SidebarNavigation
+          ariaLabel={navigationLabel}
+          items={items}
+          newOrderCount={newOrderCount}
+        />
+        {operatorOnly && <AdminLogoutButton />}
       </details>
     </>
   );

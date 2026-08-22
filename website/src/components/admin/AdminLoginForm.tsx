@@ -45,7 +45,7 @@ export default function AdminLoginForm() {
         return;
       }
 
-      router.replace("/admin");
+      router.replace("/admin/access");
       router.refresh();
     } catch {
       setErrorMessage(genericErrorMessage);

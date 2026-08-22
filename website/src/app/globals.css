@@ -864,6 +864,11 @@ h3 {
   gap: 0.45rem;
 }
 
+.admin-sidebar > .admin-logout {
+  margin-top: auto;
+  justify-items: start;
+}
+
 .admin-logout-button {
   cursor: pointer;
 }
@@ -2391,6 +2396,11 @@ h3 {
     margin: 0;
     border-top: 1px solid rgba(255, 253, 248, 0.12);
     padding: 0.65rem;
+  }
+
+  .admin-mobile-sidebar > .admin-logout {
+    padding: 0 0.65rem 0.65rem;
+    justify-items: start;
   }
 
   .admin-order-notification-center {

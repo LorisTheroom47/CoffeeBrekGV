@@ -1,5 +1,12 @@
 # Coffee Break Monza — Changelog
 
+## 22 agosto 2026
+
+- Sostituito il limiter ordini basato su `Map` in-memory con il binding nativo Cloudflare Workers Rate Limiting `ORDERS_RATE_LIMITER`.
+- Configurata una soglia prudente di un tentativo ogni 60 secondi per identificatore server-side. La finestra è un'approssimazione semplice dell'obiettivo di circa cinque tentativi ogni dieci minuti, perché il binding semplice supporta periodi di 10 o 60 secondi.
+- Il controllo è ora asincrono e resta eseguito prima della validazione, di Turnstile e della RPC. In caso di limite superato o binding non disponibile, il flusso termina con il messaggio sanitizzato `TOO_MANY_REQUESTS`.
+- Nessun IP viene persistito o registrato, nessun secret o dipendenza è stato aggiunto e Turnstile, idempotenza, Supabase, Broadcast e autenticazione restano invariati.
+
 ## 21 agosto 2026
 
 - Risolto il blocco Turnstile di `/ordine` in produzione Cloudflare: la Secret configurata apparteneva a un widget duplicato diverso da quello della Site Key pubblica.

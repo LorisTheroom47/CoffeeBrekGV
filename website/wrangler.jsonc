@@ -7,5 +7,15 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  "ratelimits": [
+    {
+      "name": "ORDERS_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 1,
+        "period": 60
+      }
+    }
+  ]
 }

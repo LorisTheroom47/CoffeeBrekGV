@@ -238,7 +238,7 @@ export async function createPublicOrderAction(
 
   const rateLimitIdentifier = await getRateLimitIdentifier();
 
-  if (!allowOrderAttempt(rateLimitIdentifier)) {
+  if (!(await allowOrderAttempt(rateLimitIdentifier))) {
     return failure("TOO_MANY_REQUESTS");
   }
 

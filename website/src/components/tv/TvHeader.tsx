@@ -7,7 +7,7 @@ export default function TvHeader({ date, dateTime }: TvHeaderProps) {
   return (
     <header className="tv-header">
       <div>
-        <p className="tv-brand">Coffee Break Monza</p>
+        <p className="tv-brand">Coffee Break GV</p>
         <h1>Menu del giorno</h1>
       </div>
       <time className="tv-date" dateTime={dateTime}>

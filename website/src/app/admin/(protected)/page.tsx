@@ -11,8 +11,8 @@ import { getMenuCategories, type MenuCategory } from "@/lib/menu";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Coffee Break Monza",
-  description: "Dashboard amministrativa dimostrativa di Coffee Break Monza.",
+  title: "Dashboard | Coffee Break GV",
+  description: "Dashboard amministrativa dimostrativa di Coffee Break GV.",
 };
 
 export default async function AdminPage() {

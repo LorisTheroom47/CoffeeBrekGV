@@ -1,13 +1,24 @@
+import Image from "next/image";
+
 export default function Hero() {
   return (
     <section className="hero section" id="home">
       <div className="site-container hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow">Pranzo, gusto e semplicità</p>
-          <h1>La tua pausa pranzo a Monza</h1>
+          <Image
+            className="hero-logo"
+            src="/images/coffee-break-gv-logo.png"
+            alt="Coffee Break GV"
+            width={1672}
+            height={941}
+            sizes="(max-width: 48rem) 20rem, 27rem"
+            priority
+          />
+          <p className="eyebrow">Coffee Break GV</p>
+          <h1>Il tuo pranzo quotidiano, semplice e gustoso</h1>
           <p className="hero-description">
-            Piatti preparati ogni giorno, menu completo e sapori semplici da
-            gustare nel locale, da asporto o presto anche a domicilio.
+            Piatti preparati ogni giorno da gustare nel locale, da asporto o
+            con consegna in ospedale. Ordina entro le 10:00.
           </p>
           <div className="button-group">
             <a className="button button-primary" href="#menu">

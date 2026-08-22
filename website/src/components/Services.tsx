@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const services = [
   {
     title: "Mangia nel locale",
@@ -12,11 +14,11 @@ const services = [
     icon: "bag",
   },
   {
-    title: "Consegna a domicilio",
+    title: "Consegna in ospedale",
     description:
-      "Stiamo lavorando per portare Coffee Break direttamente dove ti serve.",
+      "Ricevi il tuo pranzo al piano terra, nei settori A, B o C dell’ospedale.",
     icon: "delivery",
-    badge: "Prossimamente",
+    href: "/ordine",
   },
 ];
 
@@ -30,21 +32,34 @@ export default function Services() {
         </div>
 
         <div className="services-grid">
-          {services.map((service) => (
-            <article className="service-card" key={service.title}>
+          {services.map((service) => {
+            const content = (
+              <>
               <span
                 className={`service-icon service-icon-${service.icon}`}
                 aria-hidden="true"
               />
               <div className="service-title-row">
                 <h3>{service.title}</h3>
-                {service.badge ? (
-                  <span className="status-badge">{service.badge}</span>
-                ) : null}
               </div>
               <p>{service.description}</p>
-            </article>
-          ))}
+              </>
+            );
+
+            return service.href ? (
+              <Link
+                className="service-card service-card-link"
+                href={service.href}
+                key={service.title}
+              >
+                {content}
+              </Link>
+            ) : (
+              <article className="service-card" key={service.title}>
+                {content}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

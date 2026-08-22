@@ -5,6 +5,7 @@ import {
   formatAdminOrderTotal,
   formatAdminRequestedDate,
   formatAdminRequestedTime,
+  getAdminDeliveryPointLabel,
   getAdminOrderFulfillmentLabel,
   getAdminOrderStatusPresentation,
   type AdminOrderSummary,
@@ -63,6 +64,9 @@ export default function AdminOrderTable({ orders }: AdminOrderTableProps) {
                   <td data-label="Cliente">{order.customerName}</td>
                   <td data-label="Modalità">
                     {getAdminOrderFulfillmentLabel(order.fulfillmentType)}
+                    {order.fulfillmentType === "delivery" && (
+                      <small>{getAdminDeliveryPointLabel(order.deliveryPoint)}</small>
+                    )}
                   </td>
                   <td data-label="Richiesto per">
                     <span>{formatAdminRequestedDate(order.requestedDate)}</span>

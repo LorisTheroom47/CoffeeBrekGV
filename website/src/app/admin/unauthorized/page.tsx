@@ -6,7 +6,7 @@ import { getAdminAuthorization } from "@/lib/auth/authorization";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Accesso non autorizzato | Coffee Break Monza",
+  title: "Accesso non autorizzato | Coffee Break GV",
   description: "Accesso non autorizzato all’area amministrativa.",
 };
 
@@ -27,7 +27,7 @@ export default async function AdminUnauthorizedPage() {
         className="admin-login-card"
         aria-labelledby="admin-unauthorized-title"
       >
-        <p className="admin-login-brand">Coffee Break Monza</p>
+        <p className="admin-login-brand">Coffee Break GV</p>
         <h1 id="admin-unauthorized-title">Accesso non autorizzato</h1>
         <p className="admin-login-intro">
           Il tuo account è valido, ma non è abilitato alla gestione del sito.

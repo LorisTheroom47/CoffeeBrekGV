@@ -10,7 +10,7 @@ export default function CallToAction() {
             <h2 id="cta-title">Hai già scelto cosa mangiare?</h2>
             <p>
               Consulta il menu del giorno e prepara il tuo pranzo con Coffee
-              Break Monza.
+              Break GV.
             </p>
           </div>
           <Link className="button button-light" href="/ordine">

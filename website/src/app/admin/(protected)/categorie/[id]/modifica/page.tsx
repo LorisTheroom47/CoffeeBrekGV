@@ -10,7 +10,7 @@ import { isValidUuid } from "@/lib/menu/menu-item-form";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Modifica categoria | Coffee Break Monza",
+  title: "Modifica categoria | Coffee Break GV",
   description: "Modifica di una categoria del menu.",
 };
 

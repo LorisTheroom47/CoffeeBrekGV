@@ -9,8 +9,8 @@ import type { AdminOrderSummary } from "@/lib/orders/admin-types";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Ordini | Coffee Break Monza",
-  description: "Elenco amministrativo degli ordini di Coffee Break Monza.",
+  title: "Ordini | Coffee Break GV",
+  description: "Elenco amministrativo degli ordini di Coffee Break GV.",
 };
 
 export default async function AdminOrdersPage() {

@@ -9,8 +9,8 @@ import { getMenuCategories } from "@/lib/menu";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Menu del giorno | Coffee Break Monza",
-  description: "Consulta il menu del giorno di Coffee Break Monza.",
+  title: "Menu del giorno | Coffee Break GV",
+  description: "Consulta il menu del giorno di Coffee Break GV.",
 };
 
 export default async function MenuPage() {

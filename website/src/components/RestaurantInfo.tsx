@@ -6,7 +6,7 @@ export default function RestaurantInfo() {
           <p className="eyebrow">Un posto semplice, fatto con cura</p>
           <h2>La tua tavola quotidiana</h2>
           <p>
-            Coffee Break Monza è un luogo caldo e informale dove fermarsi per un
+            Coffee Break GV è un luogo caldo e informale dove fermarsi per un
             pranzo preparato ogni giorno. Ti aspettiamo con proposte genuine, da
             gustare con calma nel locale oppure da portare con te.
           </p>
@@ -23,11 +23,19 @@ export default function RestaurantInfo() {
           <dl>
             <div>
               <dt>Telefono</dt>
-              <dd>Informazione in aggiornamento</dd>
+              <dd>
+                <a href="tel:+3903922339799">039 223 39799</a>
+                <br />
+                <a href="tel:+393480629825">348 062 9825</a>
+              </dd>
             </div>
             <div>
               <dt>Orari</dt>
-              <dd>Informazione in aggiornamento</dd>
+              <dd>7:00 – 16:00</dd>
+            </div>
+            <div>
+              <dt>Ordini</dt>
+              <dd>Entro le 10:00</dd>
             </div>
           </dl>
           <a

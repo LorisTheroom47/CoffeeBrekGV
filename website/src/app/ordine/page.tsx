@@ -7,8 +7,8 @@ import { getMenuCategories } from "@/lib/menu";
 import type { OrderMenuCategory } from "@/lib/orders";
 
 export const metadata: Metadata = {
-  title: "Ordina | Coffee Break Monza",
-  description: "Ordina il tuo pranzo da Coffee Break Monza.",
+  title: "Ordina | Coffee Break GV",
+  description: "Ordina il tuo pranzo da Coffee Break GV.",
 };
 
 export const dynamic = "force-dynamic";
@@ -59,8 +59,9 @@ export default async function OrderPage() {
             <p className="eyebrow">Ordina online</p>
             <h1>Prepara il tuo pranzo</h1>
             <p>
-              Scegli i piatti disponibili, indica consegna o ritiro e inviaci
-              la tua richiesta.
+              Scegli i piatti disponibili, ritira da Coffee Break GV oppure
+              richiedi la consegna in ospedale nei settori A, B o C. Gli ordini
+              devono essere effettuati entro le 10:00.
             </p>
           </div>
         </header>

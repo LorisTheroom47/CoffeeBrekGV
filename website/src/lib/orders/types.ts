@@ -23,9 +23,7 @@ export type CreateOrderInput = {
   customerName: string;
   customerPhone: string;
   customerEmail?: string;
-  deliveryAddress?: string;
-  deliveryCity?: string;
-  deliveryPostalCode?: string;
+  deliveryPoint?: "A" | "B" | "C";
   requestedDate: string;
   requestedTime?: string;
   customerNotes?: string;
@@ -53,9 +51,7 @@ export type CreateOrderField =
   | "customerName"
   | "customerPhone"
   | "customerEmail"
-  | "deliveryAddress"
-  | "deliveryCity"
-  | "deliveryPostalCode"
+  | "deliveryPoint"
   | "requestedDate"
   | "requestedTime"
   | "customerNotes"
@@ -86,9 +82,7 @@ export type ValidatedCreateOrderInput = {
   customerName: string;
   customerPhone: string;
   customerEmail: string | null;
-  deliveryAddress: string | null;
-  deliveryCity: string | null;
-  deliveryPostalCode: string | null;
+  deliveryPoint: "A" | "B" | "C" | null;
   requestedDate: string;
   requestedTime: string | null;
   customerNotes: string | null;

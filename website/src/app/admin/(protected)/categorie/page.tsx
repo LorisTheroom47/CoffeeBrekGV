@@ -7,8 +7,8 @@ import { getAdminCategories, type AdminCategory } from "@/lib/menu";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Categorie | Coffee Break Monza",
-  description: "Gestione delle categorie del menu di Coffee Break Monza.",
+  title: "Categorie | Coffee Break GV",
+  description: "Gestione delle categorie del menu di Coffee Break GV.",
 };
 
 export default async function AdminCategoriesPage() {

@@ -5,9 +5,9 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Contatti | Coffee Break Monza",
+  title: "Contatti | Coffee Break GV",
   description:
-    "Informazioni e indirizzo di Coffee Break Monza in Via Pergolesi 33.",
+    "Informazioni e indirizzo di Coffee Break GV in Via Pergolesi 33.",
 };
 
 export default function ContactsPage() {
@@ -38,7 +38,7 @@ export default function ContactsPage() {
             <p className="eyebrow">Nel cuore della tua giornata</p>
             <h2 id="reach-us-title">Come raggiungerci</h2>
             <p>
-              Coffee Break Monza si trova in Via Pergolesi 33. Raggiungici per
+              Coffee Break GV si trova in Via Pergolesi 33. Raggiungici per
               il pranzo e scegli se fermarti nel locale oppure ritirare i tuoi
               piatti da asporto.
             </p>

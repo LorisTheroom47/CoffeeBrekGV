@@ -7,8 +7,8 @@ import { getMenuCategories } from "@/lib/menu";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Menu TV | Coffee Break Monza",
-  description: "Menu del giorno di Coffee Break Monza in modalità TV.",
+  title: "Menu TV | Coffee Break GV",
+  description: "Menu del giorno di Coffee Break GV in modalità TV.",
 };
 
 const timeZone = "Europe/Rome";

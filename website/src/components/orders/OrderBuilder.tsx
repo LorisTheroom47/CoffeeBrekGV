@@ -25,6 +25,16 @@ type OrderBuilderProps = {
 };
 
 type FulfillmentType = "delivery" | "pickup";
+type DeliveryPoint = "A" | "B" | "C";
+
+const deliveryPoints: ReadonlyArray<{
+  value: DeliveryPoint;
+  label: string;
+}> = [
+  { value: "A", label: "Consegna al piano terra, settore A" },
+  { value: "B", label: "Consegna al piano terra, settore B" },
+  { value: "C", label: "Consegna al piano terra, settore C" },
+];
 
 const turnstileRequiredMessage =
   "Completa la verifica di sicurezza prima di inviare l’ordine.";
@@ -35,6 +45,7 @@ type OrderConfirmation = {
   orderNumber: string;
   total: string;
   fulfillmentType: FulfillmentType;
+  deliveryPoint: DeliveryPoint | null;
   requestedDate: string;
   requestedTime: string | null;
 };
@@ -92,9 +103,7 @@ export default function OrderBuilder({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [deliveryCity, setDeliveryCity] = useState("");
-  const [deliveryPostalCode, setDeliveryPostalCode] = useState("");
+  const [deliveryPoint, setDeliveryPoint] = useState<DeliveryPoint | "">("");
   const [requestedDate, setRequestedDate] = useState(minimumDate);
   const [requestedTime, setRequestedTime] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
@@ -159,15 +168,11 @@ export default function OrderBuilder({
     setFieldErrors((current) => ({
       ...current,
       fulfillmentType: undefined,
-      deliveryAddress: undefined,
-      deliveryCity: undefined,
-      deliveryPostalCode: undefined,
+      deliveryPoint: undefined,
     }));
 
     if (nextValue === "pickup") {
-      setDeliveryAddress("");
-      setDeliveryCity("");
-      setDeliveryPostalCode("");
+      setDeliveryPoint("");
     }
   }
 
@@ -178,9 +183,7 @@ export default function OrderBuilder({
     setCustomerName("");
     setCustomerPhone("");
     setCustomerEmail("");
-    setDeliveryAddress("");
-    setDeliveryCity("");
-    setDeliveryPostalCode("");
+    setDeliveryPoint("");
     setRequestedDate(minimumDate);
     setRequestedTime("");
     setCustomerNotes("");
@@ -220,14 +223,8 @@ export default function OrderBuilder({
       errors.requestedTime = "Inserisci un orario valido.";
     }
     if (fulfillmentType === "delivery") {
-      if (!deliveryAddress.trim() || deliveryAddress.trim().length > 200) {
-        errors.deliveryAddress = "Inserisci l’indirizzo di consegna.";
-      }
-      if (!deliveryCity.trim() || deliveryCity.trim().length > 120) {
-        errors.deliveryCity = "Inserisci la città.";
-      }
-      if (!deliveryPostalCode.trim() || deliveryPostalCode.trim().length > 20) {
-        errors.deliveryPostalCode = "Inserisci il CAP.";
+      if (!deliveryPoint) {
+        errors.deliveryPoint = "Seleziona un punto di consegna.";
       }
     }
     if (customerNotes.trim().length > 1000) {
@@ -288,9 +285,7 @@ export default function OrderBuilder({
       ...(customerNotes.trim() ? { customerNotes: customerNotes.trim() } : {}),
       ...(fulfillmentType === "delivery"
         ? {
-            deliveryAddress: deliveryAddress.trim(),
-            deliveryCity: deliveryCity.trim(),
-            deliveryPostalCode: deliveryPostalCode.trim(),
+            deliveryPoint: deliveryPoint as DeliveryPoint,
           }
         : {}),
     };
@@ -318,9 +313,7 @@ export default function OrderBuilder({
         setCustomerName("");
         setCustomerPhone("");
         setCustomerEmail("");
-        setDeliveryAddress("");
-        setDeliveryCity("");
-        setDeliveryPostalCode("");
+        setDeliveryPoint("");
         setFulfillmentType("delivery");
         setRequestedDate(minimumDate);
         setRequestedTime("");
@@ -333,6 +326,7 @@ export default function OrderBuilder({
           orderNumber: response.orderNumber,
           total: response.total,
           fulfillmentType: input.fulfillmentType,
+          deliveryPoint: input.deliveryPoint ?? null,
           requestedDate: input.requestedDate,
           requestedTime: input.requestedTime ?? null,
         });
@@ -374,6 +368,12 @@ export default function OrderBuilder({
                 : "Ritiro"}
             </dd>
           </div>
+          {confirmation.deliveryPoint && (
+            <div>
+              <dt>Punto di consegna</dt>
+              <dd>Piano terra — Settore {confirmation.deliveryPoint}</dd>
+            </div>
+          )}
           <div>
             <dt>Data richiesta</dt>
             <dd>{formatRequestedDate(confirmation.requestedDate)}</dd>
@@ -498,7 +498,7 @@ export default function OrderBuilder({
                       checked={fulfillmentType === "delivery"}
                       onChange={() => changeFulfillment("delivery")}
                     />
-                    <span><strong>Consegna</strong><small>All’indirizzo indicato</small></span>
+                    <span><strong>Consegna in ospedale</strong><small>Piano terra, settore A, B o C</small></span>
                   </label>
                   <label>
                     <input
@@ -508,7 +508,7 @@ export default function OrderBuilder({
                       checked={fulfillmentType === "pickup"}
                       onChange={() => changeFulfillment("pickup")}
                     />
-                    <span><strong>Ritiro</strong><small>Presso Coffee Break Monza</small></span>
+                    <span><strong>Ritiro</strong><small>Presso Coffee Break GV</small></span>
                   </label>
                 </div>
                 <FieldError field="fulfillmentType" errors={fieldErrors} />
@@ -558,48 +558,39 @@ export default function OrderBuilder({
               </div>
 
               {fulfillmentType === "delivery" && (
-                <div className="order-fields-grid order-delivery-fields">
-                  <label className="order-field-wide">
-                    Indirizzo <span aria-hidden="true">*</span>
-                    <input
-                      value={deliveryAddress}
-                      onChange={(event) => setDeliveryAddress(event.target.value)}
-                      autoComplete="street-address"
-                      maxLength={200}
-                      required
-                      aria-invalid={Boolean(fieldErrors.deliveryAddress)}
-                      aria-describedby={fieldErrors.deliveryAddress ? "deliveryAddress-error" : undefined}
-                    />
-                    <FieldError field="deliveryAddress" errors={fieldErrors} />
-                  </label>
-                  <label>
-                    Città <span aria-hidden="true">*</span>
-                    <input
-                      value={deliveryCity}
-                      onChange={(event) => setDeliveryCity(event.target.value)}
-                      autoComplete="address-level2"
-                      maxLength={120}
-                      required
-                      aria-invalid={Boolean(fieldErrors.deliveryCity)}
-                      aria-describedby={fieldErrors.deliveryCity ? "deliveryCity-error" : undefined}
-                    />
-                    <FieldError field="deliveryCity" errors={fieldErrors} />
-                  </label>
-                  <label>
-                    CAP <span aria-hidden="true">*</span>
-                    <input
-                      inputMode="numeric"
-                      value={deliveryPostalCode}
-                      onChange={(event) => setDeliveryPostalCode(event.target.value)}
-                      autoComplete="postal-code"
-                      maxLength={20}
-                      required
-                      aria-invalid={Boolean(fieldErrors.deliveryPostalCode)}
-                      aria-describedby={fieldErrors.deliveryPostalCode ? "deliveryPostalCode-error" : undefined}
-                    />
-                    <FieldError field="deliveryPostalCode" errors={fieldErrors} />
-                  </label>
-                </div>
+                <fieldset
+                  className="order-delivery-fields"
+                  aria-describedby={fieldErrors.deliveryPoint ? "deliveryPoint-error" : undefined}
+                >
+                  <legend>
+                    Punto di consegna <span aria-hidden="true">*</span>
+                  </legend>
+                  <div className="delivery-point-options">
+                    {deliveryPoints.map((point) => (
+                      <label key={point.value}>
+                        <input
+                          type="radio"
+                          name="deliveryPoint"
+                          value={point.value}
+                          checked={deliveryPoint === point.value}
+                          onChange={() => {
+                            setDeliveryPoint(point.value);
+                            setFieldErrors((current) => ({
+                              ...current,
+                              deliveryPoint: undefined,
+                            }));
+                          }}
+                          required
+                        />
+                        <span>
+                          <strong>{point.value}</strong>
+                          <small>{point.label}</small>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <FieldError field="deliveryPoint" errors={fieldErrors} />
+                </fieldset>
               )}
 
               <div className="order-fields-grid">
@@ -686,6 +677,11 @@ export default function OrderBuilder({
                 <span>Totale indicativo</span>
                 <strong>{moneyFormatter.format(indicativeTotal)}</strong>
               </div>
+              {fulfillmentType === "delivery" && deliveryPoint && (
+                <p className="order-delivery-summary">
+                  <strong>Punto di consegna:</strong> Piano terra — Settore {deliveryPoint}
+                </p>
+              )}
               <p className="order-total-note">
                 Il totale definitivo, incluse eventuali spese di consegna, è
                 calcolato in modo sicuro al momento dell’invio.

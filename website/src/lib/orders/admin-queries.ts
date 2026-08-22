@@ -11,6 +11,7 @@ type RawAdminOrderSummary = {
   id: string;
   order_number: string | number;
   fulfillment_type: string;
+  delivery_point: string | null;
   status: string;
   customer_name: string;
   requested_date: string;
@@ -27,6 +28,7 @@ type RawAdminOrderDetail = {
   customer_name: string;
   customer_phone: string;
   customer_email: string | null;
+  delivery_point: string | null;
   delivery_address: string | null;
   delivery_city: string | null;
   delivery_postal_code: string | null;
@@ -87,7 +89,7 @@ export async function getAdminOrderSummaries(): Promise<
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, order_number, fulfillment_type, status, customer_name, requested_date, requested_time, total, created_at",
+      "id, order_number, fulfillment_type, delivery_point, status, customer_name, requested_date, requested_time, total, created_at",
     )
     .order("created_at", { ascending: false })
     .order("order_number", { ascending: false });
@@ -100,6 +102,7 @@ export async function getAdminOrderSummaries(): Promise<
     id: order.id,
     orderNumber: normalizeOrderNumber(order.order_number),
     fulfillmentType: order.fulfillment_type,
+    deliveryPoint: optionalText(order.delivery_point),
     status: order.status,
     customerName: order.customer_name,
     requestedDate: order.requested_date,
@@ -121,7 +124,7 @@ export async function getAdminOrderDetail(
   const { data: orderData, error: orderError } = await supabase
     .from("orders")
     .select(
-      "id, order_number, fulfillment_type, status, customer_name, customer_phone, customer_email, delivery_address, delivery_city, delivery_postal_code, requested_date, requested_time, customer_notes, admin_notes, subtotal, delivery_fee, total, created_at",
+      "id, order_number, fulfillment_type, status, customer_name, customer_phone, customer_email, delivery_point, delivery_address, delivery_city, delivery_postal_code, requested_date, requested_time, customer_notes, admin_notes, subtotal, delivery_fee, total, created_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -150,6 +153,7 @@ export async function getAdminOrderDetail(
     customerName: rawOrder.customer_name,
     customerPhone: rawOrder.customer_phone,
     customerEmail: optionalText(rawOrder.customer_email),
+    deliveryPoint: optionalText(rawOrder.delivery_point),
     deliveryAddress: optionalText(rawOrder.delivery_address),
     deliveryCity: optionalText(rawOrder.delivery_city),
     deliveryPostalCode: optionalText(rawOrder.delivery_postal_code),

@@ -6,6 +6,7 @@ import {
   formatAdminOrderTotal,
   formatAdminRequestedDate,
   formatAdminRequestedTime,
+  getAdminDeliveryPointLabel,
   getAdminOrderFulfillmentLabel,
   getAdminOrderStatusPresentation,
   type AdminOrderDetail as AdminOrderDetailData,
@@ -24,6 +25,13 @@ export default function AdminOrderDetail({
   const status = getAdminOrderStatusPresentation(order.status);
   const requestedTime = formatAdminRequestedTime(order.requestedTime);
   const isDelivery = order.fulfillmentType === "delivery";
+  const hasDeliveryPoint =
+    order.deliveryPoint === "A" ||
+    order.deliveryPoint === "B" ||
+    order.deliveryPoint === "C";
+  const hasHistoricalAddress = Boolean(
+    order.deliveryAddress || order.deliveryCity || order.deliveryPostalCode,
+  );
   const hasNotes = Boolean(order.customerNotes || order.adminNotes);
 
   return (
@@ -68,9 +76,27 @@ export default function AdminOrderDetail({
             </div>
             {isDelivery && (
               <>
-                <div><dt>Indirizzo</dt><dd>{order.deliveryAddress ?? "Non disponibile"}</dd></div>
-                <div><dt>Città</dt><dd>{order.deliveryCity ?? "Non disponibile"}</dd></div>
-                <div><dt>CAP</dt><dd>{order.deliveryPostalCode ?? "Non disponibile"}</dd></div>
+                {hasDeliveryPoint && (
+                  <div>
+                    <dt>Punto di consegna</dt>
+                    <dd>{getAdminDeliveryPointLabel(order.deliveryPoint)}</dd>
+                  </div>
+                )}
+                {!hasDeliveryPoint && !hasHistoricalAddress && (
+                  <div>
+                    <dt>Punto di consegna</dt>
+                    <dd>Punto non disponibile</dd>
+                  </div>
+                )}
+                {!hasDeliveryPoint && order.deliveryAddress && (
+                  <div><dt>Indirizzo storico</dt><dd>{order.deliveryAddress}</dd></div>
+                )}
+                {!hasDeliveryPoint && order.deliveryCity && (
+                  <div><dt>Città storica</dt><dd>{order.deliveryCity}</dd></div>
+                )}
+                {!hasDeliveryPoint && order.deliveryPostalCode && (
+                  <div><dt>CAP storico</dt><dd>{order.deliveryPostalCode}</dd></div>
+                )}
               </>
             )}
           </dl>

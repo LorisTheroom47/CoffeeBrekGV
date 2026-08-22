@@ -6,8 +6,8 @@ import { getAdminAuthorization } from "@/lib/auth/authorization";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Accesso amministratore | Coffee Break Monza",
-  description: "Accesso all’area amministrativa di Coffee Break Monza.",
+  title: "Accesso amministratore | Coffee Break GV",
+  description: "Accesso all’area amministrativa di Coffee Break GV.",
 };
 
 export default async function AdminLoginPage() {
@@ -30,7 +30,7 @@ export default async function AdminLoginPage() {
         className="admin-login-card"
         aria-labelledby="admin-login-title"
       >
-        <p className="admin-login-brand">Coffee Break Monza</p>
+        <p className="admin-login-brand">Coffee Break GV</p>
         <h1 id="admin-login-title">Accesso amministratore</h1>
         <p className="admin-login-intro">
           Inserisci le credenziali del tuo account per accedere alla dashboard.

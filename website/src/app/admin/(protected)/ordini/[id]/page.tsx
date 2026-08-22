@@ -8,8 +8,8 @@ import { isValidAdminOrderId } from "@/lib/orders/admin-types";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dettaglio ordine | Coffee Break Monza",
-  description: "Dettaglio amministrativo di un ordine Coffee Break Monza.",
+  title: "Dettaglio ordine | Coffee Break GV",
+  description: "Dettaglio amministrativo di un ordine Coffee Break GV.",
 };
 
 type AdminOrderDetailPageProps = Readonly<{

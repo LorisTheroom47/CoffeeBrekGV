@@ -2,6 +2,7 @@ export type AdminOrderSummary = {
   id: string;
   orderNumber: string | null;
   fulfillmentType: string;
+  deliveryPoint: string | null;
   status: string;
   customerName: string;
   requestedDate: string;
@@ -18,6 +19,7 @@ export type AdminOrderDetail = {
   customerName: string;
   customerPhone: string;
   customerEmail: string | null;
+  deliveryPoint: string | null;
   deliveryAddress: string | null;
   deliveryCity: string | null;
   deliveryPostalCode: string | null;
@@ -154,6 +156,14 @@ export function getAdminOrderFulfillmentLabel(value: string): string {
   if (value === "delivery") return "Consegna";
   if (value === "pickup") return "Ritiro";
   return "Modalità non disponibile";
+}
+
+export function getAdminDeliveryPointLabel(value: string | null): string {
+  if (value === "A" || value === "B" || value === "C") {
+    return `Piano terra — Settore ${value}`;
+  }
+
+  return "Punto non disponibile";
 }
 
 export function isValidAdminOrderId(value: string): boolean {

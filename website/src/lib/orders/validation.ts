@@ -159,34 +159,15 @@ export function validateCreateOrderInput(
     fieldErrors.customerEmail = "Inserisci un’email valida.";
   }
 
-  let deliveryAddress: string | null = null;
-  let deliveryCity: string | null = null;
-  let deliveryPostalCode: string | null = null;
+  let deliveryPoint: "A" | "B" | "C" | null = null;
 
   if (fulfillmentType === "delivery") {
-    const address = normalizeOptionalString(rawInput.deliveryAddress, 200);
-    const city = normalizeOptionalString(rawInput.deliveryCity, 120);
-    const postalCode = normalizeOptionalString(
-      rawInput.deliveryPostalCode,
-      20,
-    );
+    const point = rawInput.deliveryPoint;
 
-    if (address === null || address === undefined) {
-      fieldErrors.deliveryAddress = "Inserisci l’indirizzo di consegna.";
+    if (point !== "A" && point !== "B" && point !== "C") {
+      fieldErrors.deliveryPoint = "Seleziona un punto di consegna.";
     } else {
-      deliveryAddress = address;
-    }
-
-    if (city === null || city === undefined) {
-      fieldErrors.deliveryCity = "Inserisci la città.";
-    } else {
-      deliveryCity = city;
-    }
-
-    if (postalCode === null || postalCode === undefined) {
-      fieldErrors.deliveryPostalCode = "Inserisci il CAP.";
-    } else {
-      deliveryPostalCode = postalCode;
+      deliveryPoint = point;
     }
   }
 
@@ -288,9 +269,7 @@ export function validateCreateOrderInput(
       customerName,
       customerPhone,
       customerEmail,
-      deliveryAddress,
-      deliveryCity,
-      deliveryPostalCode,
+      deliveryPoint,
       requestedDate,
       requestedTime,
       customerNotes,

@@ -11,7 +11,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Elimina categoria | Coffee Break Monza",
+  title: "Elimina categoria | Coffee Break GV",
   description: "Conferma dell’eliminazione definitiva di una categoria vuota.",
 };
 

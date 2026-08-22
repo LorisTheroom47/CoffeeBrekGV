@@ -5,7 +5,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 import CategoryForm from "@/components/admin/CategoryForm";
 
 export const metadata: Metadata = {
-  title: "Nuova categoria | Coffee Break Monza",
+  title: "Nuova categoria | Coffee Break GV",
   description: "Creazione di una nuova categoria del menu.",
 };
 

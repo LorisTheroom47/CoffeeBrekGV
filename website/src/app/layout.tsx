@@ -14,8 +14,8 @@ const displayFont = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Coffee Break Monza",
-  description: "Menu del giorno, asporto e consegna a Monza",
+  title: "Coffee Break GV",
+  description: "Menu del giorno, asporto e consegna in ospedale",
 };
 
 export default function RootLayout({

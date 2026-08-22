@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="site-container footer-main">
         <div>
-          <p className="footer-brand">Coffee Break Monza</p>
+          <p className="footer-brand">Coffee Break GV</p>
           <p>Via Pergolesi 33, Monza</p>
         </div>
         <nav aria-label="Navigazione nel piè di pagina">
@@ -17,7 +17,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="site-container footer-bottom">
-        <p>© {currentYear} Coffee Break Monza</p>
+        <p>© {currentYear} Coffee Break GV</p>
         <p>Sito in fase di sviluppo</p>
       </div>
     </footer>

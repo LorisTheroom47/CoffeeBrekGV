@@ -11,7 +11,7 @@ import { isValidUuid } from "@/lib/menu/menu-item-form";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Elimina piatto | Coffee Break Monza",
+  title: "Elimina piatto | Coffee Break GV",
   description: "Conferma dell’eliminazione definitiva di un piatto.",
 };
 

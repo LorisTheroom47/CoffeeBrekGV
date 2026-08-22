@@ -12,7 +12,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Nuovo piatto | Coffee Break Monza",
+  title: "Nuovo piatto | Coffee Break GV",
   description: "Creazione di un nuovo piatto del menu.",
 };
 

@@ -1,7 +1,6 @@
 "use server";
 
 import { createHash } from "node:crypto";
-import { headers } from "next/headers";
 import {
   type CreateOrderErrorCode,
   type CreateOrderFieldErrors,
@@ -10,10 +9,6 @@ import {
   type ValidatedCreateOrderInput,
   validateCreateOrderInput,
 } from "@/lib/orders";
-import {
-  allowOrderAttempt,
-  getOrderRateLimitIdentifier,
-} from "@/lib/orders/rate-limit";
 import { verifyTurnstileToken } from "@/lib/orders/turnstile";
 import { createOrderServerSupabaseClient } from "@/lib/supabase/order-server";
 
@@ -112,18 +107,6 @@ function payloadSizeInBytes(input: unknown): number | null {
 function honeypotIsClear(input: unknown): boolean {
   if (!isRecord(input) || !("website" in input)) return true;
   return typeof input.website === "string" && input.website.trim() === "";
-}
-
-async function getRateLimitIdentifier(): Promise<string> {
-  try {
-    const requestHeaders = await headers();
-    return getOrderRateLimitIdentifier(
-      requestHeaders.get("x-forwarded-for"),
-      requestHeaders.get("x-real-ip"),
-    );
-  } catch {
-    return getOrderRateLimitIdentifier(null, null);
-  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -234,12 +217,6 @@ export async function createPublicOrderAction(
 
   if (!honeypotIsClear(input)) {
     return failure("INVALID_REQUEST");
-  }
-
-  const rateLimitIdentifier = await getRateLimitIdentifier();
-
-  if (!(await allowOrderAttempt(rateLimitIdentifier))) {
-    return failure("TOO_MANY_REQUESTS");
   }
 
   const validation = validateCreateOrderInput(input);

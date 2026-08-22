@@ -1,7 +1,7 @@
 # Coffee Break Monza — Roadmap
 
-- Workers Rate Limiting ordini: implementato con binding `ORDERS_RATE_LIMITER`, controllo asincrono e soglia prudente di 1 tentativo ogni 60 secondi
-- Limiter `Map` in-memory: rimosso; nessun Redis, Durable Object, secret o persistenza IP introdotti
+- Workers Rate Limiting ordini: rimosso dopo test reale non deterministico; il secondo tentativo entro 60 secondi non è stato bloccato
+- Limiter distribuito alternativo: non implementato; nessuna `Map` in-memory, Redis, Durable Object, secret o persistenza IP presenti
 
 - Fix produzione `/ordine` e Turnstile: completato e testato realmente su Cloudflare Workers il 21 agosto 2026
 - Site Key pubblica e Secret Turnstile: allineate allo stesso widget; secret runtime/build separate dal client

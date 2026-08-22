@@ -2,10 +2,9 @@
 
 ## 22 agosto 2026
 
-- Sostituito il limiter ordini basato su `Map` in-memory con il binding nativo Cloudflare Workers Rate Limiting `ORDERS_RATE_LIMITER`.
-- Configurata una soglia prudente di un tentativo ogni 60 secondi per identificatore server-side. La finestra è un'approssimazione semplice dell'obiettivo di circa cinque tentativi ogni dieci minuti, perché il binding semplice supporta periodi di 10 o 60 secondi.
-- Il controllo è ora asincrono e resta eseguito prima della validazione, di Turnstile e della RPC. In caso di limite superato o binding non disponibile, il flusso termina con il messaggio sanitizzato `TOO_MANY_REQUESTS`.
-- Nessun IP viene persistito o registrato, nessun secret o dipendenza è stato aggiunto e Turnstile, idempotenza, Supabase, Broadcast e autenticazione restano invariati.
+- Il binding Cloudflare Workers Rate Limiting `ORDERS_RATE_LIMITER` è stato rimosso dopo il test reale: essendo permissivo ed eventualmente consistente, ha consentito un secondo ordine dopo 11 secondi nonostante la soglia configurata di un tentativo al minuto.
+- Rimossi binding, accesso al contesto Cloudflare e controllo asincrono dalla Server Action. Non è stata reintrodotta la precedente `Map` in-memory né aggiunta altra infrastruttura.
+- Turnstile, Siteverify, RPC server-only, idempotenza, Supabase, Broadcast e autenticazione restano invariati. Nessun secret, IP persistito o log IP è stato introdotto.
 
 ## 21 agosto 2026
 

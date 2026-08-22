@@ -678,13 +678,18 @@ export default function OrderBuilder({
                 <strong>{moneyFormatter.format(indicativeTotal)}</strong>
               </div>
               {fulfillmentType === "delivery" && deliveryPoint && (
-                <p className="order-delivery-summary">
-                  <strong>Punto di consegna:</strong> Piano terra — Settore {deliveryPoint}
-                </p>
+                <div className="order-delivery-summary">
+                  <p>
+                    <strong>Punto di consegna:</strong> Piano terra — Settore {deliveryPoint}
+                  </p>
+                  <p>
+                    <strong>Consegna:</strong> Gratuita
+                  </p>
+                </div>
               )}
               <p className="order-total-note">
-                Il totale definitivo, incluse eventuali spese di consegna, è
-                calcolato in modo sicuro al momento dell’invio.
+                Il totale definitivo è calcolato in modo sicuro al momento
+                dell’invio.
               </p>
 
               <TurnstileWidget

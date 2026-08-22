@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -10,8 +11,8 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="site-container header-inner">
-        <Link className="brand" href="/" aria-label="Coffee Break GV, home">
-          Coffee Break <span>GV</span>
+        <Link className="brand-logo-link" href="/" aria-label="Coffee Break GV, home">
+          <BrandLogo className="site-header-logo" priority />
         </Link>
 
         <nav className="desktop-navigation" aria-label="Navigazione principale">

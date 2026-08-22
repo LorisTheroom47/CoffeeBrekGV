@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
+import BrandLogo from "@/components/BrandLogo";
 import { getAdminAuthorization } from "@/lib/auth/authorization";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export default async function AdminUnauthorizedPage() {
         className="admin-login-card"
         aria-labelledby="admin-unauthorized-title"
       >
-        <p className="admin-login-brand">Coffee Break GV</p>
+        <BrandLogo className="admin-login-logo" priority />
         <h1 id="admin-unauthorized-title">Accesso non autorizzato</h1>
         <p className="admin-login-intro">
           Il tuo account è valido, ma non è abilitato alla gestione del sito.

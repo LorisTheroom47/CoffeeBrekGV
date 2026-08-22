@@ -199,6 +199,19 @@ h3 {
   gap: 2rem;
 }
 
+.brand-logo-link {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.site-header-logo {
+  display: block;
+  width: clamp(6.5rem, 10vw, 8.5rem);
+  height: auto;
+  object-fit: contain;
+}
+
 .brand {
   color: var(--color-coffee-dark);
   font-size: 1.35rem;
@@ -626,6 +639,13 @@ h3 {
   font-weight: 700;
 }
 
+.admin-brand-logo {
+  display: block;
+  width: min(100%, 10rem);
+  height: auto;
+  object-fit: contain;
+}
+
 .admin-brand-caption {
   margin-bottom: 0;
   color: var(--color-terracotta);
@@ -789,6 +809,13 @@ h3 {
 
 .admin-mobile-sidebar {
   display: none;
+}
+
+.admin-mobile-logo {
+  display: block;
+  width: 7rem;
+  height: auto;
+  object-fit: contain;
 }
 
 .admin-content {
@@ -1623,6 +1650,14 @@ h3 {
   font-weight: 700;
 }
 
+.tv-brand-logo {
+  display: block;
+  width: clamp(9rem, 14vw, 14rem);
+  height: auto;
+  margin-bottom: 0.8rem;
+  object-fit: contain;
+}
+
 .tv-header h1 {
   max-width: none;
   margin: 0;
@@ -1747,6 +1782,14 @@ h3 {
   color: var(--color-sage-dark);
   font-family: var(--font-display), serif;
   font-weight: 700;
+}
+
+.admin-login-logo {
+  display: block;
+  width: min(100%, 15rem);
+  height: auto;
+  margin: 0 auto 1.5rem;
+  object-fit: contain;
 }
 
 .admin-login-card h1 {
@@ -3061,6 +3104,14 @@ h3 {
   padding: 0.8rem 1rem;
   background: rgba(130, 147, 103, 0.12);
   color: var(--color-coffee-dark);
+}
+
+.order-delivery-summary p {
+  margin: 0;
+}
+
+.order-delivery-summary p + p {
+  margin-top: 0.35rem;
 }
 
 .order-fields-grid label,

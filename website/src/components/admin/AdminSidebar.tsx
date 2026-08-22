@@ -1,3 +1,5 @@
+import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 import { getNewAdminOrderCount } from "@/lib/orders/admin-queries";
 
 const navigationItems = [
@@ -42,7 +44,9 @@ export default async function AdminSidebar() {
     <>
       <aside className="admin-sidebar">
         <div>
-          <p className="admin-brand">Coffee Break</p>
+          <Link href="/admin" aria-label="Coffee Break GV, dashboard">
+            <BrandLogo className="admin-brand-logo" />
+          </Link>
           <p className="admin-brand-caption">Amministrazione</p>
         </div>
         <SidebarNavigation newOrderCount={newOrderCount} />
@@ -51,7 +55,7 @@ export default async function AdminSidebar() {
 
       <details className="admin-mobile-sidebar">
         <summary>
-          <span>Dashboard</span>
+          <BrandLogo className="admin-mobile-logo" />
           <span className="admin-menu-indicator" aria-hidden="true" />
         </summary>
         <SidebarNavigation newOrderCount={newOrderCount} />

@@ -3,6 +3,7 @@ import type {
   MenuItem,
   MenuItemAllergen,
 } from "./types";
+import { getMenuImagePublicUrl } from "./storage";
 
 export type RawMenuCategory = {
   id: string;
@@ -94,7 +95,7 @@ function mapMenuItem(
     price: mapPrice(item.price, item.name),
     available: item.available,
     displayOrder: item.display_order,
-    imageUrl: item.image_url,
+    imageUrl: getMenuImagePublicUrl(item.image_url),
     allergens: allergensByMenuItem.get(item.id) ?? [],
   };
 }

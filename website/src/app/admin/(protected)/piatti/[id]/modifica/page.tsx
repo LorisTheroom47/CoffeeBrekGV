@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateMenuItemAction } from "./actions";
+import {
+  removeMenuItemImageAction,
+  uploadMenuItemImageAction,
+} from "./image-actions";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import MenuItemForm from "@/components/admin/MenuItemForm";
+import MenuItemImageForm from "@/components/admin/MenuItemImageForm";
 import {
   getAllergenOptions,
   getMenuCategoryOptions,
@@ -17,6 +22,7 @@ import {
   formatPriceForInput,
   isValidUuid,
 } from "@/lib/menu/menu-item-form";
+import { getMenuImagePublicUrl } from "@/lib/menu/storage";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +70,8 @@ export default async function EditMenuItemPage({
   }
 
   const updateAction = updateMenuItemAction.bind(null, id);
+  const uploadImageAction = uploadMenuItemImageAction.bind(null, id);
+  const removeImageAction = removeMenuItemImageAction.bind(null, id);
 
   return (
     <main className="admin-shell">
@@ -125,6 +133,23 @@ export default async function EditMenuItemPage({
             />
           )}
         </section>
+
+        {item ? (
+          <section
+            className="admin-form-card"
+            aria-labelledby="edit-item-image-title"
+          >
+            <h2 className="admin-form-title" id="edit-item-image-title">
+              Fotografia del piatto
+            </h2>
+            <MenuItemImageForm
+              imageUrl={getMenuImagePublicUrl(item.imageUrl)}
+              itemName={item.name}
+              removeAction={removeImageAction}
+              uploadAction={uploadImageAction}
+            />
+          </section>
+        ) : null}
       </div>
     </main>
   );

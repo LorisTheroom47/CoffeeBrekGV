@@ -55,4 +55,5 @@ export type MenuItemEditData = {
   description: string | null;
   price: number | string;
   available: boolean;
+  imageUrl: string | null;
 };

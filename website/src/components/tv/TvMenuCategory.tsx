@@ -14,7 +14,7 @@ export default function TvMenuCategory({ category }: TvMenuCategoryProps) {
       <h2 id={`tv-category-${category.id}`}>{category.name}</h2>
       <ul>
         {category.items.map((item) => (
-          <MenuItem item={item} key={item.id} />
+          <MenuItem item={item} key={item.id} showImage={false} />
         ))}
       </ul>
     </section>

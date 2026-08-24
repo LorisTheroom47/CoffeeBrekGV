@@ -13,6 +13,7 @@ export default function Footer() {
         <nav aria-label="Navigazione nel piè di pagina">
           <Link href="/">Home</Link>
           <Link href="/menu">Menu del giorno</Link>
+          <Link href="/gallery">Gallery</Link>
           <Link href="/contatti">Contatti</Link>
         </nav>
       </div>

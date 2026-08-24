@@ -104,7 +104,7 @@ export async function getMenuItemForEdit(
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("menu_items")
-      .select("id, category_id, name, description, price, available")
+      .select("id, category_id, name, description, price, available, image_url")
       .eq("id", id)
       .maybeSingle();
 
@@ -123,6 +123,7 @@ export async function getMenuItemForEdit(
       description: data.description,
       price: data.price,
       available: data.available,
+      imageUrl: data.image_url,
     } as MenuItemEditData;
   } catch {
     throw new Error(publicErrorMessage);

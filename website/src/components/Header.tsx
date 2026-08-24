@@ -4,6 +4,7 @@ import BrandLogo from "@/components/BrandLogo";
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Menu del giorno", href: "/menu" },
+  { label: "Gallery", href: "/gallery" },
   { label: "Contatti", href: "/contatti" },
 ];
 

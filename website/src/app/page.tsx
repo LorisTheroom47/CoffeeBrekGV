@@ -3,6 +3,7 @@ import DailyMenu from "@/components/DailyMenu";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import HomePromo from "@/components/HomePromo";
 import MenuUnavailable from "@/components/menu/MenuUnavailable";
 import RestaurantInfo from "@/components/RestaurantInfo";
 import Services from "@/components/Services";
@@ -31,6 +32,7 @@ export default async function Home() {
         )}
         <Services />
         <RestaurantInfo />
+        <HomePromo />
         <CallToAction />
       </main>
       <Footer />

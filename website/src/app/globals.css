@@ -3502,10 +3502,15 @@ h3 {
   font-weight: 700;
 }
 
-.home-promo-section,
 .gallery-page,
 .gallery-content {
   background: var(--color-warm-white);
+}
+
+.home-promo-section {
+  position: relative;
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+  background: var(--color-coffee-dark);
 }
 
 .home-promo-card {
@@ -3515,44 +3520,60 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: clamp(2rem, 7vw, 6rem);
-  border: 1px solid rgba(95, 58, 43, 0.14);
+  border: 1px solid rgba(255, 253, 248, 0.28);
   border-radius: var(--radius-large);
-  padding: clamp(2rem, 6vw, 4.5rem);
+  padding: clamp(2.5rem, 6vw, 5rem);
   background:
-    radial-gradient(circle at 90% 10%, rgba(202, 112, 77, 0.2), transparent 32%),
-    var(--color-cream);
-  box-shadow: var(--shadow-soft);
+    radial-gradient(circle at 92% 4%, rgba(255, 253, 248, 0.2), transparent 30%),
+    linear-gradient(125deg, var(--color-sage-dark), var(--color-coffee) 72%);
+  box-shadow: 0 24px 65px rgba(28, 15, 11, 0.34);
 }
 
 .home-promo-card::before {
   position: absolute;
   top: -3rem;
   left: -3rem;
-  width: 9rem;
+  width: 11rem;
   aspect-ratio: 1;
-  border: 1.5rem solid rgba(130, 147, 103, 0.12);
+  border: 1.8rem solid rgba(255, 253, 248, 0.1);
   border-radius: 50%;
   content: "";
 }
 
 .home-promo-card > div {
   position: relative;
-  max-width: 48rem;
+  max-width: 52rem;
+}
+
+.home-promo-card .eyebrow {
+  color: var(--color-cream-deep);
 }
 
 .home-promo-card h2 {
-  font-size: clamp(2rem, 4vw, 3.4rem);
+  max-width: 16ch;
+  color: var(--color-warm-white);
+  font-size: clamp(2.5rem, 5vw, 4.4rem);
 }
 
 .home-promo-card p:last-child {
   margin-bottom: 0;
-  color: var(--color-text-muted);
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--color-warm-white);
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .home-promo-card .button {
   position: relative;
   flex: none;
+  border-color: var(--color-warm-white);
+  background: var(--color-warm-white);
+  color: var(--color-coffee-dark);
+  box-shadow: 0 12px 30px rgba(28, 15, 11, 0.22);
+}
+
+.home-promo-card .button:hover {
+  background: var(--color-cream);
 }
 
 .gallery-page-header {
@@ -3661,5 +3682,13 @@ h3 {
   .admin-image-controls .button,
   .admin-image-upload-form {
     width: 100%;
+  }
+
+  .home-promo-card {
+    padding: 2rem 1.35rem;
+  }
+
+  .home-promo-card h2 {
+    font-size: clamp(2.35rem, 12vw, 3.3rem);
   }
 }

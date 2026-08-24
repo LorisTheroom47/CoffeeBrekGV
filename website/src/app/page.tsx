@@ -25,6 +25,7 @@ export default async function Home() {
       <Header />
       <main>
         <Hero />
+        <HomePromo />
         {categories ? (
           <DailyMenu categories={categories} />
         ) : (
@@ -32,7 +33,6 @@ export default async function Home() {
         )}
         <Services />
         <RestaurantInfo />
-        <HomePromo />
         <CallToAction />
       </main>
       <Footer />

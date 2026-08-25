@@ -1689,24 +1689,75 @@ h3 {
   grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
 }
 
-.tv-menu-scroll {
+.tv-menu-slides {
+  position: relative;
   min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: none;
-  scrollbar-width: none;
+  margin-block: clamp(1rem, 2vw, 2rem);
+  overflow: hidden;
 }
 
-.tv-menu-scroll::-webkit-scrollbar {
-  display: none;
+.tv-menu-slides-stage {
+  position: relative;
+  height: 100%;
 }
 
-.tv-menu-scroll-content {
-  min-height: 100%;
+.tv-menu-slide {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  inset: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 650ms ease,
+    transform 650ms ease,
+    visibility 650ms;
 }
 
-.tv-menu-scroll-content > .tv-menu-grid {
-  min-height: 100%;
+.tv-menu-slide.is-active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tv-menu-slide > .tv-menu-category {
+  height: 100%;
+  overflow: hidden;
+}
+
+.tv-menu-slides .tv-menu-category h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(0.75rem, 1.4vw, 1.4rem);
+}
+
+.tv-menu-slides .tv-menu-category h2 small {
+  color: var(--color-cream-deep);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.42em;
+  letter-spacing: 0.08em;
+}
+
+.tv-menu-slides .tv-menu-category .menu-item {
+  padding-block: clamp(0.55rem, 1vh, 1rem);
+}
+
+.tv-menu-slides-measure {
+  position: absolute;
+  visibility: hidden;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-menu-slide {
+    transform: none;
+    transition: none;
+  }
 }
 
 .tv-menu-category {

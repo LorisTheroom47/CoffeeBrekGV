@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import MenuUnavailable from "@/components/menu/MenuUnavailable";
-import TvAutoScroll from "@/components/tv/TvAutoScroll";
 import TvHeader from "@/components/tv/TvHeader";
-import TvMenuGrid from "@/components/tv/TvMenuGrid";
+import TvMenuSlides from "@/components/tv/TvMenuSlides";
 import { getMenuCategories } from "@/lib/menu";
 
 export const dynamic = "force-dynamic";
@@ -61,9 +60,7 @@ export default async function TvPage() {
   return (
     <main className="tv-page">
       <TvHeader date={currentDate.label} dateTime={currentDate.iso} />
-      <TvAutoScroll>
-        <TvMenuGrid categories={categories} />
-      </TvAutoScroll>
+      <TvMenuSlides categories={categories} />
       <p className="tv-note">
         Menu dimostrativo: i piatti verranno aggiornati quotidianamente.
       </p>

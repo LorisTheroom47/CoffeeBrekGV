@@ -24,8 +24,10 @@ export default function TvAutoScroll({ children }: TvAutoScrollProps) {
     let phase: "initial" | "down" | "bottom" | "up" = "initial";
     let phaseStartedAt = performance.now();
     let previousFrameAt = phaseStartedAt;
+    let scrollPosition = 0;
 
     const resetCycle = () => {
+      scrollPosition = 0;
       viewport.scrollTop = 0;
       phase = "initial";
       phaseStartedAt = performance.now();
@@ -39,6 +41,7 @@ export default function TvAutoScroll({ children }: TvAutoScrollProps) {
       );
 
       if (reducedMotion.matches || maximumScroll <= 1) {
+        scrollPosition = 0;
         viewport.scrollTop = 0;
         previousFrameAt = currentTime;
         animationFrame = window.requestAnimationFrame(animate);
@@ -54,12 +57,14 @@ export default function TvAutoScroll({ children }: TvAutoScrollProps) {
           phaseStartedAt = currentTime;
         }
       } else if (phase === "down") {
-        viewport.scrollTop = Math.min(
+        scrollPosition = Math.min(
           maximumScroll,
-          viewport.scrollTop + (downwardSpeed * elapsedSinceFrame) / 1_000,
+          scrollPosition + (downwardSpeed * elapsedSinceFrame) / 1_000,
         );
+        viewport.scrollTop = Math.round(scrollPosition);
 
-        if (viewport.scrollTop >= maximumScroll - 1) {
+        if (scrollPosition >= maximumScroll) {
+          scrollPosition = maximumScroll;
           viewport.scrollTop = maximumScroll;
           phase = "bottom";
           phaseStartedAt = currentTime;
@@ -70,12 +75,13 @@ export default function TvAutoScroll({ children }: TvAutoScrollProps) {
           phaseStartedAt = currentTime;
         }
       } else {
-        viewport.scrollTop = Math.max(
+        scrollPosition = Math.max(
           0,
-          viewport.scrollTop - (returnSpeed * elapsedSinceFrame) / 1_000,
+          scrollPosition - (returnSpeed * elapsedSinceFrame) / 1_000,
         );
+        viewport.scrollTop = Math.round(scrollPosition);
 
-        if (viewport.scrollTop <= 1) {
+        if (scrollPosition <= 0) {
           resetCycle();
         }
       }
@@ -83,19 +89,32 @@ export default function TvAutoScroll({ children }: TvAutoScrollProps) {
       animationFrame = window.requestAnimationFrame(animate);
     };
 
-    const resizeObserver = new ResizeObserver(resetCycle);
-    resizeObserver.observe(viewport);
-    if (viewport.firstElementChild) {
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(resetCycle);
+    resizeObserver?.observe(viewport);
+    if (resizeObserver && viewport.firstElementChild) {
       resizeObserver.observe(viewport.firstElementChild);
     }
 
-    reducedMotion.addEventListener("change", resetCycle);
+    window.addEventListener("resize", resetCycle);
+    if (typeof reducedMotion.addEventListener === "function") {
+      reducedMotion.addEventListener("change", resetCycle);
+    } else {
+      reducedMotion.addListener(resetCycle);
+    }
     animationFrame = window.requestAnimationFrame(animate);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
-      resizeObserver.disconnect();
-      reducedMotion.removeEventListener("change", resetCycle);
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", resetCycle);
+      if (typeof reducedMotion.removeEventListener === "function") {
+        reducedMotion.removeEventListener("change", resetCycle);
+      } else {
+        reducedMotion.removeListener(resetCycle);
+      }
     };
   }, []);
 

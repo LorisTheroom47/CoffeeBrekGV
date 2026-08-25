@@ -1691,7 +1691,9 @@ h3 {
 
 .tv-menu-scroll {
   min-height: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
   scrollbar-width: none;
 }
 

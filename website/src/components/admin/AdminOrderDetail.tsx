@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdminOrderDeleteControl from "@/components/admin/AdminOrderDeleteControl";
 import AdminOrderStatusControls from "@/components/admin/AdminOrderStatusControls";
 import {
   formatAdminOrderCreatedAt,
@@ -149,6 +150,11 @@ export default function AdminOrderDetail({
           <div className="admin-order-summary-total"><dt>Totale</dt><dd>{formatAdminOrderTotal(order.total)}</dd></div>
         </dl>
       </section>
+
+      <AdminOrderDeleteControl
+        orderId={order.id}
+        orderNumber={order.orderNumber}
+      />
     </div>
   );
 }

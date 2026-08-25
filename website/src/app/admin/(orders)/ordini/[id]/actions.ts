@@ -14,10 +14,15 @@ export type UpdateOrderStatusState = Readonly<{
   message: string | null;
 }>;
 
+export type DeleteOrderState = Readonly<{
+  message: string | null;
+}>;
+
 const genericErrorMessage = "Impossibile aggiornare lo stato. Riprova.";
 const invalidTransitionMessage = "Transizione di stato non consentita.";
 const concurrentUpdateMessage =
   "Lo stato dell’ordine è cambiato. Aggiorna la pagina e riprova.";
+const genericDeleteErrorMessage = "Impossibile eliminare l’ordine. Riprova.";
 
 export async function updateOrderStatusAction(
   orderId: string,
@@ -73,4 +78,49 @@ export async function updateOrderStatusAction(
   revalidatePath("/admin/ordini");
   revalidatePath(`/admin/ordini/${orderId}`);
   redirect(`/admin/ordini/${orderId}`);
+}
+
+export async function deleteOrderAction(
+  orderId: string,
+  previousState: DeleteOrderState,
+  formData: FormData,
+): Promise<DeleteOrderState> {
+  void previousState;
+  void formData;
+  await requireOrderAccess();
+
+  if (!isValidAdminOrderId(orderId)) {
+    return { message: genericDeleteErrorMessage };
+  }
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: result, error: deleteError } = await supabase.rpc(
+      "delete_order",
+      { p_order_id: orderId },
+    );
+
+    if (deleteError || typeof result !== "string") {
+      return { message: genericDeleteErrorMessage };
+    }
+
+    if (result === "access_denied") {
+      return { message: "Non hai i permessi per eliminare questo ordine." };
+    }
+
+    if (result === "not_found") {
+      return { message: "L’ordine non è più disponibile." };
+    }
+
+    if (result !== "deleted") {
+      return { message: genericDeleteErrorMessage };
+    }
+  } catch {
+    return { message: genericDeleteErrorMessage };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/ordini");
+  revalidatePath(`/admin/ordini/${orderId}`);
+  redirect("/admin/ordini");
 }

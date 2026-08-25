@@ -4,7 +4,7 @@ const contactDetails = [
   { label: "Servizio", value: "Pranzo" },
   { label: "Telefono", value: "039 223 39799 · 348 062 9825" },
   { label: "Email", value: "Informazione in aggiornamento" },
-  { label: "Orari", value: "7:00 – 16:00" },
+  { label: "Orari", value: "6:30 – 16:30" },
   { label: "Ordini", value: "Gli ordini devono essere effettuati entro le 10:00." },
 ];
 

@@ -31,7 +31,7 @@ export default function RestaurantInfo() {
             </div>
             <div>
               <dt>Orari</dt>
-              <dd>7:00 – 16:00</dd>
+              <dd>6:30 – 16:30</dd>
             </div>
             <div>
               <dt>Ordini</dt>

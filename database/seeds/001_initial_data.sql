@@ -28,8 +28,13 @@ insert into public.categories (name, slug, display_order)
 values
   ('Primi', 'primi', 1),
   ('Secondi', 'secondi', 2),
-  ('Contorni', 'contorni', 3),
-  ('Piatti unici', 'piatti-unici', 4)
+  ('Insalate', 'insalate', 3),
+  ('Panini', 'panini', 4),
+  ('Piadine', 'piadine', 5),
+  ('Bevande', 'bevande', 6),
+  ('Brioches di pasticceria', 'brioches-di-pasticceria', 7),
+  ('Prodotti senza glutine', 'prodotti-senza-glutine', 8),
+  ('Caffetteria', 'caffetteria', 9)
 on conflict (slug) do update
 set
   name = excluded.name,
@@ -56,10 +61,8 @@ values
   ('primi', 'Risotto alla milanese', 8.00, true, 2),
   ('secondi', 'Cotoletta con patate', 10.00, true, 1),
   ('secondi', 'Pollo alla griglia', 9.00, true, 2),
-  ('contorni', 'Verdure grigliate', 4.00, true, 1),
-  ('contorni', 'Patate al forno', 4.00, true, 2),
-  ('piatti-unici', 'Insalatona Coffee Break', 9.50, true, 1),
-  ('piatti-unici', 'Piatto vegetariano', 9.00, false, 2);
+  ('insalate', 'Insalatona Coffee Break', 9.50, true, 1),
+  ('insalate', 'Piatto vegetariano', 9.00, false, 2);
 
 update public.menu_items as menu_item
 set

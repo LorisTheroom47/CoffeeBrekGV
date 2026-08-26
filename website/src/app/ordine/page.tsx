@@ -3,6 +3,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import OrderBuilder from "@/components/orders/OrderBuilder";
+import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
 import { getMenuCategories } from "@/lib/menu";
 import type { OrderMenuCategory } from "@/lib/orders";
 
@@ -58,11 +59,12 @@ export default async function OrderPage() {
           <div className="site-container order-page-heading">
             <p className="eyebrow">Ordina online</p>
             <h1>Prepara il tuo pranzo</h1>
-            <p>
+            <p className="order-page-intro">
               Scegli i piatti disponibili, ritira da Coffee Break GV oppure
-              richiedi la consegna in ospedale nei settori A, B o C. Gli ordini
-              devono essere effettuati entro le 10:00.
+              richiedi la consegna in ospedale nei punti A, B, C, Pronto
+              Soccorso o Palazzina Blu.
             </p>
+            <OrderDeadlineNotice />
           </div>
         </header>
 

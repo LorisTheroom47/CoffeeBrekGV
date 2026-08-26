@@ -3,6 +3,11 @@ import type {
   CreateOrderInput,
   ValidatedCreateOrderInput,
 } from "./types";
+import {
+  isDeliveryPoint,
+  isNormalizedDeliveryTimeSlot,
+  type DeliveryPoint,
+} from "./delivery";
 
 type ValidationResult =
   | { success: true; data: ValidatedCreateOrderInput }
@@ -159,12 +164,12 @@ export function validateCreateOrderInput(
     fieldErrors.customerEmail = "Inserisci un’email valida.";
   }
 
-  let deliveryPoint: "A" | "B" | "C" | null = null;
+  let deliveryPoint: DeliveryPoint | null = null;
 
   if (fulfillmentType === "delivery") {
     const point = rawInput.deliveryPoint;
 
-    if (point !== "A" && point !== "B" && point !== "C") {
+    if (!isDeliveryPoint(point)) {
       fieldErrors.deliveryPoint = "Seleziona un punto di consegna.";
     } else {
       deliveryPoint = point;
@@ -187,6 +192,12 @@ export function validateCreateOrderInput(
 
   if (requestedTime === undefined) {
     fieldErrors.requestedTime = "Inserisci un orario valido.";
+  } else if (
+    fulfillmentType === "delivery" &&
+    !isNormalizedDeliveryTimeSlot(requestedTime)
+  ) {
+    fieldErrors.requestedTime =
+      "Seleziona un orario di consegna tra le 12:00 e le 14:00.";
   }
 
   const customerNotes = normalizeOptionalString(rawInput.customerNotes, 1000);

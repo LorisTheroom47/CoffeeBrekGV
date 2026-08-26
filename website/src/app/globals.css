@@ -545,6 +545,35 @@ h3 {
   flex: none;
 }
 
+.order-deadline-home {
+  padding-block: clamp(1rem, 2vw, 1.5rem);
+  background: var(--color-cream);
+}
+
+.order-deadline-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.65rem, 2vw, 1rem);
+  border: 2px solid var(--color-terracotta);
+  border-radius: var(--radius-medium);
+  padding: clamp(0.9rem, 2.5vw, 1.35rem);
+  background: var(--color-coffee-dark);
+  color: var(--color-warm-white);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.order-deadline-notice > span {
+  color: var(--color-terracotta);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.order-deadline-notice strong {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  letter-spacing: 0.075em;
+}
+
 .menu-page {
   background: var(--color-warm-white);
 }
@@ -2901,11 +2930,15 @@ h3 {
   font-size: clamp(2.8rem, 6vw, 5rem);
 }
 
-.order-page-heading > p:last-child {
+.order-page-intro {
   max-width: 43rem;
-  margin-bottom: 0;
+  margin-bottom: 1.5rem;
   color: var(--color-text-muted);
   font-size: 1.08rem;
+}
+
+.order-page-heading .order-deadline-notice {
+  max-width: 43rem;
 }
 
 .order-message-card,

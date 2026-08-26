@@ -1,3 +1,5 @@
+import type { DeliveryPoint } from "./delivery";
+
 export type OrderItemInput = {
   menuItemId: string;
   quantity: number;
@@ -23,7 +25,7 @@ export type CreateOrderInput = {
   customerName: string;
   customerPhone: string;
   customerEmail?: string;
-  deliveryPoint?: "A" | "B" | "C";
+  deliveryPoint?: DeliveryPoint;
   requestedDate: string;
   requestedTime?: string;
   customerNotes?: string;
@@ -38,6 +40,7 @@ export type CreateOrderErrorCode =
   | "INVALID_ITEMS"
   | "ITEM_NOT_AVAILABLE"
   | "INVALID_REQUEST_DATE"
+  | "INVALID_REQUEST_TIME"
   | "REQUEST_TOO_LARGE"
   | "TOO_MANY_REQUESTS"
   | "SECURITY_CHECK_FAILED"
@@ -82,7 +85,7 @@ export type ValidatedCreateOrderInput = {
   customerName: string;
   customerPhone: string;
   customerEmail: string | null;
-  deliveryPoint: "A" | "B" | "C" | null;
+  deliveryPoint: DeliveryPoint | null;
   requestedDate: string;
   requestedTime: string | null;
   customerNotes: string | null;

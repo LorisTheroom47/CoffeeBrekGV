@@ -1,3 +1,8 @@
+import {
+  getDeliveryPointLabel,
+  isDeliveryPoint,
+} from "@/lib/orders/delivery";
+
 export type AdminOrderSummary = {
   id: string;
   orderNumber: string | null;
@@ -159,11 +164,11 @@ export function getAdminOrderFulfillmentLabel(value: string): string {
 }
 
 export function getAdminDeliveryPointLabel(value: string | null): string {
-  if (value === "A" || value === "B" || value === "C") {
-    return `Piano terra — Settore ${value}`;
-  }
+  return getDeliveryPointLabel(value) ?? "Punto non disponibile";
+}
 
-  return "Punto non disponibile";
+export function isAdminDeliveryPoint(value: string | null): boolean {
+  return isDeliveryPoint(value);
 }
 
 export function isValidAdminOrderId(value: string): boolean {

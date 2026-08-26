@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import HomePromo from "@/components/HomePromo";
 import MenuUnavailable from "@/components/menu/MenuUnavailable";
+import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
 import RestaurantInfo from "@/components/RestaurantInfo";
 import Services from "@/components/Services";
 import { getMenuCategories } from "@/lib/menu";
@@ -25,6 +26,11 @@ export default async function Home() {
       <Header />
       <main>
         <Hero />
+        <div className="order-deadline-home">
+          <div className="site-container">
+            <OrderDeadlineNotice />
+          </div>
+        </div>
         <HomePromo />
         {categories ? (
           <DailyMenu categories={categories} />

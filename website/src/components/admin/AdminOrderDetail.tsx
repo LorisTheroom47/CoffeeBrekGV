@@ -10,6 +10,7 @@ import {
   getAdminDeliveryPointLabel,
   getAdminOrderFulfillmentLabel,
   getAdminOrderStatusPresentation,
+  isAdminDeliveryPoint,
   type AdminOrderDetail as AdminOrderDetailData,
   type AdminOrderItemDetail,
 } from "@/lib/orders/admin-types";
@@ -26,10 +27,7 @@ export default function AdminOrderDetail({
   const status = getAdminOrderStatusPresentation(order.status);
   const requestedTime = formatAdminRequestedTime(order.requestedTime);
   const isDelivery = order.fulfillmentType === "delivery";
-  const hasDeliveryPoint =
-    order.deliveryPoint === "A" ||
-    order.deliveryPoint === "B" ||
-    order.deliveryPoint === "C";
+  const hasDeliveryPoint = isAdminDeliveryPoint(order.deliveryPoint);
   const hasHistoricalAddress = Boolean(
     order.deliveryAddress || order.deliveryCity || order.deliveryPostalCode,
   );
@@ -107,7 +105,12 @@ export default function AdminOrderDetail({
           <h2 id="timing-title">Data e ora</h2>
           <dl className="admin-order-definition-list">
             <div><dt>Data richiesta</dt><dd>{formatAdminRequestedDate(order.requestedDate)}</dd></div>
-            {requestedTime && <div><dt>Orario preferito</dt><dd>{requestedTime}</dd></div>}
+            {requestedTime && (
+              <div>
+                <dt>{isDelivery ? "Orario consegna" : "Orario preferito"}</dt>
+                <dd>{requestedTime}</dd>
+              </div>
+            )}
             <div><dt>Ordine creato</dt><dd>{formatAdminOrderCreatedAt(order.createdAt)}</dd></div>
           </dl>
         </section>

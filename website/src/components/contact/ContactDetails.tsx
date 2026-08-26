@@ -1,11 +1,22 @@
 const contactDetails = [
-  { label: "Nome", value: "Coffee Break GV" },
-  { label: "Indirizzo", value: "Via Pergolesi 33, Monza" },
-  { label: "Servizio", value: "Pranzo" },
-  { label: "Telefono", value: "039 223 39799 · 348 062 9825" },
-  { label: "Email", value: "Informazione in aggiornamento" },
-  { label: "Orari", value: "6:30 – 16:30" },
-  { label: "Ordini", value: "Gli ordini devono essere effettuati entro le 10:00." },
+  { label: "Nome", values: [{ text: "Coffee Break GV" }] },
+  { label: "Indirizzo", values: [{ text: "Via Pergolesi 33, Monza" }] },
+  { label: "Servizio", values: [{ text: "Pranzo" }] },
+  {
+    label: "Telefono",
+    values: [
+      { text: "039 233 9799", href: "tel:+390392339799" },
+      { text: "348 062 9825", href: "tel:+393480629825" },
+    ],
+  },
+  {
+    label: "Email",
+    values: [
+      { text: "ristogivi@gmail.com", href: "mailto:ristogivi@gmail.com" },
+    ],
+  },
+  { label: "Orari", values: [{ text: "6:30 – 16:30" }] },
+  { label: "Ordini", values: [{ text: "ORDINA ENTRO LE 10:00" }] },
 ];
 
 export default function ContactDetails() {
@@ -17,7 +28,18 @@ export default function ContactDetails() {
         {contactDetails.map((detail) => (
           <div key={detail.label}>
             <dt>{detail.label}</dt>
-            <dd>{detail.value}</dd>
+            <dd>
+              {detail.values.map((value, index) => (
+                <span key={value.text}>
+                  {"href" in value ? (
+                    <a href={value.href}>{value.text}</a>
+                  ) : (
+                    value.text
+                  )}
+                  {index < detail.values.length - 1 ? <br /> : null}
+                </span>
+              ))}
+            </dd>
           </div>
         ))}
       </dl>

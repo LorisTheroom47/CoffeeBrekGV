@@ -20,6 +20,8 @@ const errorMessages: Readonly<Record<CreateOrderErrorCode, string>> = {
   INVALID_ITEMS: "Controlla i piatti e le quantità.",
   ITEM_NOT_AVAILABLE: "Uno o più piatti non sono più disponibili.",
   INVALID_REQUEST_DATE: "Seleziona una data valida.",
+  INVALID_REQUEST_TIME:
+    "Seleziona un orario di consegna tra le 12:00 e le 14:00.",
   REQUEST_TOO_LARGE:
     "La richiesta è troppo grande. Riduci il contenuto e riprova.",
   TOO_MANY_REQUESTS:
@@ -39,6 +41,7 @@ const knownRpcErrorCodes = new Set<CreateOrderErrorCode>([
   "INVALID_ITEMS",
   "ITEM_NOT_AVAILABLE",
   "INVALID_REQUEST_DATE",
+  "INVALID_REQUEST_TIME",
   "IDEMPOTENCY_CONFLICT",
   "ORDER_CREATION_FAILED",
 ]);
@@ -70,6 +73,10 @@ function validationErrorCode(
 
   if (fieldErrors.requestedDate) {
     return "INVALID_REQUEST_DATE";
+  }
+
+  if (fieldErrors.requestedTime) {
+    return "INVALID_REQUEST_TIME";
   }
 
   if (fieldErrors.items) {

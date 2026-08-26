@@ -18,6 +18,13 @@ import type {
   CreateOrderResult,
   OrderMenuCategory,
 } from "@/lib/orders";
+import {
+  deliveryPointOptions,
+  deliveryTimeSlots,
+  getDeliveryPointLabel,
+  isDeliveryTimeSlot,
+  type DeliveryPoint,
+} from "@/lib/orders/delivery";
 
 type OrderBuilderProps = {
   categories: OrderMenuCategory[];
@@ -25,16 +32,6 @@ type OrderBuilderProps = {
 };
 
 type FulfillmentType = "delivery" | "pickup";
-type DeliveryPoint = "A" | "B" | "C";
-
-const deliveryPoints: ReadonlyArray<{
-  value: DeliveryPoint;
-  label: string;
-}> = [
-  { value: "A", label: "Consegna al piano terra, settore A" },
-  { value: "B", label: "Consegna al piano terra, settore B" },
-  { value: "C", label: "Consegna al piano terra, settore C" },
-];
 
 const turnstileRequiredMessage =
   "Completa la verifica di sicurezza prima di inviare l’ordine.";
@@ -173,6 +170,8 @@ export default function OrderBuilder({
 
     if (nextValue === "pickup") {
       setDeliveryPoint("");
+    } else if (requestedTime && !isDeliveryTimeSlot(requestedTime)) {
+      setRequestedTime("");
     }
   }
 
@@ -219,13 +218,19 @@ export default function OrderBuilder({
     if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate) || requestedDate < minimumDate) {
       errors.requestedDate = "Seleziona una data valida.";
     }
-    if (requestedTime && !/^([01]\d|2[0-3]):[0-5]\d$/.test(requestedTime)) {
-      errors.requestedTime = "Inserisci un orario valido.";
-    }
     if (fulfillmentType === "delivery") {
       if (!deliveryPoint) {
         errors.deliveryPoint = "Seleziona un punto di consegna.";
       }
+      if (!isDeliveryTimeSlot(requestedTime)) {
+        errors.requestedTime =
+          "Seleziona un orario di consegna tra le 12:00 e le 14:00.";
+      }
+    } else if (
+      requestedTime &&
+      !/^([01]\d|2[0-3]):[0-5]\d$/.test(requestedTime)
+    ) {
+      errors.requestedTime = "Inserisci un orario valido.";
     }
     if (customerNotes.trim().length > 1000) {
       errors.customerNotes = "Le note sono troppo lunghe.";
@@ -371,7 +376,7 @@ export default function OrderBuilder({
           {confirmation.deliveryPoint && (
             <div>
               <dt>Punto di consegna</dt>
-              <dd>Piano terra — Settore {confirmation.deliveryPoint}</dd>
+              <dd>{getDeliveryPointLabel(confirmation.deliveryPoint)}</dd>
             </div>
           )}
           <div>
@@ -381,7 +386,12 @@ export default function OrderBuilder({
         </dl>
         {confirmation.requestedTime && (
           <p className="order-confirmation-time">
-            <strong>Orario preferito:</strong> {confirmation.requestedTime}
+            <strong>
+              {confirmation.fulfillmentType === "delivery"
+                ? "Orario consegna:"
+                : "Orario preferito:"}
+            </strong>{" "}
+            {confirmation.requestedTime}
           </p>
         )}
         <p>
@@ -498,7 +508,7 @@ export default function OrderBuilder({
                       checked={fulfillmentType === "delivery"}
                       onChange={() => changeFulfillment("delivery")}
                     />
-                    <span><strong>Consegna in ospedale</strong><small>Piano terra, settore A, B o C</small></span>
+                    <span><strong>Consegna in ospedale</strong><small>Scegli il punto di consegna</small></span>
                   </label>
                   <label>
                     <input
@@ -566,7 +576,7 @@ export default function OrderBuilder({
                     Punto di consegna <span aria-hidden="true">*</span>
                   </legend>
                   <div className="delivery-point-options">
-                    {deliveryPoints.map((point) => (
+                    {deliveryPointOptions.map((point) => (
                       <label key={point.value}>
                         <input
                           type="radio"
@@ -583,8 +593,10 @@ export default function OrderBuilder({
                           required
                         />
                         <span>
-                          <strong>{point.value}</strong>
-                          <small>{point.label}</small>
+                          <strong>{point.title}</strong>
+                          {point.description ? (
+                            <small>{point.description}</small>
+                          ) : null}
                         </span>
                       </label>
                     ))}
@@ -608,14 +620,33 @@ export default function OrderBuilder({
                   <FieldError field="requestedDate" errors={fieldErrors} />
                 </label>
                 <label>
-                  Orario preferito <span className="optional-label">(facoltativo)</span>
-                  <input
-                    type="time"
-                    value={requestedTime}
-                    onChange={(event) => setRequestedTime(event.target.value)}
-                    aria-invalid={Boolean(fieldErrors.requestedTime)}
-                    aria-describedby={fieldErrors.requestedTime ? "requestedTime-error" : undefined}
-                  />
+                  {fulfillmentType === "delivery" ? (
+                    <>Orario consegna <span aria-hidden="true">*</span></>
+                  ) : (
+                    <>Orario preferito <span className="optional-label">(facoltativo)</span></>
+                  )}
+                  {fulfillmentType === "delivery" ? (
+                    <select
+                      value={requestedTime}
+                      onChange={(event) => setRequestedTime(event.target.value)}
+                      required
+                      aria-invalid={Boolean(fieldErrors.requestedTime)}
+                      aria-describedby={fieldErrors.requestedTime ? "requestedTime-error" : undefined}
+                    >
+                      <option value="">Seleziona un orario</option>
+                      {deliveryTimeSlots.map((slot) => (
+                        <option key={slot} value={slot}>{slot}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="time"
+                      value={requestedTime}
+                      onChange={(event) => setRequestedTime(event.target.value)}
+                      aria-invalid={Boolean(fieldErrors.requestedTime)}
+                      aria-describedby={fieldErrors.requestedTime ? "requestedTime-error" : undefined}
+                    />
+                  )}
                   <FieldError field="requestedTime" errors={fieldErrors} />
                 </label>
                 <label className="order-field-wide">
@@ -680,11 +711,17 @@ export default function OrderBuilder({
               {fulfillmentType === "delivery" && deliveryPoint && (
                 <div className="order-delivery-summary">
                   <p>
-                    <strong>Punto di consegna:</strong> Piano terra — Settore {deliveryPoint}
+                    <strong>Punto di consegna:</strong>{" "}
+                    {getDeliveryPointLabel(deliveryPoint)}
                   </p>
                   <p>
                     <strong>Consegna:</strong> Gratuita
                   </p>
+                  {requestedTime ? (
+                    <p>
+                      <strong>Orario consegna:</strong> {requestedTime}
+                    </p>
+                  ) : null}
                 </div>
               )}
               <p className="order-total-note">

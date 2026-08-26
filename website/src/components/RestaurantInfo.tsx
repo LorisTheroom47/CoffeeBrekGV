@@ -24,9 +24,15 @@ export default function RestaurantInfo() {
             <div>
               <dt>Telefono</dt>
               <dd>
-                <a href="tel:+3903922339799">039 223 39799</a>
+                <a href="tel:+390392339799">039 233 9799</a>
                 <br />
                 <a href="tel:+393480629825">348 062 9825</a>
+              </dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd>
+                <a href="mailto:ristogivi@gmail.com">ristogivi@gmail.com</a>
               </dd>
             </div>
             <div>
@@ -35,7 +41,7 @@ export default function RestaurantInfo() {
             </div>
             <div>
               <dt>Ordini</dt>
-              <dd>Entro le 10:00</dd>
+              <dd><strong>ORDINA ENTRO LE 10:00</strong></dd>
             </div>
           </dl>
           <a

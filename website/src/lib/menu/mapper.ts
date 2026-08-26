@@ -19,6 +19,7 @@ export type RawMenuItem = {
   description: string | null;
   price: number | string;
   available: boolean;
+  orderable: boolean;
   display_order: number;
   image_url: string | null;
 };
@@ -94,6 +95,7 @@ function mapMenuItem(
     description: item.description,
     price: mapPrice(item.price, item.name),
     available: item.available,
+    orderable: item.orderable,
     displayOrder: item.display_order,
     imageUrl: getMenuImagePublicUrl(item.image_url),
     allergens: allergensByMenuItem.get(item.id) ?? [],

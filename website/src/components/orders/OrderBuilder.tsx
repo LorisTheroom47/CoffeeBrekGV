@@ -33,6 +33,17 @@ type OrderBuilderProps = {
 
 type FulfillmentType = "delivery" | "pickup";
 
+const selectableOrderCategoryNames = [
+  "Primi",
+  "Secondi",
+  "Insalate",
+  "Panini",
+  "Piadine",
+  "Bevande",
+  "Brioches di pasticceria",
+  "Prodotti senza glutine",
+] as const;
+
 const turnstileRequiredMessage =
   "Completa la verifica di sicurezza prima di inviare l’ordine.";
 const turnstileUnavailableMessage =
@@ -95,6 +106,7 @@ export default function OrderBuilder({
   );
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [itemNotes, setItemNotes] = useState<Record<string, string>>({});
+  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const [fulfillmentType, setFulfillmentType] =
     useState<FulfillmentType>("delivery");
   const [customerName, setCustomerName] = useState("");
@@ -129,6 +141,20 @@ export default function OrderBuilder({
     () => categories.flatMap((category) => category.items),
     [categories],
   );
+  const selectableCategories = useMemo(
+    () =>
+      selectableOrderCategoryNames.flatMap((categoryName) => {
+        const category = categories.find(
+          (candidate) => candidate.name === categoryName,
+        );
+        return category ? [category] : [];
+      }),
+    [categories],
+  );
+  const visibleCategories =
+    selectedCategoryId === "all"
+      ? categories
+      : categories.filter((category) => category.id === selectedCategoryId);
   const selectedItems = allItems.filter(
     (item) => (quantities[item.id] ?? 0) > 0,
   );
@@ -440,7 +466,32 @@ export default function OrderBuilder({
                 <span>{selectedItems.length} selezionati</span>
               </div>
 
-              {categories.map((category) => (
+              <nav
+                aria-label="Filtra i piatti per categoria"
+                className="order-category-filters"
+              >
+                <button
+                  aria-pressed={selectedCategoryId === "all"}
+                  className="order-category-filter"
+                  onClick={() => setSelectedCategoryId("all")}
+                  type="button"
+                >
+                  Tutti
+                </button>
+                {selectableCategories.map((category) => (
+                  <button
+                    aria-pressed={selectedCategoryId === category.id}
+                    className="order-category-filter"
+                    key={category.id}
+                    onClick={() => setSelectedCategoryId(category.id)}
+                    type="button"
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </nav>
+
+              {visibleCategories.map((category) => (
                 <section className="order-category" key={category.id}>
                   <h3>{category.name}</h3>
                   <div className="order-dish-list">

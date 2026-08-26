@@ -37,7 +37,7 @@ export async function getMenuCategories(): Promise<MenuCategory[]> {
       supabase
         .from("menu_items")
         .select(
-          "id, category_id, name, description, price, available, display_order, image_url",
+          "id, category_id, name, description, price, available, orderable, display_order, image_url",
         )
         .order("display_order", { ascending: true })
         .order("name", { ascending: true }),
@@ -104,7 +104,9 @@ export async function getMenuItemForEdit(
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("menu_items")
-      .select("id, category_id, name, description, price, available, image_url")
+      .select(
+        "id, category_id, name, description, price, available, orderable, image_url",
+      )
       .eq("id", id)
       .maybeSingle();
 
@@ -123,6 +125,7 @@ export async function getMenuItemForEdit(
       description: data.description,
       price: data.price,
       available: data.available,
+      orderable: data.orderable,
       imageUrl: data.image_url,
     } as MenuItemEditData;
   } catch {

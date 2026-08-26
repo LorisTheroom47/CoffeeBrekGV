@@ -147,6 +147,7 @@ export async function updateMenuItemAction(
         category_id: category.id,
         price: parsedPrice,
         available: values.available === "true",
+        orderable: values.orderable === "true",
       })
       .eq("id", menuItemId)
       .select("id")

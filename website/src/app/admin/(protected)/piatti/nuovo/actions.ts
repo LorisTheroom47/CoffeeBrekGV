@@ -126,6 +126,7 @@ export async function createMenuItemAction(
         description: values.description.length > 0 ? values.description : null,
         price: parsedPrice,
         available: values.available === "true",
+        orderable: values.orderable === "true",
         display_order: displayOrder,
       })
       .select("id")

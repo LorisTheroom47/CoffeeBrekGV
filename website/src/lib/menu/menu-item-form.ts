@@ -4,12 +4,18 @@ export type MenuItemFormValues = Readonly<{
   categoryId: string;
   price: string;
   available: string;
+  orderable: string;
   allergenIds: string[];
 }>;
 
 export type MenuItemFormErrors = Partial<
   Record<
-    "name" | "categoryId" | "price" | "available" | "allergenIds",
+    | "name"
+    | "categoryId"
+    | "price"
+    | "available"
+    | "orderable"
+    | "allergenIds",
     string
   >
 >;
@@ -63,6 +69,7 @@ export function getMenuItemFormInput(
   allergenIdsValid: boolean;
 }> {
   const available = getTextValue(formData, "available");
+  const orderable = getTextValue(formData, "orderable");
   const rawAllergenIds = formData.getAll("allergenIds");
   const stringAllergenIds = rawAllergenIds.filter(
     (value): value is string => typeof value === "string",
@@ -77,6 +84,8 @@ export function getMenuItemFormInput(
       price: getTextValue(formData, "price").trim(),
       available:
         available === "true" || available === "false" ? available : "",
+      orderable:
+        orderable === "true" || orderable === "false" ? orderable : "",
       allergenIds,
     },
     allergenIdsValid:
@@ -106,6 +115,10 @@ export function validateMenuItemFormValues(
 
   if (values.available !== "true" && values.available !== "false") {
     errors.available = "Seleziona uno stato di disponibilità valido.";
+  }
+
+  if (values.orderable !== "true" && values.orderable !== "false") {
+    errors.orderable = "Seleziona se il piatto è ordinabile online.";
   }
 
   if (!allergenIdsValid || values.allergenIds.some((id) => !isValidUuid(id))) {

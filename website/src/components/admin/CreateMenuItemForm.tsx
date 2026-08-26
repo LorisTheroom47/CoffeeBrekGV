@@ -13,6 +13,7 @@ const initialValues = {
   categoryId: "",
   price: "",
   available: "true",
+  orderable: "true",
   allergenIds: [],
 };
 

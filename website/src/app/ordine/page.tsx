@@ -38,7 +38,7 @@ export default async function OrderPage() {
         id: category.id,
         name: category.name,
         items: category.items
-          .filter((item) => item.available)
+          .filter((item) => item.available && item.orderable)
           .map((item) => ({
             id: item.id,
             name: item.name,

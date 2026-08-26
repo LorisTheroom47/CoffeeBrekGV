@@ -38,13 +38,14 @@ export default function AdminMenuTable({ categories }: AdminMenuTableProps) {
             <th scope="col">Categoria</th>
             <th scope="col">Prezzo</th>
             <th scope="col">Disponibilità</th>
+            <th scope="col">Ordini online</th>
             <th scope="col">Azioni</th>
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td className="admin-table-empty" colSpan={5}>
+              <td className="admin-table-empty" colSpan={6}>
                 Nessun piatto presente nel menu.
               </td>
             </tr>
@@ -63,6 +64,17 @@ export default function AdminMenuTable({ categories }: AdminMenuTableProps) {
                     }`}
                   >
                     {item.available ? "Disponibile" : "Terminato"}
+                  </span>
+                </td>
+                <td data-label="Ordini online">
+                  <span
+                    className={`admin-status ${
+                      item.orderable
+                        ? "admin-status-available"
+                        : "admin-status-unavailable"
+                    }`}
+                  >
+                    {item.orderable ? "Ordinabile" : "Non ordinabile"}
                   </span>
                 </td>
                 <td data-label="Azioni">

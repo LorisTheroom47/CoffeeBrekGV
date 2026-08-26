@@ -10,6 +10,7 @@ export type MenuItem = {
   description: string | null;
   price: number;
   available: boolean;
+  orderable: boolean;
   displayOrder: number;
   imageUrl: string | null;
   allergens: MenuItemAllergen[];
@@ -55,5 +56,6 @@ export type MenuItemEditData = {
   description: string | null;
   price: number | string;
   available: boolean;
+  orderable: boolean;
   imageUrl: string | null;
 };

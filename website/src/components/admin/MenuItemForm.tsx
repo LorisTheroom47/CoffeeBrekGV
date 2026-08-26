@@ -157,6 +157,35 @@ export default function MenuItemForm({
           ) : null}
         </div>
 
+        <div className="admin-form-field admin-form-field-full">
+          <label htmlFor="menu-item-orderable">Ordinabile online</label>
+          <select
+            aria-describedby={
+              state.errors.orderable
+                ? "menu-item-orderable-error"
+                : "menu-item-orderable-hint"
+            }
+            aria-invalid={Boolean(state.errors.orderable)}
+            defaultValue={state.values.orderable}
+            disabled={isPending}
+            id="menu-item-orderable"
+            name="orderable"
+            required
+          >
+            <option value="true">Ordinabile</option>
+            <option value="false">Non ordinabile</option>
+          </select>
+          {state.errors.orderable ? (
+            <p className="admin-form-field-error" id="menu-item-orderable-error">
+              {state.errors.orderable}
+            </p>
+          ) : (
+            <p className="admin-form-hint" id="menu-item-orderable-hint">
+              Il piatto resta visibile nel menu anche quando non è ordinabile.
+            </p>
+          )}
+        </div>
+
         <fieldset
           aria-describedby={
             state.errors.allergenIds ? "menu-item-allergens-error" : undefined

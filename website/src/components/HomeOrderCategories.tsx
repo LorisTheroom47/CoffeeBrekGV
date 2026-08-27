@@ -62,7 +62,7 @@ function CategoryIllustration({ slug }: { slug: OrderCategorySlug }) {
           <path d="M29 43c6 6 13 9 19 9s13-3 19-9M38 28l10 24 10-24M27 61c14-7 28-7 42 0" />
         </svg>
       );
-    case "prodotti-senza-glutine":
+    case "senzaglutine":
       return (
         <svg {...commonProps}>
           <path d="M48 79V21M48 38c-14 0-20-8-20-16 12 0 20 5 20 16ZM48 52c14 0 20-8 20-16-12 0-20 5-20 16ZM48 65c-14 0-20-8-20-16 12 0 20 5 20 16Z" />

@@ -11,7 +11,7 @@ export const orderCategoryFilters = [
   },
   {
     name: "Prodotti senza glutine",
-    slug: "prodotti-senza-glutine",
+    slug: "senzaglutine",
   },
 ] as const;
 

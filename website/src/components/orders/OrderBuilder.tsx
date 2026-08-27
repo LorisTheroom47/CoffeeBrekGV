@@ -720,7 +720,7 @@ export default function OrderBuilder({
           </div>
 
           <aside className="order-cart" aria-labelledby="cart-title">
-            <div className="order-card order-cart-card">
+            <div className="order-card order-cart-card" id="order-checkout">
               <p className="eyebrow">Il tuo ordine</p>
               <h2 id="cart-title">Riepilogo</h2>
 
@@ -836,6 +836,13 @@ export default function OrderBuilder({
             </div>
           </aside>
         </div>
+        {selectedItems.length > 0 ? (
+          <a className="order-mobile-cart-shortcut" href="#order-checkout">
+            <span>{selectedItems.length} nel carrello</span>
+            <strong>{moneyFormatter.format(indicativeTotal)}</strong>
+            <span>Riepilogo</span>
+          </a>
+        ) : null}
       </fieldset>
     </form>
   );

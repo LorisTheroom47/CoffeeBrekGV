@@ -27,22 +27,24 @@ export default function Header() {
           </Link>
         </nav>
 
-        <details className="mobile-navigation">
-          <summary>
-            <span>Menu</span>
-            <span className="menu-icon" aria-hidden="true" />
-          </summary>
-          <nav aria-label="Navigazione mobile">
-            {navigation.map((item) => (
-              <Link key={item.href} href={item.href}>
-                {item.label}
-              </Link>
-            ))}
-            <Link className="button button-primary" href="/ordine">
-              Ordina
-            </Link>
-          </nav>
-        </details>
+        <div className="mobile-header-actions">
+          <Link className="button button-primary mobile-header-order" href="/ordine">
+            Ordina
+          </Link>
+          <details className="mobile-navigation">
+            <summary>
+              <span>Menu</span>
+              <span className="menu-icon" aria-hidden="true" />
+            </summary>
+            <nav aria-label="Navigazione mobile">
+              {navigation.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </details>
+        </div>
       </div>
     </header>
   );

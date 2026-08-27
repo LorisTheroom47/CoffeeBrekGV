@@ -3,6 +3,7 @@ import DailyMenu from "@/components/DailyMenu";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import HomeOrderCategories from "@/components/HomeOrderCategories";
 import HomePromo from "@/components/HomePromo";
 import MenuUnavailable from "@/components/menu/MenuUnavailable";
 import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
@@ -31,6 +32,7 @@ export default async function Home() {
             <OrderDeadlineNotice />
           </div>
         </div>
+        <HomeOrderCategories />
         <HomePromo />
         {categories ? (
           <DailyMenu categories={categories} />

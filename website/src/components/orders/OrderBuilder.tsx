@@ -25,24 +25,18 @@ import {
   isDeliveryTimeSlot,
   type DeliveryPoint,
 } from "@/lib/orders/delivery";
+import {
+  orderCategoryFilters,
+  type OrderCategorySlug,
+} from "@/lib/orders/categories";
 
 type OrderBuilderProps = {
   categories: OrderMenuCategory[];
+  initialCategorySlug: OrderCategorySlug | "all";
   minimumDate: string;
 };
 
 type FulfillmentType = "delivery" | "pickup";
-
-const selectableOrderCategoryNames = [
-  "Primi",
-  "Secondi",
-  "Insalate",
-  "Panini",
-  "Piadine",
-  "Bevande",
-  "Brioches di pasticceria",
-  "Prodotti senza glutine",
-] as const;
 
 const turnstileRequiredMessage =
   "Completa la verifica di sicurezza prima di inviare l’ordine.";
@@ -99,6 +93,7 @@ function FieldError({
 
 export default function OrderBuilder({
   categories,
+  initialCategorySlug,
   minimumDate,
 }: OrderBuilderProps) {
   const turnstileConfigured = Boolean(
@@ -106,7 +101,9 @@ export default function OrderBuilder({
   );
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [itemNotes, setItemNotes] = useState<Record<string, string>>({});
-  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState<
+    OrderCategorySlug | "all"
+  >(initialCategorySlug);
   const [fulfillmentType, setFulfillmentType] =
     useState<FulfillmentType>("delivery");
   const [customerName, setCustomerName] = useState("");
@@ -137,24 +134,28 @@ export default function OrderBuilder({
     if (confirmation) confirmationRef.current?.focus();
   }, [confirmation]);
 
+  useEffect(() => {
+    setSelectedCategorySlug(initialCategorySlug);
+  }, [initialCategorySlug]);
+
   const allItems = useMemo(
     () => categories.flatMap((category) => category.items),
     [categories],
   );
   const selectableCategories = useMemo(
     () =>
-      selectableOrderCategoryNames.flatMap((categoryName) => {
+      orderCategoryFilters.flatMap((filter) => {
         const category = categories.find(
-          (candidate) => candidate.name === categoryName,
+          (candidate) => candidate.slug === filter.slug,
         );
         return category ? [category] : [];
       }),
     [categories],
   );
   const visibleCategories =
-    selectedCategoryId === "all"
+    selectedCategorySlug === "all"
       ? categories
-      : categories.filter((category) => category.id === selectedCategoryId);
+      : categories.filter((category) => category.slug === selectedCategorySlug);
   const selectedItems = allItems.filter(
     (item) => (quantities[item.id] ?? 0) > 0,
   );
@@ -471,19 +472,21 @@ export default function OrderBuilder({
                 className="order-category-filters"
               >
                 <button
-                  aria-pressed={selectedCategoryId === "all"}
+                  aria-pressed={selectedCategorySlug === "all"}
                   className="order-category-filter"
-                  onClick={() => setSelectedCategoryId("all")}
+                  onClick={() => setSelectedCategorySlug("all")}
                   type="button"
                 >
                   Tutti
                 </button>
                 {selectableCategories.map((category) => (
                   <button
-                    aria-pressed={selectedCategoryId === category.id}
+                    aria-pressed={selectedCategorySlug === category.slug}
                     className="order-category-filter"
                     key={category.id}
-                    onClick={() => setSelectedCategoryId(category.id)}
+                    onClick={() =>
+                      setSelectedCategorySlug(category.slug as OrderCategorySlug)
+                    }
                     type="button"
                   >
                     {category.name}

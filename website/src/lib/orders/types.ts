@@ -16,6 +16,7 @@ export type OrderMenuItem = {
 export type OrderMenuCategory = {
   id: string;
   name: string;
+  slug: string;
   items: OrderMenuItem[];
 };
 

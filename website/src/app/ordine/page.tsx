@@ -6,6 +6,10 @@ import OrderBuilder from "@/components/orders/OrderBuilder";
 import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
 import { getMenuCategories } from "@/lib/menu";
 import type { OrderMenuCategory } from "@/lib/orders";
+import {
+  isOrderCategorySlug,
+  type OrderCategorySlug,
+} from "@/lib/orders/categories";
 
 export const metadata: Metadata = {
   title: "Ordina | Coffee Break GV",
@@ -27,8 +31,17 @@ function getTodayInRome(): string {
   return `${values.get("year")}-${values.get("month")}-${values.get("day")}`;
 }
 
-export default async function OrderPage() {
+type OrderPageProps = Readonly<{
+  searchParams: Promise<{ categoria?: string | string[] }>;
+}>;
+
+export default async function OrderPage({ searchParams }: OrderPageProps) {
+  const query = await searchParams;
+  const requestedCategory = Array.isArray(query.categoria)
+    ? query.categoria[0]
+    : query.categoria;
   let categories: OrderMenuCategory[] | null = null;
+  let initialCategorySlug: OrderCategorySlug | "all" = "all";
 
   try {
     const menuCategories = await getMenuCategories();
@@ -37,6 +50,7 @@ export default async function OrderPage() {
       .map((category) => ({
         id: category.id,
         name: category.name,
+        slug: category.slug,
         items: category.items
           .filter((item) => item.available && item.orderable)
           .map((item) => ({
@@ -47,6 +61,13 @@ export default async function OrderPage() {
           })),
       }))
       .filter((category) => category.items.length > 0);
+
+    if (
+      isOrderCategorySlug(requestedCategory) &&
+      categories.some((category) => category.slug === requestedCategory)
+    ) {
+      initialCategorySlug = requestedCategory;
+    }
   } catch {
     categories = null;
   }
@@ -96,6 +117,7 @@ export default async function OrderPage() {
             ) : (
               <OrderBuilder
                 categories={categories}
+                initialCategorySlug={initialCategorySlug}
                 minimumDate={getTodayInRome()}
               />
             )}

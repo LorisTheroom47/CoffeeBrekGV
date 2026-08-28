@@ -14,9 +14,9 @@ const services = [
     icon: "bag",
   },
   {
-    title: "Consegna in ospedale",
+    title: "Consegne in ospedale",
     description:
-      "Ricevi il tuo pranzo al piano terra, nei settori A, B o C dell’ospedale.",
+      "A · B · C · Pronto Soccorso · Maria Letizia Verga",
     icon: "delivery",
     href: "/ordine",
   },

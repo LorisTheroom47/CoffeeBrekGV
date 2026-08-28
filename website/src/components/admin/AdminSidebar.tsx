@@ -9,6 +9,7 @@ const navigationItems = [
   { label: "Menu del giorno", href: "/admin#menu-giorno" },
   { label: "Ordini", href: "/admin/ordini" },
   { label: "Categorie", href: "/admin/categorie" },
+  { label: "Extra", href: "/admin/extra" },
   { label: "Anteprima TV", href: "/admin#anteprima-tv" },
   { label: "Impostazioni", href: "/admin#impostazioni" },
 ];

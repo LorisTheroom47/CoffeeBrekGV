@@ -148,6 +148,7 @@ export async function updateMenuItemAction(
         price: parsedPrice,
         available: values.available === "true",
         orderable: values.orderable === "true",
+        customizable: values.customizable === "true",
       })
       .eq("id", menuItemId)
       .select("id")

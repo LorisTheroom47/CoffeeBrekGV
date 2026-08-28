@@ -1,11 +1,14 @@
 export {
   getAdminCategories,
+  getAdminMenuItemExtras,
   getAllergenOptions,
+  getAvailableMenuItemExtras,
   getCategoryForEdit,
   getMenuCategories,
   getMenuCategoryOptions,
   getMenuItemAllergenIds,
   getMenuItemForEdit,
+  getMenuItemExtraForEdit,
 } from "./queries";
 export type {
   AdminCategory,
@@ -16,4 +19,8 @@ export type {
   MenuItem,
   MenuItemAllergen,
   MenuItemEditData,
+  MenuItemExtra,
+  MenuItemExtraEditData,
+  MenuItemExtraGroup,
+  MenuItemExtraScope,
 } from "./types";

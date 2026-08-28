@@ -46,6 +46,13 @@ function normalizeOptionalString(
   return normalized.length <= maximumLength ? normalized : undefined;
 }
 
+function normalizeOptionalUuid(value: unknown): string | null | undefined {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim().toLowerCase();
+  return uuidPattern.test(normalized) ? normalized : undefined;
+}
+
 function isRealDate(value: string): boolean {
   const match = datePattern.exec(value);
 
@@ -225,7 +232,7 @@ export function validateCreateOrderInput(
   ) {
     fieldErrors.items = "Controlla i piatti e le quantità.";
   } else {
-    const menuItemIds = new Set<string>();
+    const configurationKeys = new Set<string>();
 
     for (const rawItem of rawInput.items) {
       if (!isRecord(rawItem)) {
@@ -239,6 +246,15 @@ export function validateCreateOrderInput(
           : "";
       const quantity = rawItem.quantity;
       const itemNotes = normalizeOptionalString(rawItem.customerNotes, 500);
+      const cheeseExtraId = normalizeOptionalUuid(rawItem.cheeseExtraId);
+      const vegetableExtraId = normalizeOptionalUuid(rawItem.vegetableExtraId);
+      const sauceExtraId = normalizeOptionalUuid(rawItem.sauceExtraId);
+      const configurationKey = [
+        menuItemId.toLowerCase(),
+        cheeseExtraId ?? "",
+        vegetableExtraId ?? "",
+        sauceExtraId ?? "",
+      ].join("|");
 
       if (
         !uuidPattern.test(menuItemId) ||
@@ -247,17 +263,23 @@ export function validateCreateOrderInput(
         quantity < 1 ||
         quantity > 99 ||
         itemNotes === undefined ||
-        menuItemIds.has(menuItemId.toLowerCase())
+        cheeseExtraId === undefined ||
+        vegetableExtraId === undefined ||
+        sauceExtraId === undefined ||
+        configurationKeys.has(configurationKey)
       ) {
         fieldErrors.items = "Controlla i piatti e le quantità.";
         break;
       }
 
-      menuItemIds.add(menuItemId.toLowerCase());
+      configurationKeys.add(configurationKey);
       items.push({
         menuItemId,
         quantity,
         customerNotes: itemNotes,
+        cheeseExtraId,
+        vegetableExtraId,
+        sauceExtraId,
       });
     }
   }

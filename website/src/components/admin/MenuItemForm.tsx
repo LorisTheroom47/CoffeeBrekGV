@@ -186,6 +186,35 @@ export default function MenuItemForm({
           )}
         </div>
 
+        <div className="admin-form-field admin-form-field-full">
+          <label htmlFor="menu-item-customizable">Personalizzabile</label>
+          <select
+            aria-describedby={
+              state.errors.customizable
+                ? "menu-item-customizable-error"
+                : "menu-item-customizable-hint"
+            }
+            aria-invalid={Boolean(state.errors.customizable)}
+            defaultValue={state.values.customizable}
+            disabled={isPending}
+            id="menu-item-customizable"
+            name="customizable"
+            required
+          >
+            <option value="false">Non personalizzabile</option>
+            <option value="true">Personalizzabile</option>
+          </select>
+          {state.errors.customizable ? (
+            <p className="admin-form-field-error" id="menu-item-customizable-error">
+              {state.errors.customizable}
+            </p>
+          ) : (
+            <p className="admin-form-hint" id="menu-item-customizable-hint">
+              Abilita gli extra configurati per Panini e Piadine.
+            </p>
+          )}
+        </div>
+
         <fieldset
           aria-describedby={
             state.errors.allergenIds ? "menu-item-allergens-error" : undefined

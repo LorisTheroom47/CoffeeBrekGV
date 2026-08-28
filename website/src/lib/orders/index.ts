@@ -6,6 +6,7 @@ export type {
   CreateOrderResult,
   OrderItemInput,
   OrderMenuCategory,
+  OrderMenuExtra,
   OrderMenuItem,
   ValidatedCreateOrderInput,
 } from "./types";

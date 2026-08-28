@@ -14,6 +14,7 @@ const initialValues = {
   price: "",
   available: "true",
   orderable: "true",
+  customizable: "false",
   allergenIds: [],
 };
 

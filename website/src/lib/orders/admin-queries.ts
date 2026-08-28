@@ -46,9 +46,18 @@ type RawAdminOrderItemDetail = {
   id: string;
   item_name: string;
   unit_price: string | number | null;
+  extras_unit_price: string | number | null;
   quantity: number;
   line_total: string | number | null;
   customer_notes: string | null;
+};
+
+type RawAdminOrderItemExtra = {
+  id: string;
+  order_item_id: string;
+  extra_name: string;
+  group_code: "FORMAGGIO" | "VERDURA" | "SALSA";
+  extra_unit_price: string | number | null;
 };
 
 export type AdminOrderDetailResult =
@@ -135,7 +144,7 @@ export async function getAdminOrderDetail(
   const { data: itemsData, error: itemsError } = await supabase
     .from("order_items")
     .select(
-      "id, item_name, unit_price, quantity, line_total, customer_notes, created_at",
+      "id, item_name, unit_price, extras_unit_price, quantity, line_total, customer_notes, created_at",
     )
     .eq("order_id", id)
     .order("created_at", { ascending: true })
@@ -143,6 +152,28 @@ export async function getAdminOrderDetail(
     .order("id", { ascending: true });
 
   if (itemsError) return { status: "error" };
+
+  const itemIds = (itemsData ?? []).map((item) => item.id);
+  let extrasData: RawAdminOrderItemExtra[] = [];
+
+  if (itemIds.length > 0) {
+    const { data, error } = await supabase
+      .from("order_item_extras")
+      .select("id, order_item_id, extra_name, group_code, extra_unit_price")
+      .in("order_item_id", itemIds)
+      .order("group_code", { ascending: true })
+      .order("created_at", { ascending: true });
+
+    if (error) return { status: "error" };
+    extrasData = (data ?? []) as RawAdminOrderItemExtra[];
+  }
+
+  const extrasByItem = new Map<string, RawAdminOrderItemExtra[]>();
+  for (const extra of extrasData) {
+    const itemExtras = extrasByItem.get(extra.order_item_id) ?? [];
+    itemExtras.push(extra);
+    extrasByItem.set(extra.order_item_id, itemExtras);
+  }
 
   const rawOrder = orderData as RawAdminOrderDetail;
   const order: AdminOrderDetail = {
@@ -171,9 +202,16 @@ export async function getAdminOrderDetail(
       id: item.id,
       itemName: item.item_name,
       unitPrice: item.unit_price,
+      extrasUnitPrice: item.extras_unit_price,
       quantity: item.quantity,
       lineTotal: item.line_total,
       customerNotes: optionalText(item.customer_notes),
+      extras: (extrasByItem.get(item.id) ?? []).map((extra) => ({
+        id: extra.id,
+        name: extra.extra_name,
+        groupCode: extra.group_code,
+        unitPrice: extra.extra_unit_price,
+      })),
     }),
   );
 

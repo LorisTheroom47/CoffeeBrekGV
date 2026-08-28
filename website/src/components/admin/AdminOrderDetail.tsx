@@ -32,6 +32,11 @@ export default function AdminOrderDetail({
     order.deliveryAddress || order.deliveryCity || order.deliveryPostalCode,
   );
   const hasNotes = Boolean(order.customerNotes || order.adminNotes);
+  const extraGroupLabels = {
+    FORMAGGIO: "Formaggio",
+    VERDURA: "Verdura",
+    SALSA: "Salsa",
+  } as const;
 
   return (
     <div className="admin-order-detail">
@@ -130,13 +135,28 @@ export default function AdminOrderDetail({
           <p>{items.length} {items.length === 1 ? "riga" : "righe"}</p>
         </div>
         <table className="admin-menu-table admin-order-items-table">
-          <thead><tr><th scope="col">Piatto</th><th scope="col">Quantità</th><th scope="col">Prezzo unitario</th><th scope="col">Totale riga</th><th scope="col">Nota</th></tr></thead>
+          <thead><tr><th scope="col">Piatto ed extra</th><th scope="col">Quantità</th><th scope="col">Prezzo base</th><th scope="col">Sovrapprezzo extra</th><th scope="col">Totale riga</th><th scope="col">Nota</th></tr></thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id}>
-                <td data-label="Piatto">{item.itemName}</td>
+                <td data-label="Piatto ed extra">
+                  <strong>{item.itemName}</strong>
+                  {item.extras.length > 0 && (
+                    <ul className="admin-order-item-extras">
+                      {item.extras.map((extra) => (
+                        <li key={extra.id}>
+                          {extraGroupLabels[extra.groupCode]}: {extra.name}
+                          {Number(extra.unitPrice) > 0
+                            ? ` (+${formatAdminOrderTotal(extra.unitPrice)})`
+                            : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </td>
                 <td data-label="Quantità">{item.quantity}</td>
-                <td data-label="Prezzo unitario">{formatAdminOrderTotal(item.unitPrice)}</td>
+                <td data-label="Prezzo base">{formatAdminOrderTotal(item.unitPrice)}</td>
+                <td data-label="Sovrapprezzo extra">{formatAdminOrderTotal(item.extrasUnitPrice)}</td>
                 <td data-label="Totale riga">{formatAdminOrderTotal(item.lineTotal)}</td>
                 <td data-label="Nota">{item.customerNotes ?? "—"}</td>
               </tr>

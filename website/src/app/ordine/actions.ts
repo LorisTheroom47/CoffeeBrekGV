@@ -196,9 +196,22 @@ function createRequestFingerprint(
         menuItemId: item.menuItemId.toLowerCase(),
         quantity: item.quantity,
         customerNotes: item.customerNotes,
+        cheeseExtraId: item.cheeseExtraId,
+        vegetableExtraId: item.vegetableExtraId,
+        sauceExtraId: item.sauceExtraId,
       }))
-      .sort((first, second) =>
-        first.menuItemId.localeCompare(second.menuItemId),
+      .sort(
+        (first, second) =>
+          first.menuItemId.localeCompare(second.menuItemId) ||
+          (first.cheeseExtraId ?? "").localeCompare(
+            second.cheeseExtraId ?? "",
+          ) ||
+          (first.vegetableExtraId ?? "").localeCompare(
+            second.vegetableExtraId ?? "",
+          ) ||
+          (first.sauceExtraId ?? "").localeCompare(
+            second.sauceExtraId ?? "",
+          ),
       ),
   };
 
@@ -248,6 +261,9 @@ export async function createPublicOrderAction(
       menu_item_id: item.menuItemId,
       quantity: item.quantity,
       customer_notes: item.customerNotes,
+      cheese_extra_id: item.cheeseExtraId,
+      vegetable_extra_id: item.vegetableExtraId,
+      sauce_extra_id: item.sauceExtraId,
     })),
     p_customer_email: values.customerEmail,
     p_delivery_point: values.deliveryPoint,

@@ -42,9 +42,18 @@ export type AdminOrderItemDetail = {
   id: string;
   itemName: string;
   unitPrice: string | number | null;
+  extrasUnitPrice: string | number | null;
   quantity: number;
   lineTotal: string | number | null;
   customerNotes: string | null;
+  extras: AdminOrderItemExtraDetail[];
+};
+
+export type AdminOrderItemExtraDetail = {
+  id: string;
+  name: string;
+  groupCode: "FORMAGGIO" | "VERDURA" | "SALSA";
+  unitPrice: string | number | null;
 };
 
 export type AdminOrderStatusPresentation = {

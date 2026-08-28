@@ -11,6 +11,7 @@ export type MenuItem = {
   price: number;
   available: boolean;
   orderable: boolean;
+  customizable: boolean;
   displayOrder: number;
   imageUrl: string | null;
   allergens: MenuItemAllergen[];
@@ -57,5 +58,22 @@ export type MenuItemEditData = {
   price: number | string;
   available: boolean;
   orderable: boolean;
+  customizable: boolean;
   imageUrl: string | null;
 };
+
+export type MenuItemExtraGroup = "FORMAGGIO" | "VERDURA" | "SALSA";
+
+export type MenuItemExtraScope = "PANINO" | "PIADINA" | "ENTRAMBI";
+
+export type MenuItemExtra = {
+  id: string;
+  name: string;
+  groupCode: MenuItemExtraGroup;
+  price: number;
+  available: boolean;
+  appliesTo: MenuItemExtraScope;
+  displayOrder: number;
+};
+
+export type MenuItemExtraEditData = MenuItemExtra;

@@ -3185,14 +3185,108 @@ h3 {
 }
 
 .order-dish {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
+  display: block;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-small);
   padding: 1rem;
   transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.order-dish-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.order-customize-trigger {
+  display: grid;
+  justify-items: end;
+  gap: 0.4rem;
+}
+
+.order-customize-trigger > span {
+  color: var(--color-sage-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.order-customizer {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-line);
+  padding-top: 1rem;
+}
+
+.order-customizer-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.order-customizer-heading span,
+.order-customizer-heading strong {
+  display: block;
+}
+
+.order-customizer-heading span {
+  color: var(--color-rust);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.order-extra-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.order-extra-groups fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 0.8rem;
+  padding: 0.65rem;
+}
+
+.order-extra-groups legend {
+  padding-inline: 0.25rem;
+  color: var(--color-coffee-dark);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.order-extra-groups label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.65rem;
+  border-radius: 0.55rem;
+  padding: 0.35rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.order-extra-groups label:has(input:checked) {
+  background: rgba(125, 138, 104, 0.14);
+  color: var(--color-coffee-dark);
+  font-weight: 800;
+}
+
+.order-extra-groups input {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+  accent-color: var(--color-sage-dark);
+}
+
+.order-add-customized {
+  justify-self: end;
 }
 
 .order-dish-selected {
@@ -3494,6 +3588,35 @@ h3 {
   font-size: 0.85rem;
 }
 
+.order-cart-extras {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 0 0.65rem;
+  padding: 0;
+  list-style: none;
+}
+
+.order-cart-list .order-cart-extras li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.order-cart-quantity {
+  width: fit-content;
+  margin: 0 0 0.65rem;
+  grid-template-columns: 2.35rem 2rem 2.35rem;
+}
+
+.order-cart-quantity button {
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
 .order-indicative-total {
   display: flex;
   align-items: baseline;
@@ -3607,6 +3730,43 @@ h3 {
   color: var(--color-text-muted);
 }
 
+.order-confirmation-items {
+  margin: 0 0 1.5rem;
+  border-radius: var(--radius-small);
+  background: var(--color-cream);
+  padding: 1rem;
+  text-align: left;
+}
+
+.order-confirmation-items h3 {
+  margin-bottom: 0.75rem;
+}
+
+.order-confirmation-items ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-confirmation-items li > span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.admin-order-item-extras {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  list-style: none;
+}
+
 .order-confirmation-actions {
   display: flex;
   flex-wrap: wrap;
@@ -3656,6 +3816,38 @@ h3 {
 
   .order-field-wide {
     grid-column: auto;
+  }
+
+  .order-dish-row {
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .order-customize-trigger {
+    flex: 0 0 auto;
+  }
+
+  .order-customize-trigger .button {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .order-extra-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .order-extra-groups fieldset {
+    padding: 0.55rem;
+  }
+
+  .order-extra-groups label {
+    min-height: 2.75rem;
+  }
+
+  .order-add-customized {
+    width: 100%;
+    justify-self: stretch;
   }
 }
 

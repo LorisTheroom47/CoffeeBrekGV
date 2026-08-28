@@ -128,6 +128,7 @@ export default async function EditMenuItemPage({
                 price: formatPriceForInput(item.price),
                 available: item.available ? "true" : "false",
                 orderable: item.orderable ? "true" : "false",
+                customizable: item.customizable ? "true" : "false",
                 allergenIds: selectedAllergenIds,
               }}
               submitLabel="Salva modifiche"

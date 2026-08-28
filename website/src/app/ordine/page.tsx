@@ -4,8 +4,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import OrderBuilder from "@/components/orders/OrderBuilder";
 import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
-import { getMenuCategories } from "@/lib/menu";
-import type { OrderMenuCategory } from "@/lib/orders";
+import {
+  getAvailableMenuItemExtras,
+  getMenuCategories,
+} from "@/lib/menu";
+import type { OrderMenuCategory, OrderMenuExtra } from "@/lib/orders";
 import {
   isOrderCategorySlug,
   type OrderCategorySlug,
@@ -41,12 +44,16 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
     ? query.categoria[0]
     : query.categoria;
   let categories: OrderMenuCategory[] | null = null;
+  let extras: OrderMenuExtra[] | null = null;
   let initialCategorySlug: OrderCategorySlug | "all" = "all";
 
   try {
-    const menuCategories = await getMenuCategories();
+    const [menuCategories, menuExtras] = await Promise.all([
+      getMenuCategories(),
+      getAvailableMenuItemExtras(),
+    ]);
 
-    categories = menuCategories
+    const orderCategories: OrderMenuCategory[] = menuCategories
       .map((category) => ({
         id: category.id,
         name: category.name,
@@ -58,18 +65,29 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
             name: item.name,
             price: item.price,
             allergens: item.allergens.map((allergen) => allergen.name),
+            customizable: item.customizable,
+            customizationScope: (
+              category.slug === "panini"
+                ? "PANINO"
+                : category.slug === "piadine"
+                  ? "PIADINA"
+                  : null
+            ) as "PANINO" | "PIADINA" | null,
           })),
       }))
       .filter((category) => category.items.length > 0);
+    categories = orderCategories;
 
     if (
       isOrderCategorySlug(requestedCategory) &&
-      categories.some((category) => category.slug === requestedCategory)
+      orderCategories.some((category) => category.slug === requestedCategory)
     ) {
       initialCategorySlug = requestedCategory;
     }
+    extras = menuExtras;
   } catch {
     categories = null;
+    extras = null;
   }
 
   return (
@@ -95,7 +113,7 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
               Componi il tuo ordine
             </h2>
 
-            {categories === null ? (
+            {categories === null || extras === null ? (
               <div className="order-message-card" role="status">
                 <h2>Ordini temporaneamente non disponibili</h2>
                 <p>
@@ -117,6 +135,7 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
             ) : (
               <OrderBuilder
                 categories={categories}
+                extras={extras}
                 initialCategorySlug={initialCategorySlug}
                 minimumDate={getTodayInRome()}
               />

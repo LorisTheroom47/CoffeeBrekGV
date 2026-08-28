@@ -5,6 +5,7 @@ export type MenuItemFormValues = Readonly<{
   price: string;
   available: string;
   orderable: string;
+  customizable: string;
   allergenIds: string[];
 }>;
 
@@ -15,6 +16,7 @@ export type MenuItemFormErrors = Partial<
     | "price"
     | "available"
     | "orderable"
+    | "customizable"
     | "allergenIds",
     string
   >
@@ -70,6 +72,7 @@ export function getMenuItemFormInput(
 }> {
   const available = getTextValue(formData, "available");
   const orderable = getTextValue(formData, "orderable");
+  const customizable = getTextValue(formData, "customizable");
   const rawAllergenIds = formData.getAll("allergenIds");
   const stringAllergenIds = rawAllergenIds.filter(
     (value): value is string => typeof value === "string",
@@ -86,6 +89,10 @@ export function getMenuItemFormInput(
         available === "true" || available === "false" ? available : "",
       orderable:
         orderable === "true" || orderable === "false" ? orderable : "",
+      customizable:
+        customizable === "true" || customizable === "false"
+          ? customizable
+          : "",
       allergenIds,
     },
     allergenIdsValid:
@@ -119,6 +126,10 @@ export function validateMenuItemFormValues(
 
   if (values.orderable !== "true" && values.orderable !== "false") {
     errors.orderable = "Seleziona se il piatto è ordinabile online.";
+  }
+
+  if (values.customizable !== "true" && values.customizable !== "false") {
+    errors.customizable = "Seleziona se il piatto è personalizzabile.";
   }
 
   if (!allergenIdsValid || values.allergenIds.some((id) => !isValidUuid(id))) {

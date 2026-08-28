@@ -4,6 +4,17 @@ export type OrderItemInput = {
   menuItemId: string;
   quantity: number;
   customerNotes?: string;
+  cheeseExtraId?: string;
+  vegetableExtraId?: string;
+  sauceExtraId?: string;
+};
+
+export type OrderMenuExtra = {
+  id: string;
+  name: string;
+  groupCode: "FORMAGGIO" | "VERDURA" | "SALSA";
+  price: number;
+  appliesTo: "PANINO" | "PIADINA" | "ENTRAMBI";
 };
 
 export type OrderMenuItem = {
@@ -11,6 +22,8 @@ export type OrderMenuItem = {
   name: string;
   price: number;
   allergens: string[];
+  customizable: boolean;
+  customizationScope: "PANINO" | "PIADINA" | null;
 };
 
 export type OrderMenuCategory = {
@@ -95,5 +108,8 @@ export type ValidatedCreateOrderInput = {
     menuItemId: string;
     quantity: number;
     customerNotes: string | null;
+    cheeseExtraId: string | null;
+    vegetableExtraId: string | null;
+    sauceExtraId: string | null;
   }>;
 };

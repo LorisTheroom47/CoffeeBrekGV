@@ -15,6 +15,8 @@ import type {
   MenuCategory,
   MenuCategoryOption,
   MenuItemEditData,
+  MenuItemExtra,
+  MenuItemExtraEditData,
 } from "./types";
 import { readMenuItemAllergenIds } from "./admin-allergens";
 
@@ -37,7 +39,7 @@ export async function getMenuCategories(): Promise<MenuCategory[]> {
       supabase
         .from("menu_items")
         .select(
-          "id, category_id, name, description, price, available, orderable, display_order, image_url",
+          "id, category_id, name, description, price, available, orderable, customizable, display_order, image_url",
         )
         .order("display_order", { ascending: true })
         .order("name", { ascending: true }),
@@ -105,7 +107,7 @@ export async function getMenuItemForEdit(
     const { data, error } = await supabase
       .from("menu_items")
       .select(
-        "id, category_id, name, description, price, available, orderable, image_url",
+        "id, category_id, name, description, price, available, orderable, customizable, image_url",
       )
       .eq("id", id)
       .maybeSingle();
@@ -126,8 +128,92 @@ export async function getMenuItemForEdit(
       price: data.price,
       available: data.available,
       orderable: data.orderable,
+      customizable: data.customizable,
       imageUrl: data.image_url,
     } as MenuItemEditData;
+  } catch {
+    throw new Error(publicErrorMessage);
+  }
+}
+
+type RawMenuItemExtra = {
+  id: string;
+  name: string;
+  group_code: MenuItemExtra["groupCode"];
+  price: number | string;
+  available: boolean;
+  applies_to: MenuItemExtra["appliesTo"];
+  display_order: number;
+};
+
+function mapMenuItemExtra(extra: RawMenuItemExtra): MenuItemExtra {
+  const price = typeof extra.price === "number" ? extra.price : Number(extra.price);
+
+  if (!Number.isFinite(price)) {
+    throw new Error(publicErrorMessage);
+  }
+
+  return {
+    id: extra.id,
+    name: extra.name,
+    groupCode: extra.group_code,
+    price,
+    available: extra.available,
+    appliesTo: extra.applies_to,
+    displayOrder: extra.display_order,
+  };
+}
+
+export async function getAvailableMenuItemExtras(): Promise<MenuItemExtra[]> {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("menu_item_extras")
+      .select("id, name, group_code, price, available, applies_to, display_order")
+      .eq("available", true)
+      .order("group_code", { ascending: true })
+      .order("display_order", { ascending: true })
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+
+    return ((data ?? []) as RawMenuItemExtra[]).map(mapMenuItemExtra);
+  } catch {
+    throw new Error(publicErrorMessage);
+  }
+}
+
+export async function getAdminMenuItemExtras(): Promise<MenuItemExtra[]> {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("menu_item_extras")
+      .select("id, name, group_code, price, available, applies_to, display_order")
+      .order("group_code", { ascending: true })
+      .order("display_order", { ascending: true })
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+
+    return ((data ?? []) as RawMenuItemExtra[]).map(mapMenuItemExtra);
+  } catch {
+    throw new Error(publicErrorMessage);
+  }
+}
+
+export async function getMenuItemExtraForEdit(
+  id: string,
+): Promise<MenuItemExtraEditData | null> {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("menu_item_extras")
+      .select("id, name, group_code, price, available, applies_to, display_order")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data ? mapMenuItemExtra(data as RawMenuItemExtra) : null;
   } catch {
     throw new Error(publicErrorMessage);
   }

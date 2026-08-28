@@ -20,14 +20,14 @@ export const deliveryPointOptions = [
   {
     value: "PRONTO_SOCCORSO",
     title: "Pronto Soccorso",
-    description: null,
-    label: "Pronto Soccorso",
+    description: "Piano -1, davanti agli ascensori",
+    label: "Pronto Soccorso — Piano -1, davanti agli ascensori",
   },
   {
     value: "PALAZZINA_BLU",
-    title: "Palazzina Blu",
-    description: null,
-    label: "Palazzina Blu",
+    title: "Maria Letizia Verga",
+    description: "Reception",
+    label: "Maria Letizia Verga — Reception",
   },
 ] as const;
 

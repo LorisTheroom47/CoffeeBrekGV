@@ -5,6 +5,7 @@ export type MenuItemExtraFormValues = Readonly<{
   groupCode: string;
   price: string;
   appliesTo: string;
+  appliesToGlutenFree: string;
   available: string;
   displayOrder: string;
 }>;
@@ -45,6 +46,7 @@ export function getMenuItemExtraFormValues(
     groupCode: text(formData, "groupCode"),
     price: text(formData, "price"),
     appliesTo: text(formData, "appliesTo"),
+    appliesToGlutenFree: text(formData, "appliesToGlutenFree"),
     available: text(formData, "available"),
     displayOrder: text(formData, "displayOrder"),
   };
@@ -67,6 +69,14 @@ export function validateMenuItemExtraFormValues(
 
   if (!scopes.includes(values.appliesTo as MenuItemExtraScope)) {
     errors.appliesTo = "Seleziona un ambito valido.";
+  }
+
+  if (
+    values.appliesToGlutenFree !== "true" &&
+    values.appliesToGlutenFree !== "false"
+  ) {
+    errors.appliesToGlutenFree =
+      "Seleziona se l’extra è disponibile per i prodotti senza glutine.";
   }
 
   if (values.available !== "true" && values.available !== "false") {

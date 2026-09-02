@@ -143,6 +143,7 @@ type RawMenuItemExtra = {
   price: number | string;
   available: boolean;
   applies_to: MenuItemExtra["appliesTo"];
+  applies_to_gluten_free: boolean;
   display_order: number;
 };
 
@@ -160,6 +161,7 @@ function mapMenuItemExtra(extra: RawMenuItemExtra): MenuItemExtra {
     price,
     available: extra.available,
     appliesTo: extra.applies_to,
+    appliesToGlutenFree: extra.applies_to_gluten_free,
     displayOrder: extra.display_order,
   };
 }
@@ -169,7 +171,7 @@ export async function getAvailableMenuItemExtras(): Promise<MenuItemExtra[]> {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("menu_item_extras")
-      .select("id, name, group_code, price, available, applies_to, display_order")
+      .select("id, name, group_code, price, available, applies_to, applies_to_gluten_free, display_order")
       .eq("available", true)
       .order("group_code", { ascending: true })
       .order("display_order", { ascending: true })
@@ -188,7 +190,7 @@ export async function getAdminMenuItemExtras(): Promise<MenuItemExtra[]> {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("menu_item_extras")
-      .select("id, name, group_code, price, available, applies_to, display_order")
+      .select("id, name, group_code, price, available, applies_to, applies_to_gluten_free, display_order")
       .order("group_code", { ascending: true })
       .order("display_order", { ascending: true })
       .order("name", { ascending: true });
@@ -208,7 +210,7 @@ export async function getMenuItemExtraForEdit(
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("menu_item_extras")
-      .select("id, name, group_code, price, available, applies_to, display_order")
+      .select("id, name, group_code, price, available, applies_to, applies_to_gluten_free, display_order")
       .eq("id", id)
       .maybeSingle();
 

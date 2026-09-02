@@ -59,6 +59,9 @@ export default async function EditExtraPage({
                 groupCode: extra.groupCode,
                 price: extra.price.toFixed(2).replace(".", ","),
                 appliesTo: extra.appliesTo,
+                appliesToGlutenFree: extra.appliesToGlutenFree
+                  ? "true"
+                  : "false",
                 available: extra.available ? "true" : "false",
                 displayOrder: String(extra.displayOrder),
               }}

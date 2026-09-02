@@ -15,6 +15,7 @@ export type OrderMenuExtra = {
   groupCode: "FORMAGGIO" | "VERDURA" | "SALSA";
   price: number;
   appliesTo: "PANINO" | "PIADINA" | "ENTRAMBI";
+  appliesToGlutenFree: boolean;
 };
 
 export type OrderMenuItem = {
@@ -23,7 +24,7 @@ export type OrderMenuItem = {
   price: number;
   allergens: string[];
   customizable: boolean;
-  customizationScope: "PANINO" | "PIADINA" | null;
+  customizationScope: "PANINO" | "PIADINA" | "SENZA_GLUTINE" | null;
 };
 
 export type OrderMenuCategory = {

@@ -6,7 +6,8 @@ import MenuItemExtraForm from "@/components/admin/MenuItemExtraForm";
 
 export const metadata: Metadata = {
   title: "Nuovo extra | Coffee Break GV",
-  description: "Creazione di un extra per panini e piadine.",
+  description:
+    "Creazione di un extra per panini, piadine e prodotti senza glutine.",
 };
 
 const initialValues = {
@@ -14,6 +15,7 @@ const initialValues = {
   groupCode: "FORMAGGIO",
   price: "0,00",
   appliesTo: "ENTRAMBI",
+  appliesToGlutenFree: "false",
   available: "true",
   displayOrder: "0",
 };

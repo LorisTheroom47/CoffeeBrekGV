@@ -7,7 +7,8 @@ import { getAdminMenuItemExtras, type MenuItemExtra } from "@/lib/menu";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Extra | Coffee Break GV",
-  description: "Gestione degli extra per panini e piadine.",
+  description:
+    "Gestione degli extra per panini, piadine e prodotti senza glutine.",
 };
 
 export default async function AdminExtrasPage() {
@@ -26,7 +27,10 @@ export default async function AdminExtrasPage() {
           <div>
             <p className="eyebrow">Gestione menu</p>
             <h1>Extra</h1>
-            <p>Configura formaggi, verdure e salse per panini e piadine.</p>
+            <p>
+              Configura formaggi, verdure e salse per panini, piadine e
+              prodotti senza glutine.
+            </p>
           </div>
           <Link className="button button-primary" href="/admin/extra/nuovo">
             Nuovo extra

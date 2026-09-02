@@ -108,6 +108,25 @@ export default function MenuItemExtraForm({
           </select>
           {state.errors.available && <p className="admin-form-field-error">{state.errors.available}</p>}
         </div>
+        <div className="admin-form-field">
+          <label htmlFor="extra-gluten-free">Prodotti senza glutine</label>
+          <select
+            id="extra-gluten-free"
+            name="appliesToGlutenFree"
+            required
+            disabled={isPending}
+            defaultValue={state.values.appliesToGlutenFree}
+            aria-invalid={Boolean(state.errors.appliesToGlutenFree)}
+          >
+            <option value="false">Non applicabile</option>
+            <option value="true">Applicabile</option>
+          </select>
+          {state.errors.appliesToGlutenFree && (
+            <p className="admin-form-field-error">
+              {state.errors.appliesToGlutenFree}
+            </p>
+          )}
+        </div>
         <div className="admin-form-field admin-form-field-full">
           <label htmlFor="extra-display-order">Ordine visualizzazione</label>
           <input

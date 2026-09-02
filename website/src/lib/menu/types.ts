@@ -73,6 +73,7 @@ export type MenuItemExtra = {
   price: number;
   available: boolean;
   appliesTo: MenuItemExtraScope;
+  appliesToGlutenFree: boolean;
   displayOrder: number;
 };
 

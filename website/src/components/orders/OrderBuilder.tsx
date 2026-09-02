@@ -225,8 +225,10 @@ export default function OrderBuilder({
     return extras.filter(
       (extra) =>
         extra.groupCode === group &&
-        (extra.appliesTo === item.customizationScope ||
-          extra.appliesTo === "ENTRAMBI"),
+        (item.customizationScope === "SENZA_GLUTINE"
+          ? extra.appliesToGlutenFree
+          : extra.appliesTo === item.customizationScope ||
+            extra.appliesTo === "ENTRAMBI"),
     );
   }
 

@@ -41,6 +41,7 @@ export async function createExtraAction(
         group_code: values.groupCode,
         price: parsedPrice,
         applies_to: values.appliesTo,
+        applies_to_gluten_free: values.appliesToGlutenFree === "true",
         available: values.available === "true",
         display_order: parsedDisplayOrder,
       })

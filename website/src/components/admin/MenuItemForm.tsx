@@ -210,7 +210,8 @@ export default function MenuItemForm({
             </p>
           ) : (
             <p className="admin-form-hint" id="menu-item-customizable-hint">
-              Abilita gli extra configurati per Panini e Piadine.
+              Abilita gli extra configurati per Panini, Piadine e Prodotti
+              senza glutine.
             </p>
           )}
         </div>

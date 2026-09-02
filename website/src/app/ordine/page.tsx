@@ -71,8 +71,10 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
                 ? "PANINO"
                 : category.slug === "piadine"
                   ? "PIADINA"
-                  : null
-            ) as "PANINO" | "PIADINA" | null,
+                  : category.slug === "senzaglutine"
+                    ? "SENZA_GLUTINE"
+                    : null
+            ) as "PANINO" | "PIADINA" | "SENZA_GLUTINE" | null,
           })),
       }))
       .filter((category) => category.items.length > 0);

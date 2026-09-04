@@ -19,7 +19,7 @@ export async function updateExtraAction(
 ): Promise<MenuItemExtraFormState> {
   await requireAdmin();
   const values = getMenuItemExtraFormValues(formData);
-  const { errors, parsedPrice, parsedDisplayOrder } =
+  const { errors, parsedPrice, parsedDisplayOrder, parsedAppliesTo } =
     validateMenuItemExtraFormValues(values);
 
   if (!isValidUuid(extraId)) {
@@ -28,7 +28,8 @@ export async function updateExtraAction(
   if (
     Object.keys(errors).length ||
     parsedPrice === null ||
-    parsedDisplayOrder === null
+    parsedDisplayOrder === null ||
+    parsedAppliesTo === null
   ) {
     return menuItemExtraFormState(
       values,
@@ -45,7 +46,7 @@ export async function updateExtraAction(
         name: values.name,
         group_code: values.groupCode,
         price: parsedPrice,
-        applies_to: values.appliesTo,
+        applies_to: parsedAppliesTo,
         applies_to_gluten_free: values.appliesToGlutenFree === "true",
         available: values.available === "true",
         display_order: parsedDisplayOrder,

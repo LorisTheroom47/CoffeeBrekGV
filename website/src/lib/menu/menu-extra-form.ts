@@ -4,7 +4,8 @@ export type MenuItemExtraFormValues = Readonly<{
   name: string;
   groupCode: string;
   price: string;
-  appliesTo: string;
+  appliesToPanini: string;
+  appliesToPiadine: string;
   appliesToGlutenFree: string;
   available: string;
   displayOrder: string;
@@ -25,17 +26,19 @@ const groups: readonly MenuItemExtraGroup[] = [
   "VERDURA",
   "SALSA",
 ];
-const scopes: readonly MenuItemExtraScope[] = [
-  "PANINO",
-  "PIADINA",
-  "ENTRAMBI",
-];
 const pricePattern = /^\d{1,8}(?:[.,]\d{1,2})?$/;
 const integerPattern = /^\d{1,10}$/;
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
+}
+
+function checkbox(formData: FormData, key: string) {
+  const value = formData.get(key);
+
+  if (value === null) return "false";
+  return value === "true" ? "true" : "";
 }
 
 export function getMenuItemExtraFormValues(
@@ -45,8 +48,9 @@ export function getMenuItemExtraFormValues(
     name: text(formData, "name"),
     groupCode: text(formData, "groupCode"),
     price: text(formData, "price"),
-    appliesTo: text(formData, "appliesTo"),
-    appliesToGlutenFree: text(formData, "appliesToGlutenFree"),
+    appliesToPanini: checkbox(formData, "appliesToPanini"),
+    appliesToPiadine: checkbox(formData, "appliesToPiadine"),
+    appliesToGlutenFree: checkbox(formData, "appliesToGlutenFree"),
     available: text(formData, "available"),
     displayOrder: text(formData, "displayOrder"),
   };
@@ -58,6 +62,7 @@ export function validateMenuItemExtraFormValues(
   const errors: MenuItemExtraFormErrors = {};
   let parsedPrice: string | null = null;
   let parsedDisplayOrder: number | null = null;
+  let parsedAppliesTo: MenuItemExtraScope | null = null;
 
   if (values.name.length === 0 || values.name.length > 120) {
     errors.name = "Inserisci un nome valido.";
@@ -67,16 +72,27 @@ export function validateMenuItemExtraFormValues(
     errors.groupCode = "Seleziona un gruppo valido.";
   }
 
-  if (!scopes.includes(values.appliesTo as MenuItemExtraScope)) {
-    errors.appliesTo = "Seleziona un ambito valido.";
-  }
+  const applicabilityValues = [
+    values.appliesToPanini,
+    values.appliesToPiadine,
+    values.appliesToGlutenFree,
+  ];
 
-  if (
-    values.appliesToGlutenFree !== "true" &&
-    values.appliesToGlutenFree !== "false"
+  if (applicabilityValues.some((value) => !["true", "false"].includes(value))) {
+    errors.appliesToPanini = "Seleziona applicabilità valide.";
+  } else if (
+    values.appliesToPanini !== "true" &&
+    values.appliesToPiadine !== "true"
   ) {
-    errors.appliesToGlutenFree =
-      "Seleziona se l’extra è disponibile per i prodotti senza glutine.";
+    errors.appliesToPanini =
+      "Seleziona almeno Panini o Piadine per mantenere la compatibilità attuale.";
+  } else {
+    parsedAppliesTo =
+      values.appliesToPanini === "true" && values.appliesToPiadine === "true"
+        ? "ENTRAMBI"
+        : values.appliesToPanini === "true"
+          ? "PANINO"
+          : "PIADINA";
   }
 
   if (values.available !== "true" && values.available !== "false") {
@@ -112,7 +128,7 @@ export function validateMenuItemExtraFormValues(
     errors.displayOrder = "Inserisci un ordine intero maggiore o uguale a zero.";
   }
 
-  return { errors, parsedPrice, parsedDisplayOrder };
+  return { errors, parsedPrice, parsedDisplayOrder, parsedAppliesTo };
 }
 
 export function menuItemExtraFormState(

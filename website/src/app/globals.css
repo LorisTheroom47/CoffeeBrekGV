@@ -1172,6 +1172,15 @@ h3 {
   color: var(--color-warm-white);
 }
 
+.admin-table-action-primary {
+  background: var(--color-coffee);
+  color: var(--color-warm-white);
+}
+
+.admin-table-action-primary:hover {
+  background: var(--color-coffee-dark);
+}
+
 .admin-table-action:disabled {
   cursor: not-allowed;
   opacity: 0.42;
@@ -1181,6 +1190,22 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.admin-extra-scope-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.admin-extra-scope-list span {
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  background: rgba(125, 138, 104, 0.16);
+  color: var(--color-sage-dark);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .admin-reorder-controls {
@@ -1598,6 +1623,65 @@ h3 {
   min-width: 0;
   border: 0;
   padding: 0;
+}
+
+.admin-extra-applicability {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+}
+
+.admin-extra-applicability legend {
+  margin-bottom: 0.75rem;
+  color: var(--color-coffee);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.admin-extra-applicability-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.65rem;
+}
+
+.admin-extra-applicability-option {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-small);
+  padding: 0.7rem 0.8rem;
+  background: var(--color-cream);
+  color: var(--color-coffee-dark);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-extra-applicability-option:has(input:checked) {
+  border-color: var(--color-sage-dark);
+  background: rgba(125, 138, 104, 0.16);
+}
+
+.admin-extra-applicability-option input {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--color-coffee);
+}
+
+.admin-extra-applicability-option input:focus-visible {
+  outline: 3px solid var(--color-terracotta);
+  outline-offset: 3px;
+}
+
+.admin-extra-applicability-option:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
 .admin-allergen-fieldset legend {

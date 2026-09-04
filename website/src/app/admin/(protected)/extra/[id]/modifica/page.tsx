@@ -58,7 +58,16 @@ export default async function EditExtraPage({
                 name: extra.name,
                 groupCode: extra.groupCode,
                 price: extra.price.toFixed(2).replace(".", ","),
-                appliesTo: extra.appliesTo,
+                appliesToPanini:
+                  extra.appliesTo === "PANINO" ||
+                  extra.appliesTo === "ENTRAMBI"
+                    ? "true"
+                    : "false",
+                appliesToPiadine:
+                  extra.appliesTo === "PIADINA" ||
+                  extra.appliesTo === "ENTRAMBI"
+                    ? "true"
+                    : "false",
                 appliesToGlutenFree: extra.appliesToGlutenFree
                   ? "true"
                   : "false",

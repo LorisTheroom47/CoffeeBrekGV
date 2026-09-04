@@ -77,22 +77,59 @@ export default function MenuItemExtraForm({
           />
           {state.errors.price && <p className="admin-form-field-error">{state.errors.price}</p>}
         </div>
-        <div className="admin-form-field">
-          <label htmlFor="extra-scope">Applicabile a</label>
-          <select
-            id="extra-scope"
-            name="appliesTo"
-            required
-            disabled={isPending}
-            defaultValue={state.values.appliesTo}
-            aria-invalid={Boolean(state.errors.appliesTo)}
-          >
-            <option value="PANINO">Panino</option>
-            <option value="PIADINA">Piadina</option>
-            <option value="ENTRAMBI">Entrambi</option>
-          </select>
-          {state.errors.appliesTo && <p className="admin-form-field-error">{state.errors.appliesTo}</p>}
-        </div>
+        <fieldset
+          aria-describedby={
+            state.errors.appliesToPanini
+              ? "extra-applicability-error"
+              : "extra-applicability-hint"
+          }
+          aria-invalid={Boolean(state.errors.appliesToPanini)}
+          className="admin-extra-applicability admin-form-field-full"
+        >
+          <legend>Applicabile a</legend>
+          <div className="admin-extra-applicability-options">
+            <label className="admin-extra-applicability-option">
+              <input
+                defaultChecked={state.values.appliesToPanini === "true"}
+                disabled={isPending}
+                name="appliesToPanini"
+                type="checkbox"
+                value="true"
+              />
+              <span>Panini</span>
+            </label>
+            <label className="admin-extra-applicability-option">
+              <input
+                defaultChecked={state.values.appliesToPiadine === "true"}
+                disabled={isPending}
+                name="appliesToPiadine"
+                type="checkbox"
+                value="true"
+              />
+              <span>Piadine</span>
+            </label>
+            <label className="admin-extra-applicability-option">
+              <input
+                defaultChecked={state.values.appliesToGlutenFree === "true"}
+                disabled={isPending}
+                name="appliesToGlutenFree"
+                type="checkbox"
+                value="true"
+              />
+              <span>Prodotti senza glutine</span>
+            </label>
+          </div>
+          {state.errors.appliesToPanini ? (
+            <p className="admin-form-field-error" id="extra-applicability-error">
+              {state.errors.appliesToPanini}
+            </p>
+          ) : (
+            <p className="admin-form-hint" id="extra-applicability-hint">
+              Puoi selezionare tutte e tre le opzioni. Almeno Panini o Piadine
+              deve rimanere selezionato.
+            </p>
+          )}
+        </fieldset>
         <div className="admin-form-field">
           <label htmlFor="extra-available">Disponibilità</label>
           <select
@@ -107,25 +144,6 @@ export default function MenuItemExtraForm({
             <option value="false">Non disponibile</option>
           </select>
           {state.errors.available && <p className="admin-form-field-error">{state.errors.available}</p>}
-        </div>
-        <div className="admin-form-field">
-          <label htmlFor="extra-gluten-free">Prodotti senza glutine</label>
-          <select
-            id="extra-gluten-free"
-            name="appliesToGlutenFree"
-            required
-            disabled={isPending}
-            defaultValue={state.values.appliesToGlutenFree}
-            aria-invalid={Boolean(state.errors.appliesToGlutenFree)}
-          >
-            <option value="false">Non applicabile</option>
-            <option value="true">Applicabile</option>
-          </select>
-          {state.errors.appliesToGlutenFree && (
-            <p className="admin-form-field-error">
-              {state.errors.appliesToGlutenFree}
-            </p>
-          )}
         </div>
         <div className="admin-form-field admin-form-field-full">
           <label htmlFor="extra-display-order">Ordine visualizzazione</label>

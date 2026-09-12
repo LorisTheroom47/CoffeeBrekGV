@@ -16,7 +16,7 @@ const contactDetails = [
     ],
   },
   { label: "Orari", values: [{ text: "6:30 – 16:30" }] },
-  { label: "Ordini", values: [{ text: "ORDINA ENTRO LE 10:00" }] },
+  { label: "Ordini", values: [{ text: "ORDINA ENTRO LE 10:30" }] },
 ];
 
 export default function ContactDetails() {

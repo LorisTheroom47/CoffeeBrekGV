@@ -41,7 +41,7 @@ export default function RestaurantInfo() {
             </div>
             <div>
               <dt>Ordini</dt>
-              <dd><strong>ORDINA ENTRO LE 10:00</strong></dd>
+              <dd><strong>ORDINA ENTRO LE 10:30</strong></dd>
             </div>
           </dl>
           <a

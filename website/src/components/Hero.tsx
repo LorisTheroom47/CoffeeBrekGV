@@ -19,7 +19,7 @@ export default function Hero() {
           <h1>Il tuo pranzo quotidiano, semplice e gustoso</h1>
           <p className="hero-description">
             Piatti preparati ogni giorno da gustare nel locale, da asporto o
-            con consegna in ospedale. Ordina entro le 10:00.
+            con consegna in ospedale. Ordina entro le 10:30.
           </p>
           <div className="button-group">
             <Link className="button button-primary" href="/ordine">

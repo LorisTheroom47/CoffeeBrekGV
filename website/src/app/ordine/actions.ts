@@ -22,6 +22,8 @@ const errorMessages: Readonly<Record<CreateOrderErrorCode, string>> = {
   INVALID_REQUEST_DATE: "Seleziona una data valida.",
   INVALID_REQUEST_TIME:
     "Seleziona un orario di consegna tra le 12:00 e le 14:00.",
+  ORDER_CUTOFF_EXCEEDED:
+    "Gli ordini possono essere inviati entro le 10:30.",
   REQUEST_TOO_LARGE:
     "La richiesta è troppo grande. Riduci il contenuto e riprova.",
   TOO_MANY_REQUESTS:
@@ -49,6 +51,20 @@ const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const moneyPattern = /^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/;
 const orderNumberPattern = /^[1-9]\d*$/;
+
+function isAfterOrderCutoff(): boolean {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    hourCycle: "h23",
+    minute: "2-digit",
+    timeZone: "Europe/Rome",
+  }).formatToParts(new Date());
+  const values = new Map(parts.map((part) => [part.type, part.value]));
+  const hour = Number(values.get("hour"));
+  const minute = Number(values.get("minute"));
+
+  return hour > 10 || (hour === 10 && minute > 30);
+}
 
 function failure(
   code: CreateOrderErrorCode,
@@ -250,6 +266,10 @@ export async function createPublicOrderAction(
       validationErrorCode(validation.fieldErrors),
       validation.fieldErrors,
     );
+  }
+
+  if (isAfterOrderCutoff()) {
+    return failure("ORDER_CUTOFF_EXCEEDED");
   }
 
   if (!(await verifyTurnstileToken(validation.data.turnstileToken))) {

@@ -5,6 +5,7 @@ const navigation = [
   { label: "Home", href: "/" },
   { label: "Menu del giorno", href: "/menu" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Prenota un tavolo", href: "/prenota" },
   { label: "Contatti", href: "/contatti" },
 ];
 

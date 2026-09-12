@@ -2,7 +2,7 @@ import "server-only";
 
 const SITEVERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-const TURNSTILE_ACTION = "order_submit";
+const DEFAULT_TURNSTILE_ACTION = "order_submit";
 const SITEVERIFY_TIMEOUT_MILLISECONDS = 5_000;
 
 type TurnstileResponse = {
@@ -15,7 +15,10 @@ function isTurnstileResponse(value: unknown): value is TurnstileResponse {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export async function verifyTurnstileToken(token: string): Promise<boolean> {
+export async function verifyTurnstileToken(
+  token: string,
+  expectedAction = DEFAULT_TURNSTILE_ACTION,
+): Promise<boolean> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY?.trim();
 
   if (!secretKey) return false;
@@ -48,7 +51,7 @@ export async function verifyTurnstileToken(token: string): Promise<boolean> {
     return (
       isTurnstileResponse(result) &&
       result.success === true &&
-      result.action === TURNSTILE_ACTION &&
+      result.action === expectedAction &&
       typeof result.hostname === "string" &&
       result.hostname.length > 0
     );

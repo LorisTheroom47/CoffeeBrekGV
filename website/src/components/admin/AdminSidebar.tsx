@@ -8,6 +8,7 @@ const navigationItems = [
   { label: "Dashboard", href: "/admin#dashboard" },
   { label: "Menu del giorno", href: "/admin#menu-giorno" },
   { label: "Ordini", href: "/admin/ordini" },
+  { label: "Prenotazioni", href: "/admin/prenotazioni" },
   { label: "Categorie", href: "/admin/categorie" },
   { label: "Extra", href: "/admin/extra" },
   { label: "Anteprima TV", href: "/admin#anteprima-tv" },

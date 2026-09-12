@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
 type TurnstileWidgetProps = {
+  action?: "order_submit" | "reservation_submit";
   onError: () => void;
   onExpired: () => void;
   onSuccess: (token: string) => void;
@@ -36,9 +37,8 @@ declare global {
 
 const TURNSTILE_SCRIPT_URL =
   "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-const TURNSTILE_ACTION = "order_submit";
-
 export default function TurnstileWidget({
+  action = "order_submit",
   onError,
   onExpired,
   onSuccess,
@@ -66,7 +66,7 @@ export default function TurnstileWidget({
 
     widgetIdRef.current = turnstile.render(container, {
       sitekey: siteKey,
-      action: TURNSTILE_ACTION,
+      action,
       appearance: "always",
       size: "flexible",
       theme: "light",
@@ -84,7 +84,7 @@ export default function TurnstileWidget({
       }
       widgetIdRef.current = null;
     };
-  }, [scriptReady, siteKey]);
+  }, [action, scriptReady, siteKey]);
 
   useEffect(() => {
     if (widgetIdRef.current && window.turnstile) {

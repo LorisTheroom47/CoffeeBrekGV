@@ -1981,6 +1981,35 @@ h3 {
   }
 }
 
+/* Prenotazioni tavoli */
+.reservation-form-container {
+  max-width: 52rem;
+}
+
+.reservation-form {
+  margin-inline: auto;
+}
+
+.reservation-form textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--color-line);
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  background: #fff;
+  color: var(--color-coffee-dark);
+  font: inherit;
+  font-weight: 400;
+}
+
+.reservation-success > p:not(.eyebrow) {
+  color: var(--color-text-muted);
+}
+
+.admin-reservations-table td:nth-child(3) {
+  white-space: nowrap;
+}
+
 .tv-menu-category {
   min-width: 0;
   border: 2px solid rgba(255, 253, 248, 0.18);

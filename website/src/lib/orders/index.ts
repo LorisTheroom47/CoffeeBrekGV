@@ -8,6 +8,8 @@ export type {
   OrderMenuCategory,
   OrderMenuExtra,
   OrderMenuItem,
+  OrderMenuProductOption,
+  OrderMenuProductOptionGroup,
   ValidatedCreateOrderInput,
 } from "./types";
 export { validateCreateOrderInput } from "./validation";

@@ -19,6 +19,7 @@ import type {
   OrderMenuCategory,
   OrderMenuExtra,
   OrderMenuItem,
+  OrderMenuProductOption,
 } from "@/lib/orders";
 import {
   deliveryPointOptions,
@@ -46,12 +47,18 @@ type ExtraSelection = {
   vegetableExtraId: string;
   sauceExtraId: string;
 };
+type ProductOptionSelection = Record<string, string[]>;
+type SelectedProductOption = OrderMenuProductOption & {
+  groupId: string;
+  groupName: string;
+};
 type CartLine = {
   key: string;
   item: OrderMenuItem;
   quantity: number;
   selection: ExtraSelection;
   selectedExtras: OrderMenuExtra[];
+  selectedProductOptions: SelectedProductOption[];
 };
 
 const emptySelection: ExtraSelection = {
@@ -90,6 +97,7 @@ type OrderConfirmation = {
     name: string;
     quantity: number;
     extras: OrderMenuExtra[];
+    productOptions: SelectedProductOption[];
   }>;
 };
 
@@ -115,17 +123,26 @@ function formatRequestedDate(value: string): string {
   }).format(date);
 }
 
-function lineKey(itemId: string, selection: ExtraSelection): string {
+function lineKey(
+  itemId: string,
+  selection: ExtraSelection,
+  productOptionIds: readonly string[] = [],
+): string {
   return [
     itemId,
     selection.cheeseExtraId,
     selection.vegetableExtraId,
     selection.sauceExtraId,
+    ...[...productOptionIds].sort(),
   ].join("|");
 }
 
 function extraTotal(extras: readonly OrderMenuExtra[]): number {
   return extras.reduce((total, extra) => total + extra.price, 0);
+}
+
+function productOptionTotal(options: readonly SelectedProductOption[]): number {
+  return options.reduce((total, option) => total + option.price, 0);
 }
 
 function FieldError({
@@ -156,6 +173,9 @@ export default function OrderBuilder({
   const [itemNotes, setItemNotes] = useState<Record<string, string>>({});
   const [customizationSelections, setCustomizationSelections] = useState<
     Record<string, ExtraSelection>
+  >({});
+  const [productOptionSelections, setProductOptionSelections] = useState<
+    Record<string, ProductOptionSelection>
   >({});
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<
@@ -216,7 +236,10 @@ export default function OrderBuilder({
   const indicativeTotal = cartLines.reduce(
     (total, line) =>
       total +
-      (line.item.price + extraTotal(line.selectedExtras)) * line.quantity,
+      (line.item.price +
+        extraTotal(line.selectedExtras) +
+        productOptionTotal(line.selectedProductOptions)) *
+        line.quantity,
     0,
   );
 
@@ -268,6 +291,7 @@ export default function OrderBuilder({
           quantity: 1,
           selection: { ...emptySelection },
           selectedExtras: [],
+          selectedProductOptions: [],
         },
       ]);
       setFieldErrors((current) => ({ ...current, items: undefined }));
@@ -288,11 +312,69 @@ export default function OrderBuilder({
     }));
   }
 
+  function updateProductOptionSelection(
+    itemId: string,
+    groupId: string,
+    selectionType: "MULTIPLE_OPTIONAL" | "SINGLE_REQUIRED",
+    optionId: string,
+    checked: boolean,
+  ) {
+    setProductOptionSelections((current) => {
+      const itemSelection = current[itemId] ?? {};
+      const selectedIds = itemSelection[groupId] ?? [];
+      const nextSelectedIds =
+        selectionType === "SINGLE_REQUIRED"
+          ? [optionId]
+          : checked
+            ? [...selectedIds, optionId].sort()
+            : selectedIds.filter((id) => id !== optionId);
+
+      return {
+        ...current,
+        [itemId]: {
+          ...itemSelection,
+          [groupId]: nextSelectedIds,
+        },
+      };
+    });
+  }
+
+  function selectedProductOptionsForItem(
+    item: OrderMenuItem,
+  ): SelectedProductOption[] {
+    const itemSelection = productOptionSelections[item.id] ?? {};
+
+    return item.productOptionGroups.flatMap((group) => {
+      const selectedIds = new Set(itemSelection[group.id] ?? []);
+      return group.options
+        .filter((option) => selectedIds.has(option.id))
+        .map((option) => ({
+          ...option,
+          groupId: group.id,
+          groupName: group.name,
+        }));
+    });
+  }
+
+  function hasAllRequiredProductOptions(item: OrderMenuItem): boolean {
+    const itemSelection = productOptionSelections[item.id] ?? {};
+
+    return item.productOptionGroups.every(
+      (group) =>
+        group.selectionType !== "SINGLE_REQUIRED" ||
+        (itemSelection[group.id]?.length ?? 0) === 1,
+    );
+  }
+
   function addCustomizedLine(item: OrderMenuItem) {
+    if (!hasAllRequiredProductOptions(item)) return;
+
     const selection = customizationSelections[item.id] ?? emptySelection;
     const selectedIds = new Set(Object.values(selection).filter(Boolean));
     const selectedExtras = extras.filter((extra) => selectedIds.has(extra.id));
-    const key = lineKey(item.id, selection);
+    const selectedProductOptions = selectedProductOptionsForItem(item);
+    const productOptionIds = selectedProductOptions.map((option) => option.id);
+    const key = lineKey(item.id, selection, productOptionIds);
     const existing = cartLines.find((line) => line.key === key);
 
     if (existing) {
@@ -306,6 +388,7 @@ export default function OrderBuilder({
           quantity: 1,
           selection: { ...selection },
           selectedExtras,
+          selectedProductOptions,
         },
       ]);
       setFieldErrors((current) => ({ ...current, items: undefined }));
@@ -331,6 +414,7 @@ export default function OrderBuilder({
     setCartLines([]);
     setItemNotes({});
     setCustomizationSelections({});
+    setProductOptionSelections({});
     setExpandedItemId(null);
     setFulfillmentType("delivery");
     setCustomerName("");
@@ -439,6 +523,13 @@ export default function OrderBuilder({
         ...(line.selection.sauceExtraId
           ? { sauceExtraId: line.selection.sauceExtraId }
           : {}),
+        ...(line.selectedProductOptions.length > 0
+          ? {
+              productOptionIds: line.selectedProductOptions.map(
+                (option) => option.id,
+              ),
+            }
+          : {}),
       })),
       ...(customerEmail.trim() ? { customerEmail: customerEmail.trim() } : {}),
       ...(requestedTime ? { requestedTime } : {}),
@@ -452,6 +543,7 @@ export default function OrderBuilder({
       name: line.item.name,
       quantity: line.quantity,
       extras: line.selectedExtras,
+      productOptions: line.selectedProductOptions,
     }));
 
     startTransition(async () => {
@@ -474,6 +566,7 @@ export default function OrderBuilder({
         setCartLines([]);
         setItemNotes({});
         setCustomizationSelections({});
+        setProductOptionSelections({});
         setExpandedItemId(null);
         setCustomerName("");
         setCustomerPhone("");
@@ -529,6 +622,11 @@ export default function OrderBuilder({
                 {item.extras.map((extra) => (
                   <span key={extra.id}>{extraGroupLabels[extra.groupCode]}: {extra.name}</span>
                 ))}
+                {item.productOptions.map((option) => (
+                  <span key={option.id}>
+                    {option.groupName}: {option.name}
+                  </span>
+                ))}
               </li>
             ))}
           </ul>
@@ -577,11 +675,23 @@ export default function OrderBuilder({
                     {category.items.map((item) => {
                       const itemLines = cartLines.filter((line) => line.item.id === item.id);
                       const quantity = itemLines.reduce((total, line) => total + line.quantity, 0);
-                      const canCustomize = item.customizable && item.customizationScope !== null;
+                      const canCustomizeExtras =
+                        item.customizable && item.customizationScope !== null;
+                      const hasProductOptionGroups =
+                        item.productOptionGroups.length > 0;
+                      const canCustomize =
+                        canCustomizeExtras || hasProductOptionGroups;
                       const selection = customizationSelections[item.id] ?? emptySelection;
                       const selectedIds = new Set(Object.values(selection).filter(Boolean));
                       const previewExtras = extras.filter((extra) => selectedIds.has(extra.id));
-                      const unitPreview = item.price + extraTotal(previewExtras);
+                      const previewProductOptions =
+                        selectedProductOptionsForItem(item);
+                      const requiredProductOptionsComplete =
+                        hasAllRequiredProductOptions(item);
+                      const unitPreview =
+                        item.price +
+                        extraTotal(previewExtras) +
+                        productOptionTotal(previewProductOptions);
                       const isExpanded = expandedItemId === item.id;
 
                       return (
@@ -614,6 +724,7 @@ export default function OrderBuilder({
                                 <div><span>Personalizza</span><strong>{item.name}</strong></div>
                                 <strong>{moneyFormatter.format(unitPreview)}</strong>
                               </div>
+                              {canCustomizeExtras && (
                               <div className="order-extra-groups">
                                 {extraGroups.map((group) => (
                                   <fieldset key={group.code}>
@@ -631,8 +742,79 @@ export default function OrderBuilder({
                                   </fieldset>
                                 ))}
                               </div>
-                              <button className="button button-primary order-add-customized" type="button" onClick={() => addCustomizedLine(item)}>
-                                Aggiungi al carrello · {moneyFormatter.format(unitPreview)}
+                              )}
+                              {hasProductOptionGroups && (
+                                <div className="order-extra-groups">
+                                  {item.productOptionGroups.map((group) => {
+                                    const groupSelection =
+                                      productOptionSelections[item.id]?.[
+                                        group.id
+                                      ] ?? [];
+                                    const isRequired =
+                                      group.selectionType ===
+                                      "SINGLE_REQUIRED";
+
+                                    return (
+                                      <fieldset key={group.id}>
+                                        <legend>
+                                          {group.name}
+                                          {isRequired ? " *" : ""}
+                                        </legend>
+                                        {group.options.length === 0 ? (
+                                          <p className="order-field-error">
+                                            Nessuna opzione disponibile.
+                                          </p>
+                                        ) : (
+                                          group.options.map((option) => {
+                                            const checked =
+                                              groupSelection.includes(option.id);
+
+                                            return (
+                                              <label key={option.id}>
+                                                <input
+                                                  checked={checked}
+                                                  name={`${item.id}-product-option-${group.id}`}
+                                                  onChange={(event) =>
+                                                    updateProductOptionSelection(
+                                                      item.id,
+                                                      group.id,
+                                                      group.selectionType,
+                                                      option.id,
+                                                      event.target.checked,
+                                                    )
+                                                  }
+                                                  type={
+                                                    isRequired
+                                                      ? "radio"
+                                                      : "checkbox"
+                                                  }
+                                                  value={option.id}
+                                                />
+                                                <span>
+                                                  {option.name}
+                                                  {option.price > 0
+                                                    ? ` +${moneyFormatter.format(option.price)}`
+                                                    : ""}
+                                                </span>
+                                              </label>
+                                            );
+                                          })
+                                        )}
+                                      </fieldset>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                              {!requiredProductOptionsComplete && (
+                                <p className="order-field-error" role="alert">
+                                  Seleziona un’opzione per ogni scelta
+                                  obbligatoria.
+                                </p>
+                              )}
+                              <button className="button button-primary order-add-customized" type="button" disabled={!requiredProductOptionsComplete} onClick={() => addCustomizedLine(item)}>
+                                {requiredProductOptionsComplete
+                                  ? `Aggiungi al carrello · ${moneyFormatter.format(unitPreview)}`
+                                  : "Completa le scelte obbligatorie"}
                               </button>
                             </div>
                           )}
@@ -697,7 +879,10 @@ export default function OrderBuilder({
               ) : (
                 <ul className="order-cart-list">
                   {cartLines.map((line) => {
-                    const unitPrice = line.item.price + extraTotal(line.selectedExtras);
+                    const unitPrice =
+                      line.item.price +
+                      extraTotal(line.selectedExtras) +
+                      productOptionTotal(line.selectedProductOptions);
                     return (
                       <li key={line.key}>
                         <div className="order-cart-line">
@@ -707,6 +892,22 @@ export default function OrderBuilder({
                         {line.selectedExtras.length > 0 && (
                           <ul className="order-cart-extras">
                             {line.selectedExtras.map((extra) => <li key={extra.id}><span>{extraGroupLabels[extra.groupCode]}: {extra.name}</span><small>{extra.price > 0 ? `+${moneyFormatter.format(extra.price)}` : "incluso"}</small></li>)}
+                          </ul>
+                        )}
+                        {line.selectedProductOptions.length > 0 && (
+                          <ul className="order-cart-extras">
+                            {line.selectedProductOptions.map((option) => (
+                              <li key={option.id}>
+                                <span>
+                                  {option.groupName}: {option.name}
+                                </span>
+                                <small>
+                                  {option.price > 0
+                                    ? `+${moneyFormatter.format(option.price)}`
+                                    : "incluso"}
+                                </small>
+                              </li>
+                            ))}
                           </ul>
                         )}
                         <div className="quantity-control order-cart-quantity" aria-label={`Quantità di ${line.item.name}`}>

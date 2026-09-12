@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import OrderBuilder from "@/components/orders/OrderBuilder";
 import OrderDeadlineNotice from "@/components/OrderDeadlineNotice";
 import {
+  getAvailableMenuItemProductOptionGroups,
   getAvailableMenuItemExtras,
   getMenuCategories,
 } from "@/lib/menu";
@@ -52,6 +53,14 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
       getMenuCategories(),
       getAvailableMenuItemExtras(),
     ]);
+    const orderableItemIds = menuCategories.flatMap((category) =>
+      category.items
+        .filter((item) => item.available && item.orderable)
+        .map((item) => item.id),
+    );
+    const productOptionGroups = await getAvailableMenuItemProductOptionGroups(
+      orderableItemIds,
+    );
 
     const orderCategories: OrderMenuCategory[] = menuCategories
       .map((category) => ({
@@ -75,6 +84,18 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
                     ? "SENZA_GLUTINE"
                     : null
             ) as "PANINO" | "PIADINA" | "SENZA_GLUTINE" | null,
+            productOptionGroups: productOptionGroups
+              .filter((group) => group.menuItemId === item.id)
+              .map((group) => ({
+                id: group.id,
+                name: group.name,
+                selectionType: group.selectionType,
+                options: group.options.map((option) => ({
+                  id: option.id,
+                  name: option.name,
+                  price: option.price,
+                })),
+              })),
           })),
       }))
       .filter((category) => category.items.length > 0);

@@ -47,6 +47,7 @@ type RawAdminOrderItemDetail = {
   item_name: string;
   unit_price: string | number | null;
   extras_unit_price: string | number | null;
+  options_unit_price: string | number | null;
   quantity: number;
   line_total: string | number | null;
   customer_notes: string | null;
@@ -58,6 +59,14 @@ type RawAdminOrderItemExtra = {
   extra_name: string;
   group_code: "FORMAGGIO" | "VERDURA" | "SALSA";
   extra_unit_price: string | number | null;
+};
+
+type RawAdminOrderItemProductOption = {
+  id: string;
+  order_item_id: string;
+  group_name: string;
+  option_name: string;
+  option_unit_price: string | number | null;
 };
 
 export type AdminOrderDetailResult =
@@ -144,7 +153,7 @@ export async function getAdminOrderDetail(
   const { data: itemsData, error: itemsError } = await supabase
     .from("order_items")
     .select(
-      "id, item_name, unit_price, extras_unit_price, quantity, line_total, customer_notes, created_at",
+      "id, item_name, unit_price, extras_unit_price, options_unit_price, quantity, line_total, customer_notes, created_at",
     )
     .eq("order_id", id)
     .order("created_at", { ascending: true })
@@ -155,6 +164,7 @@ export async function getAdminOrderDetail(
 
   const itemIds = (itemsData ?? []).map((item) => item.id);
   let extrasData: RawAdminOrderItemExtra[] = [];
+  let productOptionsData: RawAdminOrderItemProductOption[] = [];
 
   if (itemIds.length > 0) {
     const { data, error } = await supabase
@@ -166,6 +176,19 @@ export async function getAdminOrderDetail(
 
     if (error) return { status: "error" };
     extrasData = (data ?? []) as RawAdminOrderItemExtra[];
+
+    const productOptionsResult = await supabase
+      .from("order_item_options")
+      .select(
+        "id, order_item_id, group_name, option_name, option_unit_price",
+      )
+      .in("order_item_id", itemIds)
+      .order("group_name", { ascending: true })
+      .order("created_at", { ascending: true });
+
+    if (productOptionsResult.error) return { status: "error" };
+    productOptionsData =
+      (productOptionsResult.data ?? []) as RawAdminOrderItemProductOption[];
   }
 
   const extrasByItem = new Map<string, RawAdminOrderItemExtra[]>();
@@ -173,6 +196,16 @@ export async function getAdminOrderDetail(
     const itemExtras = extrasByItem.get(extra.order_item_id) ?? [];
     itemExtras.push(extra);
     extrasByItem.set(extra.order_item_id, itemExtras);
+  }
+
+  const productOptionsByItem = new Map<
+    string,
+    RawAdminOrderItemProductOption[]
+  >();
+  for (const option of productOptionsData) {
+    const itemOptions = productOptionsByItem.get(option.order_item_id) ?? [];
+    itemOptions.push(option);
+    productOptionsByItem.set(option.order_item_id, itemOptions);
   }
 
   const rawOrder = orderData as RawAdminOrderDetail;
@@ -203,6 +236,7 @@ export async function getAdminOrderDetail(
       itemName: item.item_name,
       unitPrice: item.unit_price,
       extrasUnitPrice: item.extras_unit_price,
+      optionsUnitPrice: item.options_unit_price,
       quantity: item.quantity,
       lineTotal: item.line_total,
       customerNotes: optionalText(item.customer_notes),
@@ -212,6 +246,14 @@ export async function getAdminOrderDetail(
         groupCode: extra.group_code,
         unitPrice: extra.extra_unit_price,
       })),
+      productOptions: (productOptionsByItem.get(item.id) ?? []).map(
+        (option) => ({
+          id: option.id,
+          groupName: option.group_name,
+          optionName: option.option_name,
+          unitPrice: option.option_unit_price,
+        }),
+      ),
     }),
   );
 

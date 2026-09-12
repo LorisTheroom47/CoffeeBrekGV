@@ -199,6 +199,9 @@ function createRequestFingerprint(
         cheeseExtraId: item.cheeseExtraId,
         vegetableExtraId: item.vegetableExtraId,
         sauceExtraId: item.sauceExtraId,
+        ...(item.productOptionIds.length > 0
+          ? { productOptionIds: item.productOptionIds }
+          : {}),
       }))
       .sort(
         (first, second) =>
@@ -211,6 +214,9 @@ function createRequestFingerprint(
           ) ||
           (first.sauceExtraId ?? "").localeCompare(
             second.sauceExtraId ?? "",
+          ) ||
+          (first.productOptionIds ?? []).join(",").localeCompare(
+            (second.productOptionIds ?? []).join(","),
           ),
       ),
   };
@@ -264,6 +270,9 @@ export async function createPublicOrderAction(
       cheese_extra_id: item.cheeseExtraId,
       vegetable_extra_id: item.vegetableExtraId,
       sauce_extra_id: item.sauceExtraId,
+      ...(item.productOptionIds.length > 0
+        ? { product_option_ids: item.productOptionIds }
+        : {}),
     })),
     p_customer_email: values.customerEmail,
     p_delivery_point: values.deliveryPoint,

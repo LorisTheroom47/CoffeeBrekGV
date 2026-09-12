@@ -153,10 +153,29 @@ export default function AdminOrderDetail({
                       ))}
                     </ul>
                   )}
+                  {item.productOptions.length > 0 && (
+                    <ul className="admin-order-item-extras">
+                      {item.productOptions.map((option) => (
+                        <li key={option.id}>
+                          {option.groupName}: {option.optionName}
+                          {Number(option.unitPrice) > 0
+                            ? ` (+${formatAdminOrderTotal(option.unitPrice)})`
+                            : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </td>
                 <td data-label="Quantità">{item.quantity}</td>
                 <td data-label="Prezzo base">{formatAdminOrderTotal(item.unitPrice)}</td>
-                <td data-label="Sovrapprezzo extra">{formatAdminOrderTotal(item.extrasUnitPrice)}</td>
+                <td data-label="Sovrapprezzo extra">
+                  {formatAdminOrderTotal(item.extrasUnitPrice)}
+                  {Number(item.optionsUnitPrice) > 0 && (
+                    <small>
+                      Opzioni: {formatAdminOrderTotal(item.optionsUnitPrice)}
+                    </small>
+                  )}
+                </td>
                 <td data-label="Totale riga">{formatAdminOrderTotal(item.lineTotal)}</td>
                 <td data-label="Nota">{item.customerNotes ?? "—"}</td>
               </tr>

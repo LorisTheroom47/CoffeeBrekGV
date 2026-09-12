@@ -53,6 +53,24 @@ function normalizeOptionalUuid(value: unknown): string | null | undefined {
   return uuidPattern.test(normalized) ? normalized : undefined;
 }
 
+function normalizeProductOptionIds(value: unknown): string[] | undefined {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value) || value.length > 20) return undefined;
+
+  const normalizedIds: string[] = [];
+  const uniqueIds = new Set<string>();
+
+  for (const rawId of value) {
+    const normalizedId = normalizeOptionalUuid(rawId);
+
+    if (!normalizedId || uniqueIds.has(normalizedId)) return undefined;
+    uniqueIds.add(normalizedId);
+    normalizedIds.push(normalizedId);
+  }
+
+  return normalizedIds.sort();
+}
+
 function isRealDate(value: string): boolean {
   const match = datePattern.exec(value);
 
@@ -249,11 +267,15 @@ export function validateCreateOrderInput(
       const cheeseExtraId = normalizeOptionalUuid(rawItem.cheeseExtraId);
       const vegetableExtraId = normalizeOptionalUuid(rawItem.vegetableExtraId);
       const sauceExtraId = normalizeOptionalUuid(rawItem.sauceExtraId);
+      const productOptionIds = normalizeProductOptionIds(
+        rawItem.productOptionIds,
+      );
       const configurationKey = [
         menuItemId.toLowerCase(),
         cheeseExtraId ?? "",
         vegetableExtraId ?? "",
         sauceExtraId ?? "",
+        ...(productOptionIds ?? []),
       ].join("|");
 
       if (
@@ -266,6 +288,7 @@ export function validateCreateOrderInput(
         cheeseExtraId === undefined ||
         vegetableExtraId === undefined ||
         sauceExtraId === undefined ||
+        productOptionIds === undefined ||
         configurationKeys.has(configurationKey)
       ) {
         fieldErrors.items = "Controlla i piatti e le quantità.";
@@ -280,6 +303,7 @@ export function validateCreateOrderInput(
         cheeseExtraId,
         vegetableExtraId,
         sauceExtraId,
+        productOptionIds,
       });
     }
   }

@@ -320,6 +320,82 @@ export async function getMenuItemProductOptionGroups(
   }
 }
 
+export async function getAvailableMenuItemProductOptionGroups(
+  menuItemIds: string[],
+): Promise<MenuItemProductOptionGroup[]> {
+  if (menuItemIds.length === 0) return [];
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const groupsResult = await supabase
+      .from("menu_item_option_groups")
+      .select(
+        "id, menu_item_id, name, selection_type, available, display_order",
+      )
+      .in("menu_item_id", menuItemIds)
+      .eq("available", true)
+      .order("display_order", { ascending: true })
+      .order("name", { ascending: true });
+
+    if (groupsResult.error) throw groupsResult.error;
+
+    const rawGroups = (groupsResult.data ?? []) as RawProductOptionGroup[];
+    const groupIds = rawGroups.map((group) => group.id);
+    let rawOptions: RawProductOption[] = [];
+
+    if (groupIds.length > 0) {
+      const optionsResult = await supabase
+        .from("menu_item_options")
+        .select("id, group_id, name, price, available, display_order")
+        .in("group_id", groupIds)
+        .eq("available", true)
+        .order("display_order", { ascending: true })
+        .order("name", { ascending: true });
+
+      if (optionsResult.error) throw optionsResult.error;
+      rawOptions = (optionsResult.data ?? []) as RawProductOption[];
+    }
+
+    const optionsByGroup = new Map<string, MenuItemProductOption[]>();
+
+    for (const option of rawOptions) {
+      const price =
+        typeof option.price === "number" ? option.price : Number(option.price);
+
+      if (!Number.isFinite(price)) throw new Error(publicErrorMessage);
+
+      const groupOptions = optionsByGroup.get(option.group_id) ?? [];
+      groupOptions.push({
+        id: option.id,
+        groupId: option.group_id,
+        name: option.name,
+        price,
+        available: option.available,
+        displayOrder: option.display_order,
+      });
+      optionsByGroup.set(option.group_id, groupOptions);
+    }
+
+    return rawGroups.map((group) => {
+      if (!isProductOptionSelectionType(group.selection_type)) {
+        throw new Error(publicErrorMessage);
+      }
+
+      return {
+        id: group.id,
+        menuItemId: group.menu_item_id,
+        name: group.name,
+        selectionType: group.selection_type,
+        available: group.available,
+        displayOrder: group.display_order,
+        options: optionsByGroup.get(group.id) ?? [],
+      };
+    });
+  } catch {
+    throw new Error(publicErrorMessage);
+  }
+}
+
 export async function getAllergenOptions(): Promise<AllergenOption[]> {
   try {
     const supabase = await createServerSupabaseClient();

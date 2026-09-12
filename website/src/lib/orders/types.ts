@@ -7,6 +7,7 @@ export type OrderItemInput = {
   cheeseExtraId?: string;
   vegetableExtraId?: string;
   sauceExtraId?: string;
+  productOptionIds?: string[];
 };
 
 export type OrderMenuExtra = {
@@ -25,6 +26,20 @@ export type OrderMenuItem = {
   allergens: string[];
   customizable: boolean;
   customizationScope: "PANINO" | "PIADINA" | "SENZA_GLUTINE" | null;
+  productOptionGroups: OrderMenuProductOptionGroup[];
+};
+
+export type OrderMenuProductOption = {
+  id: string;
+  name: string;
+  price: number;
+};
+
+export type OrderMenuProductOptionGroup = {
+  id: string;
+  name: string;
+  selectionType: "MULTIPLE_OPTIONAL" | "SINGLE_REQUIRED";
+  options: OrderMenuProductOption[];
 };
 
 export type OrderMenuCategory = {
@@ -112,5 +127,6 @@ export type ValidatedCreateOrderInput = {
     cheeseExtraId: string | null;
     vegetableExtraId: string | null;
     sauceExtraId: string | null;
+    productOptionIds: string[];
   }>;
 };

@@ -2010,6 +2010,24 @@ h3 {
   white-space: nowrap;
 }
 
+.admin-reservation-delete {
+  display: grid;
+  min-width: min(18rem, 100%);
+  gap: 0.55rem;
+}
+
+.admin-reservation-delete p {
+  margin: 0;
+  color: var(--color-coffee-dark);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.admin-reservation-delete form {
+  display: grid;
+  gap: 0.45rem;
+}
+
 .tv-menu-category {
   min-width: 0;
   border: 2px solid rgba(255, 253, 248, 0.18);

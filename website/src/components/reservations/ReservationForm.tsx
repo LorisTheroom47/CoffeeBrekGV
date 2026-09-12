@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { createTableReservationAction } from "@/app/prenota/actions";
 import TurnstileWidget from "@/components/orders/TurnstileWidget";
 import {
@@ -33,10 +33,9 @@ export default function ReservationForm({
   const [result, setResult] = useState<CreateReservationResult | null>(initialResult);
   const [pending, setPending] = useState(false);
 
-  const visibleSlots = useMemo(
-    () => reservationTimeSlots.filter((slot) => reservationDate !== minimumDate || slot > currentRomeTime),
-    [currentRomeTime, minimumDate, reservationDate],
-  );
+  const allTodaySlotsHavePassed =
+    reservationDate === minimumDate &&
+    reservationTimeSlots.every((slot) => slot <= currentRomeTime);
   const fieldErrors: ReservationFieldErrors =
     result && !result.success ? result.fieldErrors ?? {} : {};
 
@@ -120,9 +119,19 @@ export default function ReservationForm({
         <label>Ora
           <select value={reservationTime} onChange={(event) => setReservationTime(event.target.value)} aria-invalid={Boolean(fieldErrors.reservationTime)} required>
             <option value="">Seleziona un orario</option>
-            {visibleSlots.map((slot) => <option key={slot} value={slot}>{slot}</option>)}
+            {reservationTimeSlots.map((slot) => (
+              <option
+                disabled={
+                  reservationDate === minimumDate && slot <= currentRomeTime
+                }
+                key={slot}
+                value={slot}
+              >
+                {slot}
+              </option>
+            ))}
           </select>
-          {visibleSlots.length === 0 && <span className="optional-label">Per oggi non restano slot: scegli un’altra data.</span>}
+          {allTodaySlotsHavePassed && <span className="optional-label">Per oggi non restano slot: scegli un’altra data.</span>}
           {fieldErrors.reservationTime && <span className="order-field-error">{fieldErrors.reservationTime}</span>}
         </label>
         <label className="order-field-wide">Note <span className="optional-label">facoltative</span>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -21,12 +22,12 @@ export default function Hero() {
             con consegna in ospedale. Ordina entro le 10:00.
           </p>
           <div className="button-group">
-            <a className="button button-primary" href="#menu">
-              Scopri il menu
-            </a>
-            <a className="button button-secondary" href="#contatti">
-              Come raggiungerci
-            </a>
+            <Link className="button button-primary" href="/ordine">
+              Ordina il pranzo
+            </Link>
+            <Link className="button button-secondary" href="/prenota">
+              Prenota un tavolo
+            </Link>
           </div>
         </div>
 

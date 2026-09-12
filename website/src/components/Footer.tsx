@@ -14,6 +14,7 @@ export default function Footer() {
           <Link href="/">Home</Link>
           <Link href="/menu">Menu del giorno</Link>
           <Link href="/gallery">Gallery</Link>
+          <Link href="/ordine">Ordina il pranzo</Link>
           <Link href="/prenota">Prenota un tavolo</Link>
           <Link href="/contatti">Contatti</Link>
         </nav>

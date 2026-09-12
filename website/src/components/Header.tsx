@@ -3,9 +3,9 @@ import BrandLogo from "@/components/BrandLogo";
 
 const navigation = [
   { label: "Home", href: "/" },
+  { label: "Prenota un tavolo", href: "/prenota" },
   { label: "Menu del giorno", href: "/menu" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Prenota un tavolo", href: "/prenota" },
   { label: "Contatti", href: "/contatti" },
 ];
 
@@ -24,13 +24,13 @@ export default function Header() {
             </Link>
           ))}
           <Link className="button button-small button-primary" href="/ordine">
-            Ordina
+            Ordina il pranzo
           </Link>
         </nav>
 
         <div className="mobile-header-actions">
           <Link className="button button-primary mobile-header-order" href="/ordine">
-            Ordina
+            Ordina il pranzo
           </Link>
           <details className="mobile-navigation">
             <summary>

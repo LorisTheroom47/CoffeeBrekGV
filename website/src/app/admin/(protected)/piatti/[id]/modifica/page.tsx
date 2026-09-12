@@ -7,6 +7,7 @@ import {
   uploadMenuItemImageAction,
 } from "./image-actions";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminProductOptionsPanel from "@/components/admin/AdminProductOptionsPanel";
 import MenuItemForm from "@/components/admin/MenuItemForm";
 import MenuItemImageForm from "@/components/admin/MenuItemImageForm";
 import {
@@ -14,9 +15,11 @@ import {
   getMenuCategoryOptions,
   getMenuItemAllergenIds,
   getMenuItemForEdit,
+  getMenuItemProductOptionGroups,
   type AllergenOption,
   type MenuCategoryOption,
   type MenuItemEditData,
+  type MenuItemProductOptionGroup,
 } from "@/lib/menu";
 import {
   formatPriceForInput,
@@ -48,6 +51,7 @@ export default async function EditMenuItemPage({
   let categories: MenuCategoryOption[] | null = null;
   let allergens: AllergenOption[] | null = null;
   let selectedAllergenIds: string[] | null = null;
+  let productOptionGroups: MenuItemProductOptionGroup[] | null = null;
 
   try {
     [item, categories, allergens, selectedAllergenIds] = await Promise.all([
@@ -58,6 +62,14 @@ export default async function EditMenuItemPage({
     ]);
   } catch {
     // La pagina mostra un errore controllato senza dettagli tecnici.
+  }
+
+  if (item) {
+    try {
+      productOptionGroups = await getMenuItemProductOptionGroups(item.id);
+    } catch {
+      // La sezione mostra un errore controllato senza dettagli tecnici.
+    }
   }
 
   if (
@@ -135,6 +147,14 @@ export default async function EditMenuItemPage({
             />
           )}
         </section>
+
+        {item ? (
+          <AdminProductOptionsPanel
+            groups={productOptionGroups}
+            menuItemId={item.id}
+            menuItemName={item.name}
+          />
+        ) : null}
 
         {item ? (
           <section

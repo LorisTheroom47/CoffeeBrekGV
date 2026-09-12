@@ -1,0 +1,178 @@
+.sectionHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionHeader :global(.admin-form-title) {
+  margin-bottom: 0.75rem;
+}
+
+.intro {
+  max-width: 46rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+.content,
+.groupList,
+.optionsSection,
+.optionList {
+  display: grid;
+  gap: 1rem;
+}
+
+.content {
+  margin-top: 1.75rem;
+}
+
+.editor {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-small);
+  background: var(--color-warm-white);
+}
+
+.editor > summary {
+  min-height: 3rem;
+  padding: 0.85rem 1rem;
+  color: var(--color-coffee);
+  cursor: pointer;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.editor > summary:hover {
+  color: var(--color-terracotta);
+}
+
+.editor > summary:focus-visible {
+  outline: 3px solid var(--color-terracotta);
+  outline-offset: 3px;
+}
+
+.editorBody {
+  border-top: 1px solid var(--color-line);
+  padding: 1.25rem;
+}
+
+.groupCard {
+  display: grid;
+  gap: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-large);
+  padding: 1.25rem;
+  background: var(--color-cream);
+}
+
+.groupHeader,
+.optionSummary,
+.optionsHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.groupHeader {
+  align-items: start;
+}
+
+.groupHeader h3,
+.optionsHeading h4,
+.optionSummary h5 {
+  color: var(--color-coffee-dark);
+}
+
+.groupHeader h3 {
+  font-size: 1.35rem;
+}
+
+.optionsHeading h4 {
+  font-size: 1.1rem;
+}
+
+.optionsHeading span {
+  display: grid;
+  min-width: 2rem;
+  min-height: 2rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-coffee);
+  color: white;
+  font-weight: 800;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.meta span {
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  background: var(--color-warm-white);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.warning {
+  border-left: 4px solid var(--color-terracotta);
+  border-radius: var(--radius-small);
+  padding: 0.8rem 1rem;
+  background: rgba(180, 89, 61, 0.1);
+  color: var(--color-coffee-dark);
+  line-height: 1.5;
+}
+
+.optionsSection {
+  border-top: 1px solid var(--color-line);
+  padding-top: 1.25rem;
+}
+
+.optionCard {
+  display: grid;
+  gap: 0.85rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-small);
+  padding: 1rem;
+  background: var(--color-warm-white);
+}
+
+.optionSummary h5 {
+  font-size: 1rem;
+}
+
+.empty,
+.noOptions {
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-small);
+  padding: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .groupHeader,
+  .optionSummary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .groupHeader form,
+  .groupHeader button,
+  .optionSummary form,
+  .optionSummary button {
+    width: 100%;
+  }
+
+  .groupCard,
+  .editorBody {
+    padding: 1rem;
+  }
+}

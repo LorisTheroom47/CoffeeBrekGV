@@ -9,6 +9,7 @@ export {
   getMenuItemAllergenIds,
   getMenuItemForEdit,
   getMenuItemExtraForEdit,
+  getMenuItemProductOptionGroups,
 } from "./queries";
 export type {
   AdminCategory,
@@ -23,4 +24,7 @@ export type {
   MenuItemExtraEditData,
   MenuItemExtraGroup,
   MenuItemExtraScope,
+  MenuItemProductOption,
+  MenuItemProductOptionGroup,
+  ProductOptionSelectionType,
 } from "./types";

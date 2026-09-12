@@ -78,3 +78,26 @@ export type MenuItemExtra = {
 };
 
 export type MenuItemExtraEditData = MenuItemExtra;
+
+export type ProductOptionSelectionType =
+  | "MULTIPLE_OPTIONAL"
+  | "SINGLE_REQUIRED";
+
+export type MenuItemProductOption = {
+  id: string;
+  groupId: string;
+  name: string;
+  price: number;
+  available: boolean;
+  displayOrder: number;
+};
+
+export type MenuItemProductOptionGroup = {
+  id: string;
+  menuItemId: string;
+  name: string;
+  selectionType: ProductOptionSelectionType;
+  available: boolean;
+  displayOrder: number;
+  options: MenuItemProductOption[];
+};

@@ -308,12 +308,18 @@ h3 {
 .hero-visual {
   position: relative;
   width: min(100%, 32rem);
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   margin-inline: auto;
   border: 1px solid rgba(83, 56, 45, 0.1);
   border-radius: 43% 57% 48% 52% / 52% 42% 58% 48%;
   background: var(--color-cream-deep);
   box-shadow: var(--shadow-soft);
+}
+
+.hero-visual img {
+  object-fit: cover;
+  object-position: center;
 }
 
 .visual-sun {
@@ -4214,6 +4220,7 @@ h3 {
 }
 
 .gallery-card-image img {
+  object-fit: cover;
   transition: transform 300ms ease;
 }
 
@@ -4370,7 +4377,10 @@ h3 {
   }
 
   .hero-visual {
-    display: none;
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    border-radius: 1.25rem;
   }
 
   .button-group {

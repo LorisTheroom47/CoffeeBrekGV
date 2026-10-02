@@ -31,19 +31,14 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="hero-visual" aria-hidden="true">
-          <div className="visual-sun" />
-          <div className="visual-leaf visual-leaf-one" />
-          <div className="visual-leaf visual-leaf-two" />
-          <div className="visual-plate">
-            <div className="visual-plate-center" />
-          </div>
-          <div className="visual-cup">
-            <div className="visual-coffee" />
-          </div>
-          <div className="visual-cup-handle" />
-          <div className="visual-steam visual-steam-one" />
-          <div className="visual-steam visual-steam-two" />
+        <div className="hero-visual">
+          <Image
+            alt="Il bancone di Coffee Break GV"
+            fill
+            priority
+            sizes="(max-width: 43rem) calc(100vw - 1.25rem), (max-width: 64rem) 28rem, 32rem"
+            src="/images/home-coffee-break.jpg"
+          />
         </div>
       </div>
     </section>

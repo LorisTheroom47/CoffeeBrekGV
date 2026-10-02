@@ -649,6 +649,25 @@ h3 {
   stroke-width: 3.2;
 }
 
+.home-order-category-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: calc(var(--radius-medium) - 0.35rem);
+  background: #f4dfc2;
+  box-shadow: 0 8px 20px rgba(95, 58, 43, 0.12);
+}
+
+.home-order-category-photo img {
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.home-order-category-card:hover .home-order-category-photo img {
+  transform: scale(1.035);
+}
+
 .home-order-category-card:hover {
   border-color: var(--color-terracotta);
   box-shadow: 0 18px 38px rgba(95, 58, 43, 0.14);
@@ -675,6 +694,10 @@ h3 {
 
   .home-order-category-illustration {
     width: clamp(5.25rem, 24vw, 6.5rem);
+  }
+
+  .home-order-category-photo {
+    border-radius: 0.85rem;
   }
 
   .home-order-category-card > span:last-child {

@@ -1,8 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   orderCategoryFilters,
   type OrderCategorySlug,
 } from "@/lib/orders/categories";
+
+const categoryImages: Partial<Record<OrderCategorySlug, string>> = {
+  primi: "/images/categories/primi.jpg",
+  secondi: "/images/categories/secondi.jpg",
+  insalate: "/images/categories/insalate.jpg",
+  panini: "/images/categories/panini.jpg",
+  piadine: "/images/categories/piadine.jpg",
+};
 
 function CategoryIllustration({ slug }: { slug: OrderCategorySlug }) {
   const commonProps = {
@@ -83,18 +92,33 @@ export default function HomeOrderCategories() {
         </div>
 
         <div className="home-order-category-grid">
-          {orderCategoryFilters.map((category) => (
-            <Link
-              className="home-order-category-card"
-              href={`/ordine?categoria=${category.slug}`}
-              key={category.slug}
-            >
-              <span className="home-order-category-illustration">
-                <CategoryIllustration slug={category.slug} />
-              </span>
-              <span>{category.name}</span>
-            </Link>
-          ))}
+          {orderCategoryFilters.map((category) => {
+            const imageSrc = categoryImages[category.slug];
+
+            return (
+              <Link
+                className="home-order-category-card"
+                href={`/ordine?categoria=${category.slug}`}
+                key={category.slug}
+              >
+                {imageSrc ? (
+                  <span className="home-order-category-photo">
+                    <Image
+                      alt=""
+                      fill
+                      sizes="(max-width: 56rem) 45vw, 22vw"
+                      src={imageSrc}
+                    />
+                  </span>
+                ) : (
+                  <span className="home-order-category-illustration">
+                    <CategoryIllustration slug={category.slug} />
+                  </span>
+                )}
+                <span>{category.name}</span>
+              </Link>
+            );
+          })}
         </div>
 
         <div className="home-order-categories-action">

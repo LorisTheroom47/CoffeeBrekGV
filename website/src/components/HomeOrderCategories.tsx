@@ -92,33 +92,35 @@ export default function HomeOrderCategories() {
         </div>
 
         <div className="home-order-category-grid">
-          {orderCategoryFilters.map((category) => {
-            const imageSrc = categoryImages[category.slug];
+          {orderCategoryFilters
+            .filter((category) => category.slug !== "brioches-di-pasticceria")
+            .map((category) => {
+              const imageSrc = categoryImages[category.slug];
 
-            return (
-              <Link
-                className="home-order-category-card"
-                href={`/ordine?categoria=${category.slug}`}
-                key={category.slug}
-              >
-                {imageSrc ? (
-                  <span className="home-order-category-photo">
-                    <Image
-                      alt=""
-                      fill
-                      sizes="(max-width: 56rem) 45vw, 22vw"
-                      src={imageSrc}
-                    />
-                  </span>
-                ) : (
-                  <span className="home-order-category-illustration">
-                    <CategoryIllustration slug={category.slug} />
-                  </span>
-                )}
-                <span>{category.name}</span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  className="home-order-category-card"
+                  href={`/ordine?categoria=${category.slug}`}
+                  key={category.slug}
+                >
+                  {imageSrc ? (
+                    <span className="home-order-category-photo">
+                      <Image
+                        alt=""
+                        fill
+                        sizes="(max-width: 56rem) 45vw, 22vw"
+                        src={imageSrc}
+                      />
+                    </span>
+                  ) : (
+                    <span className="home-order-category-illustration">
+                      <CategoryIllustration slug={category.slug} />
+                    </span>
+                  )}
+                  <span>{category.name}</span>
+                </Link>
+              );
+            })}
         </div>
 
         <div className="home-order-categories-action">

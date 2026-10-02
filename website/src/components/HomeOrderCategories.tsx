@@ -11,6 +11,8 @@ const categoryImages: Partial<Record<OrderCategorySlug, string>> = {
   insalate: "/images/categories/insalatona.png",
   panini: "/images/categories/panino-salmone.png",
   piadine: "/images/categories/piadina-special.png",
+  bevande: "/images/categories/bevande.png",
+  senzaglutine: "/images/categories/senza-glutine.png",
 };
 
 function CategoryIllustration({ slug }: { slug: OrderCategorySlug }) {

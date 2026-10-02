@@ -6,11 +6,11 @@ import {
 } from "@/lib/orders/categories";
 
 const categoryImages: Partial<Record<OrderCategorySlug, string>> = {
-  primi: "/images/categories/primi.jpg",
-  secondi: "/images/categories/secondi.jpg",
-  insalate: "/images/categories/insalate.jpg",
-  panini: "/images/categories/panini.jpg",
-  piadine: "/images/categories/piadine.jpg",
+  primi: "/images/categories/lasagna.png",
+  secondi: "/images/categories/roastbeef.png",
+  insalate: "/images/categories/insalatona.png",
+  panini: "/images/categories/panino-salmone.png",
+  piadine: "/images/categories/piadina-special.png",
 };
 
 function CategoryIllustration({ slug }: { slug: OrderCategorySlug }) {

@@ -8,7 +8,7 @@ const navigationItems = [
   { label: "Dashboard", href: "/admin#dashboard" },
   { label: "Menu del giorno", href: "/admin#menu-giorno" },
   { label: "Ordini", href: "/admin/ordini" },
-  { label: "Prenotazioni", href: "/admin/prenotazioni" },
+  { label: "Prenotazioni tavoli", href: "/admin/prenotazioni" },
   { label: "Categorie", href: "/admin/categorie" },
   { label: "Extra", href: "/admin/extra" },
   { label: "Anteprima TV", href: "/admin#anteprima-tv" },
@@ -53,10 +53,12 @@ export default async function AdminSidebar() {
   const items =
     access.role === "admin"
       ? navigationItems
-      : navigationItems.filter((item) => item.href === "/admin/ordini");
+      : navigationItems.filter((item) =>
+          ["/admin/ordini", "/admin/prenotazioni"].includes(item.href),
+        );
   const operatorOnly = access.role === "order_operator";
   const navigationLabel = operatorOnly
-    ? "Navigazione gestione ordini"
+    ? "Navigazione gestione ordini e prenotazioni"
     : "Navigazione amministratore";
   const homeHref = operatorOnly ? "/admin/ordini" : "/admin";
 
@@ -75,7 +77,7 @@ export default async function AdminSidebar() {
             <BrandLogo className="admin-brand-logo" />
           </Link>
           <p className="admin-brand-caption">
-            {operatorOnly ? "Gestione ordini" : "Amministrazione"}
+            {operatorOnly ? "Gestione operativa" : "Amministrazione"}
           </p>
         </div>
         <SidebarNavigation

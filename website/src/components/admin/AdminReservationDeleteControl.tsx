@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import {
   deleteTableReservationAction,
   type DeleteReservationState,
-} from "@/app/admin/(protected)/prenotazioni/actions";
+} from "@/app/admin/(reservations)/prenotazioni/actions";
 
 type AdminReservationDeleteControlProps = Readonly<{
   reservationId: string;

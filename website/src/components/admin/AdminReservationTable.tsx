@@ -1,5 +1,6 @@
 import type { AdminReservation } from "@/lib/reservations";
 import AdminReservationDeleteControl from "@/components/admin/AdminReservationDeleteControl";
+import AdminReservationEditControl from "@/components/admin/AdminReservationEditControl";
 
 type AdminReservationTableProps = Readonly<{ reservations: AdminReservation[] }>;
 
@@ -25,6 +26,7 @@ export default function AdminReservationTable({ reservations }: AdminReservation
         <td data-label="Prenotazione">
           <strong>n. {reservation.reservationNumber}</strong>
           <div className="admin-table-actions">
+            <AdminReservationEditControl reservation={reservation} />
             <AdminReservationDeleteControl reservationId={reservation.id} reservationNumber={reservation.reservationNumber} />
           </div>
         </td>

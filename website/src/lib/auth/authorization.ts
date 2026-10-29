@@ -30,6 +30,8 @@ export type AuthorizedOrderAccess = Readonly<{
   role: OrderAccessRole;
 }>;
 
+export type AuthorizedReservationAccess = AuthorizedOrderAccess;
+
 export async function getAdminAuthorization(): Promise<AdminAuthorization> {
   const user = await getCurrentUser();
 
@@ -121,6 +123,20 @@ export async function getOrderAccessAuthorization(): Promise<OrderAccessAuthoriz
 }
 
 export async function requireOrderAccess(): Promise<AuthorizedOrderAccess> {
+  const authorization = await getOrderAccessAuthorization();
+
+  if (authorization.status === "unauthenticated") {
+    redirect("/admin/login");
+  }
+
+  if (authorization.status !== "authorized") {
+    redirect("/admin/unauthorized");
+  }
+
+  return { user: authorization.user, role: authorization.role };
+}
+
+export async function requireReservationAccess(): Promise<AuthorizedReservationAccess> {
   const authorization = await getOrderAccessAuthorization();
 
   if (authorization.status === "unauthenticated") {

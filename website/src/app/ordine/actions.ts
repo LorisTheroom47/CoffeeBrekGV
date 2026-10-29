@@ -23,7 +23,7 @@ const errorMessages: Readonly<Record<CreateOrderErrorCode, string>> = {
   INVALID_REQUEST_TIME:
     "Seleziona un orario di consegna tra le 12:00 e le 14:00.",
   ORDER_CUTOFF_EXCEEDED:
-    "Gli ordini possono essere inviati entro le 10:30.",
+    "Per oggi gli ordini possono essere inviati entro le 10:30. Seleziona una data futura per continuare.",
   REQUEST_TOO_LARGE:
     "La richiesta è troppo grande. Riduci il contenuto e riprova.",
   TOO_MANY_REQUESTS:
@@ -52,14 +52,21 @@ const uuidPattern =
 const moneyPattern = /^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/;
 const orderNumberPattern = /^[1-9]\d*$/;
 
-function isAfterOrderCutoff(): boolean {
+function isOrderCutoffExceeded(requestedDate: string): boolean {
   const parts = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
     hour: "2-digit",
     hourCycle: "h23",
     minute: "2-digit",
+    month: "2-digit",
     timeZone: "Europe/Rome",
+    year: "numeric",
   }).formatToParts(new Date());
   const values = new Map(parts.map((part) => [part.type, part.value]));
+  const todayInRome = `${values.get("year")}-${values.get("month")}-${values.get("day")}`;
+
+  if (requestedDate !== todayInRome) return false;
+
   const hour = Number(values.get("hour"));
   const minute = Number(values.get("minute"));
 
@@ -268,7 +275,7 @@ export async function createPublicOrderAction(
     );
   }
 
-  if (isAfterOrderCutoff()) {
+  if (isOrderCutoffExceeded(validation.data.requestedDate)) {
     return failure("ORDER_CUTOFF_EXCEEDED");
   }
 

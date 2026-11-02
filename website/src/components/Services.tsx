@@ -16,7 +16,7 @@ const services = [
   {
     title: "Consegne in ospedale",
     description:
-      "A · B · C · Pronto Soccorso · Maria Letizia Verga",
+      "A · B · C · Pronto Soccorso · Maria Letizia Verga · Sale operatorie · Blocco operatorio F",
     icon: "delivery",
     href: "/ordine",
   },

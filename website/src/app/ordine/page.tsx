@@ -124,7 +124,8 @@ export default async function OrderPage({ searchParams }: OrderPageProps) {
             <p className="order-page-intro">
               Scegli i piatti disponibili, ritira da Coffee Break GV oppure
               richiedi la consegna in ospedale nei punti A, B, C, Pronto
-              Soccorso o Maria Letizia Verga.
+              Soccorso, Maria Letizia Verga, Sale operatorie o Blocco
+              operatorio F.
             </p>
             <OrderDeadlineNotice />
           </div>

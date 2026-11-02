@@ -29,6 +29,18 @@ export const deliveryPointOptions = [
     description: "Reception",
     label: "Maria Letizia Verga — Reception",
   },
+  {
+    value: "SALE_OPERATORIE",
+    title: "Sale operatorie",
+    description: "",
+    label: "Sale operatorie",
+  },
+  {
+    value: "BLOCCO_OPERATORIO_F",
+    title: "Blocco operatorio F",
+    description: "",
+    label: "Blocco operatorio F",
+  },
 ] as const;
 
 export type DeliveryPoint = (typeof deliveryPointOptions)[number]["value"];

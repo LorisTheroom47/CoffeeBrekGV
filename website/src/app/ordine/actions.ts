@@ -23,7 +23,7 @@ const errorMessages: Readonly<Record<CreateOrderErrorCode, string>> = {
   INVALID_REQUEST_TIME:
     "Seleziona un orario di consegna tra le 12:00 e le 14:00.",
   ORDER_CUTOFF_EXCEEDED:
-    "Per oggi gli ordini possono essere inviati entro le 10:30. Seleziona una data futura per continuare.",
+    "Per oggi gli ordini possono essere inviati entro le 11:00. Seleziona una data futura per continuare.",
   REQUEST_TOO_LARGE:
     "La richiesta è troppo grande. Riduci il contenuto e riprova.",
   TOO_MANY_REQUESTS:
@@ -70,7 +70,7 @@ function isOrderCutoffExceeded(requestedDate: string): boolean {
   const hour = Number(values.get("hour"));
   const minute = Number(values.get("minute"));
 
-  return hour > 10 || (hour === 10 && minute > 30);
+  return hour > 11 || (hour === 11 && minute > 0);
 }
 
 function failure(

@@ -41,7 +41,7 @@ export default function RestaurantInfo() {
             </div>
             <div>
               <dt>Ordini</dt>
-              <dd><strong>ORDINI PER OGGI ENTRO LE 10:30</strong></dd>
+              <dd><strong>ORDINI PER OGGI ENTRO LE 11:00</strong></dd>
             </div>
           </dl>
           <a

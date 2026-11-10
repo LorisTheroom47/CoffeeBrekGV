@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Lato, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import "./samsung-compat.css";
 
 const bodyFont = Lato({
   subsets: ["latin"],
@@ -16,6 +17,11 @@ const displayFont = Playfair_Display({
 export const metadata: Metadata = {
   title: "Coffee Break GV",
   description: "Menu del giorno, asporto e consegna in ospedale",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

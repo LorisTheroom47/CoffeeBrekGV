@@ -1,0 +1,277 @@
+/*
+ * Fallback progressivi per browser Samsung/Tizen meno recenti.
+ * Ogni blocco si attiva soltanto quando la funzionalità moderna manca.
+ */
+
+@supports not (font-size: clamp(1rem, 2vw, 2rem)) {
+  h1 {
+    font-size: 4.5rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+  }
+
+  .site-header-logo {
+    width: 8.5rem;
+    max-width: 100%;
+  }
+
+  .hero-grid {
+    gap: 5rem;
+  }
+
+  .hero-logo {
+    width: 27rem;
+    max-width: 100%;
+  }
+
+  .hero-description {
+    font-size: 1.2rem;
+  }
+
+  .home-order-categories {
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
+  }
+
+  .home-order-categories-heading {
+    margin-bottom: 2.75rem;
+  }
+
+  .home-order-categories-heading > p:last-child {
+    font-size: 1.1rem;
+  }
+
+  .home-order-category-grid {
+    gap: 1rem;
+  }
+
+  .home-order-category-card {
+    padding: 1.25rem;
+  }
+
+  .home-order-category-card > span:last-child {
+    font-size: 1.3rem;
+  }
+
+  .home-order-category-illustration {
+    width: 8rem;
+    max-width: 100%;
+  }
+
+  .home-order-categories-action {
+    margin-top: 2.75rem;
+  }
+
+  .home-promo-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .home-promo-card {
+    gap: 4rem;
+    padding: 3.5rem;
+  }
+
+  .home-promo-card h2 {
+    font-size: 3.5rem;
+  }
+
+  .home-promo-card p:last-child {
+    font-size: 1.35rem;
+  }
+
+  .tv-page {
+    padding: 2.5rem;
+  }
+
+  .tv-header {
+    padding-bottom: 1.75rem;
+  }
+
+  .tv-brand-logo {
+    width: 14rem;
+    max-width: 100%;
+  }
+
+  .tv-header h1 {
+    font-size: 5.5rem;
+  }
+
+  .tv-date {
+    font-size: 1.6rem;
+  }
+
+  .tv-menu-slides .tv-menu-category h2 {
+    margin-bottom: 1rem;
+  }
+
+  .tv-menu-category {
+    padding: 1.75rem;
+  }
+
+  .tv-menu-category h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2.7rem;
+  }
+
+  .tv-menu-category .menu-item {
+    font-size: 1.5rem;
+  }
+
+  .tv-menu-category .menu-item-allergens {
+    font-size: 1rem;
+  }
+
+  .tv-menu-category .availability-badge {
+    font-size: 0.75rem;
+  }
+
+  .tv-note {
+    padding-top: 1rem;
+    font-size: 0.95rem;
+  }
+
+  @media (min-width: 55rem) {
+    .desktop-navigation {
+      font-size: 1.05rem;
+    }
+
+    .desktop-navigation .button {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 43rem) {
+    .hero-logo {
+      width: 15rem;
+    }
+
+    .hero-copy h1 {
+      font-size: 2.5rem;
+    }
+
+    .home-order-categories {
+      padding-top: 3.25rem;
+      padding-bottom: 3.25rem;
+    }
+
+    .home-order-category-card {
+      padding: 0.75rem 0.5rem;
+    }
+
+    .home-promo-card {
+      gap: 2rem;
+      padding: 2rem 1.35rem;
+    }
+
+    .home-promo-card h2 {
+      font-size: 2.75rem;
+    }
+  }
+}
+
+@supports not (width: min(100%, 1rem)) {
+  .site-container {
+    width: calc(100% - 2rem);
+    max-width: var(--site-width);
+  }
+
+  .hero-visual {
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  @media (max-width: 43rem) {
+    .site-container {
+      width: calc(100% - 1.25rem);
+    }
+  }
+}
+
+@supports not (margin-inline: auto) {
+  .site-container,
+  .hero-visual {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@supports not (padding-block: 1rem) {
+  .section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  .tv-menu-slides .tv-menu-category .menu-item {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .tv-menu-category .menu-item {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  @media (max-width: 43rem) {
+    .section {
+      padding-top: 3.25rem;
+      padding-bottom: 3.25rem;
+    }
+  }
+}
+
+@supports not (margin-block: 1rem) {
+  .tv-menu-slides {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@supports not (height: 100svh) {
+  .hero {
+    min-height: calc(100vh - 5rem);
+  }
+}
+
+@supports not (inset: 0) {
+  .tv-menu-slide {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+@supports not (aspect-ratio: 4 / 3) {
+  .hero-visual {
+    height: 24rem;
+  }
+
+  .menu-item-image {
+    height: 4.5rem;
+  }
+
+  .home-order-category-illustration {
+    height: 8rem;
+  }
+
+  .home-order-category-photo {
+    height: 10rem;
+  }
+
+  @media (max-width: 43rem) {
+    .hero-visual {
+      height: 18rem;
+    }
+
+    .home-order-category-illustration {
+      height: 4.75rem;
+    }
+
+    .home-order-category-photo {
+      height: 7rem;
+    }
+  }
+}

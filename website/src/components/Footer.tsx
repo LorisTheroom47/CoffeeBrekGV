@@ -17,6 +17,7 @@ export default function Footer() {
           <Link href="/ordine">Ordina il pranzo</Link>
           <Link href="/prenota">Prenota un tavolo</Link>
           <Link href="/contatti">Contatti</Link>
+          <Link href="/tv">Visualizzazione TV</Link>
         </nav>
       </div>
       <div className="site-container footer-bottom">

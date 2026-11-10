@@ -46,9 +46,12 @@ function createCategorySlides(
 }
 
 function createFallbackSlides(categories: MenuCategory[]) {
-  return getVisibleCategories(categories).flatMap((category) => {
+  const slides: MenuSlide[] = [];
+
+  getVisibleCategories(categories).forEach((category) => {
     if (category.items.length === 0) {
-      return createCategorySlides(category, [[]]);
+      slides.push(...createCategorySlides(category, [[]]));
+      return;
     }
 
     const chunks: MenuItemData[][] = [];
@@ -62,8 +65,10 @@ function createFallbackSlides(categories: MenuCategory[]) {
       );
     }
 
-    return createCategorySlides(category, chunks);
+    slides.push(...createCategorySlides(category, chunks));
   });
+
+  return slides;
 }
 
 function getSlidesSignature(slides: MenuSlide[]) {
@@ -94,53 +99,56 @@ export default function TvMenuSlides({ categories }: TvMenuSlidesProps) {
         measurementCards.map((card) => [card.dataset.tvMeasureCategory, card]),
       );
 
-      const measuredSlides = getVisibleCategories(categories).flatMap(
-        (category) => {
-          const card = cardsByCategory.get(category.id);
-          const list = card?.querySelector("ul");
-          const itemElements = list
-            ? Array.from(list.children) as HTMLElement[]
-            : [];
+      const measuredSlides: MenuSlide[] = [];
 
-          if (!card || !list || availableHeight <= 0) {
-            return createFallbackSlides([category]);
+      getVisibleCategories(categories).forEach((category) => {
+        const card = cardsByCategory.get(category.id);
+        const list = card ? card.querySelector("ul") : null;
+        const itemElements = list
+          ? (Array.from(list.children) as HTMLElement[])
+          : [];
+
+        if (!card || !list || availableHeight <= 0) {
+          measuredSlides.push(...createFallbackSlides([category]));
+          return;
+        }
+
+        if (category.items.length === 0) {
+          measuredSlides.push(...createCategorySlides(category, [[]]));
+          return;
+        }
+
+        const cardHeight = card.getBoundingClientRect().height;
+        const listHeight = list.getBoundingClientRect().height;
+        const fixedCardHeight = Math.max(0, cardHeight - listHeight);
+        const itemsHeightLimit = Math.max(1, availableHeight - fixedCardHeight);
+        const chunks: MenuItemData[][] = [];
+        let currentChunk: MenuItemData[] = [];
+        let currentHeight = 0;
+
+        category.items.forEach((item, itemIndex) => {
+          const itemElement = itemElements[itemIndex];
+          const itemHeight = itemElement
+            ? itemElement.getBoundingClientRect().height
+            : itemsHeightLimit;
+
+          if (
+            currentChunk.length > 0 &&
+            currentHeight + itemHeight > itemsHeightLimit
+          ) {
+            chunks.push(currentChunk);
+            currentChunk = [];
+            currentHeight = 0;
           }
 
-          if (category.items.length === 0) {
-            return createCategorySlides(category, [[]]);
-          }
+          currentChunk.push(item);
+          currentHeight += itemHeight;
+        });
 
-          const cardHeight = card.getBoundingClientRect().height;
-          const listHeight = list.getBoundingClientRect().height;
-          const fixedCardHeight = Math.max(0, cardHeight - listHeight);
-          const itemsHeightLimit = Math.max(1, availableHeight - fixedCardHeight);
-          const chunks: MenuItemData[][] = [];
-          let currentChunk: MenuItemData[] = [];
-          let currentHeight = 0;
+        if (currentChunk.length > 0) chunks.push(currentChunk);
 
-          category.items.forEach((item, itemIndex) => {
-            const itemHeight =
-              itemElements[itemIndex]?.getBoundingClientRect().height ??
-              itemsHeightLimit;
-
-            if (
-              currentChunk.length > 0 &&
-              currentHeight + itemHeight > itemsHeightLimit
-            ) {
-              chunks.push(currentChunk);
-              currentChunk = [];
-              currentHeight = 0;
-            }
-
-            currentChunk.push(item);
-            currentHeight += itemHeight;
-          });
-
-          if (currentChunk.length > 0) chunks.push(currentChunk);
-
-          return createCategorySlides(category, chunks);
-        },
-      );
+        measuredSlides.push(...createCategorySlides(category, chunks));
+      });
       const nextSignature = getSlidesSignature(measuredSlides);
 
       if (nextSignature !== slidesSignatureRef.current) {
@@ -159,7 +167,9 @@ export default function TvMenuSlides({ categories }: TvMenuSlidesProps) {
       typeof ResizeObserver === "undefined"
         ? null
         : new ResizeObserver(scheduleMeasurement);
-    resizeObserver?.observe(viewport);
+    if (resizeObserver) {
+      resizeObserver.observe(viewport);
+    }
     window.addEventListener("resize", scheduleMeasurement);
     scheduleMeasurement();
 
@@ -169,7 +179,9 @@ export default function TvMenuSlides({ categories }: TvMenuSlidesProps) {
 
     return () => {
       window.cancelAnimationFrame(scheduledMeasurement);
-      resizeObserver?.disconnect();
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       window.removeEventListener("resize", scheduleMeasurement);
     };
   }, [categories]);

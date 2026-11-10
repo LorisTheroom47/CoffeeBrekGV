@@ -83,24 +83,24 @@
   }
 
   .tv-page {
-    padding: 2.5rem;
+    padding: 1.75rem;
   }
 
   .tv-header {
-    padding-bottom: 1.75rem;
+    padding-bottom: 0.85rem;
   }
 
   .tv-brand-logo {
-    width: 14rem;
+    width: 10rem;
     max-width: 100%;
   }
 
   .tv-header h1 {
-    font-size: 5.5rem;
+    font-size: 4.25rem;
   }
 
   .tv-date {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   .tv-menu-slides .tv-menu-category h2 {
@@ -108,11 +108,11 @@
   }
 
   .tv-menu-category {
-    padding: 1.75rem;
+    padding: 1.25rem;
   }
 
   .tv-menu-category h2 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     font-size: 2.7rem;
   }
 
@@ -129,7 +129,7 @@
   }
 
   .tv-note {
-    padding-top: 1rem;
+    padding-top: 0.5rem;
     font-size: 0.95rem;
   }
 

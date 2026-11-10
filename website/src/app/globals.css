@@ -1884,7 +1884,7 @@ h3 {
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
-  padding: clamp(1.5rem, 3vw, 3.5rem);
+  padding: clamp(1rem, 1.5vw, 2rem);
   background: var(--color-coffee-dark);
   color: var(--color-warm-white);
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -1894,9 +1894,9 @@ h3 {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 1.5rem;
   border-bottom: 2px solid rgba(255, 253, 248, 0.22);
-  padding-bottom: clamp(1.25rem, 2.5vw, 2.25rem);
+  padding-bottom: clamp(0.65rem, 1vw, 1rem);
 }
 
 .tv-brand {
@@ -1909,9 +1909,9 @@ h3 {
 
 .tv-brand-logo {
   display: block;
-  width: clamp(9rem, 14vw, 14rem);
+  width: clamp(7rem, 9vw, 10rem);
   height: auto;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.35rem;
   object-fit: contain;
 }
 
@@ -1919,15 +1919,15 @@ h3 {
   max-width: none;
   margin: 0;
   color: var(--color-warm-white);
-  font-size: clamp(3.25rem, 5.5vw, 7rem);
-  line-height: 0.96;
+  font-size: clamp(2.5rem, 3.4vw, 4.25rem);
+  line-height: 1;
 }
 
 .tv-date {
   flex: none;
-  padding-bottom: 0.35rem;
+  padding-bottom: 0.2rem;
   color: var(--color-cream-deep);
-  font-size: clamp(1.1rem, 1.7vw, 2rem);
+  font-size: clamp(1.1rem, 1.35vw, 1.6rem);
   font-weight: 700;
 }
 
@@ -1942,7 +1942,7 @@ h3 {
 .tv-menu-slides {
   position: relative;
   min-height: 0;
-  margin-block: clamp(1rem, 2vw, 2rem);
+  margin-block: clamp(0.5rem, 0.8vw, 0.85rem);
   overflow: hidden;
 }
 
@@ -1979,7 +1979,7 @@ h3 {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: clamp(0.75rem, 1.4vw, 1.4rem);
+  margin-bottom: clamp(0.5rem, 0.7vw, 0.8rem);
 }
 
 .tv-menu-slides .tv-menu-category h2 small {
@@ -1990,7 +1990,7 @@ h3 {
 }
 
 .tv-menu-slides .tv-menu-category .menu-item {
-  padding-block: clamp(0.55rem, 1vh, 1rem);
+  padding-block: clamp(0.4rem, 0.7vh, 0.7rem);
 }
 
 .tv-menu-slides-measure {
@@ -2061,12 +2061,12 @@ h3 {
   min-width: 0;
   border: 2px solid rgba(255, 253, 248, 0.18);
   border-radius: var(--radius-medium);
-  padding: clamp(1.25rem, 2vw, 2.25rem);
+  padding: clamp(1rem, 1.25vw, 1.5rem);
   background: rgba(255, 253, 248, 0.07);
 }
 
 .tv-menu-category h2 {
-  margin-bottom: clamp(1rem, 2vw, 2rem);
+  margin-bottom: clamp(0.65rem, 1vw, 1rem);
   color: var(--color-terracotta);
   font-size: clamp(2rem, 2.5vw, 3.4rem);
   letter-spacing: -0.02em;
@@ -2085,7 +2085,7 @@ h3 {
   min-width: 0;
   align-items: start;
   gap: 1rem;
-  padding-block: clamp(0.75rem, 1.25vw, 1.35rem);
+  padding-block: clamp(0.5rem, 0.8vw, 0.85rem);
   font-size: clamp(1.2rem, 1.45vw, 1.9rem);
   grid-template-columns: minmax(0, 1fr) auto;
   line-height: 1.25;
@@ -2128,7 +2128,7 @@ h3 {
 .tv-note {
   margin: 0;
   border-top: 1px solid rgba(255, 253, 248, 0.14);
-  padding-top: clamp(0.8rem, 1.5vw, 1.3rem);
+  padding-top: clamp(0.4rem, 0.65vw, 0.65rem);
   color: rgba(255, 253, 248, 0.6);
   font-size: clamp(0.78rem, 1vw, 1.15rem);
   text-align: center;

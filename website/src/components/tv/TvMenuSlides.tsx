@@ -20,8 +20,9 @@ type MenuSlide = Readonly<{
   totalParts: number;
 }>;
 
-const slideDurationMs = 9_000;
-const fallbackItemsPerSlide = 4;
+const slideDurationMs = 5_000;
+const fallbackItemsPerSlide = 7;
+const maxItemsPerSlide = 8;
 
 function getVisibleCategories(categories: MenuCategory[]) {
   const populatedCategories = categories.filter(
@@ -134,7 +135,8 @@ export default function TvMenuSlides({ categories }: TvMenuSlidesProps) {
 
           if (
             currentChunk.length > 0 &&
-            currentHeight + itemHeight > itemsHeightLimit
+            (currentChunk.length >= maxItemsPerSlide ||
+              currentHeight + itemHeight > itemsHeightLimit)
           ) {
             chunks.push(currentChunk);
             currentChunk = [];
